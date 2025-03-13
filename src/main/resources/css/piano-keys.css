@@ -1,0 +1,29 @@
+.white-key {
+    -fx-fill: white;
+    -fx-stroke: gray;
+}
+
+.white-key:hover {
+    -fx-fill: #d1d1d1;
+}
+
+.white-key:pressed {
+    -fx-fill: #d9d9d9;
+    -fx-translate-x: -3px;
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.5, -2, 0);
+}
+
+.black-key {
+    -fx-fill: black;
+    -fx-stroke: black;
+}
+
+.black-key:hover {
+    -fx-fill: #2f2f2f;
+}
+
+.black-key:pressed {
+    -fx-fill: #333333;
+    -fx-translate-x: -3px;
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.7), 8, 0.5, -2, 0);
+}

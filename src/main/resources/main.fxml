@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.shape.Rectangle?>
+<?import javafx.scene.text.*?>
+
+<BorderPane xmlns="http://javafx.com/javafx/8.0" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="by.fpmi.bsu.pianolane.PianoRollController">
+    <top>
+        <Button fx:id="playButton" text="Play" onAction="#handlePlayButton"/>
+
+    </top>
+    <center>
+        <ScrollPane fx:id="verticalScrollPane" fitToWidth="true" style="-fx-background-color: black;">
+            <AnchorPane fx:id="pianoRollContainer" style="-fx-background-color: black;">
+                <ScrollPane fx:id="horizontalScrollPane" layoutX="120" layoutY="0"
+                            style="-fx-background-color: lightgray;">
+                    <Pane fx:id="gridPane" minWidth="1920" minHeight="1080" style="-fx-background-color: lightgray;">
+                    </Pane>
+                </ScrollPane>
+
+
+                <Pane fx:id="keyboardPane" prefWidth="120" stylesheets="@/css/piano-keys.css">
+                </Pane>
+            </AnchorPane>
+        </ScrollPane>
+    </center>
+</BorderPane>
