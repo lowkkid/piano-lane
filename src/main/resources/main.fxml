@@ -2,27 +2,28 @@
 
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
-<?import javafx.scene.shape.Rectangle?>
-<?import javafx.scene.text.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="by.fpmi.bsu.pianolane.PianoRollController">
+            fx:controller="by.fpmi.bsu.pianolane.PianoRollController"
+            stylesheets="@css/panel.css">
     <top>
-        <Button fx:id="playButton" text="Play" onAction="#handlePlayButton"/>
-
+        <HBox alignment="CENTER" styleClass="top-box" prefHeight="50">
+            <Spinner fx:id="bpmSpinner" prefWidth="80"/>
+            <Button fx:id="playButton" text="▶" styleClass="play-button"/>
+            <Button fx:id="stopButton" text="■" styleClass="stop-button"/>
+        </HBox>
     </top>
     <center>
         <ScrollPane fx:id="verticalScrollPane" fitToWidth="true" style="-fx-background-color: black;">
             <AnchorPane fx:id="pianoRollContainer" style="-fx-background-color: black;">
-                <ScrollPane fx:id="horizontalScrollPane" layoutX="120" layoutY="0"
-                            style="-fx-background-color: lightgray;">
-                    <Pane fx:id="gridPane" minWidth="1920" minHeight="1080" style="-fx-background-color: lightgray;">
+                    <Pane fx:id="keyboardPane" prefWidth="120" stylesheets="@/css/piano-keys.css" layoutX="0">
                     </Pane>
-                </ScrollPane>
 
-
-                <Pane fx:id="keyboardPane" prefWidth="120" stylesheets="@/css/piano-keys.css">
-                </Pane>
+                    <ScrollPane fx:id="horizontalScrollPane" layoutX="120"
+                                style="-fx-background-color: lightgray;">
+                        <Pane fx:id="gridPane" minWidth="1920" minHeight="1080" style="-fx-background-color: lightgray;">
+                        </Pane>
+                    </ScrollPane>
             </AnchorPane>
         </ScrollPane>
     </center>

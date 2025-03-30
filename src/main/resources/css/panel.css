@@ -1,0 +1,74 @@
+.top-box {
+    -fx-background-color: linear-gradient(#555555, #666666);
+    -fx-alignment: center;
+    -fx-pref-height: 50;
+}
+.spinner {
+    -fx-background-color: linear-gradient(#f2f2f2, #e6e6e6);
+    -fx-background-radius: 6;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 6;
+    -fx-padding: 0 4 0 4;
+    -fx-pref-height: 40;
+}
+.spinner .text-field {
+    -fx-background-color: transparent;
+    -fx-text-fill: #000000;
+    -fx-font-size: 10pt;
+    -fx-alignment: CENTER_RIGHT;
+    -fx-padding: 0 6 0 0;
+}
+.spinner .increment-arrow-button,
+.spinner .decrement-arrow-button {
+    -fx-background-color: transparent;
+    -fx-padding: 4;
+    -fx-cursor: hand;
+}
+.spinner .increment-arrow,
+.spinner .decrement-arrow {
+    -fx-scale-x: 0.6;
+    -fx-scale-y: 0.6;
+    -fx-stroke: #555555;
+    -fx-stroke-width: 2;
+}
+.spinner .increment-arrow-button:hover,
+.spinner .decrement-arrow-button:hover {
+    -fx-background-color: #dddddd;
+    -fx-background-radius: 6;
+}
+.button {
+    -fx-font-size: 14px;
+    -fx-text-fill: #ffffff;
+    -fx-border-color: #222222;
+    -fx-border-width: 1;
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+    -fx-padding: 5 10 5 10;
+    -fx-cursor: hand;
+    -fx-pref-height: 40;
+}
+.play-button {
+    -fx-background-color:
+            linear-gradient(#ff9900, #ff9900),
+            linear-gradient(#333333, #444444);
+    -fx-background-insets: 0 90% 0 0, 0;
+}
+.play-button:hover {
+    -fx-background-color:
+            linear-gradient(#ff9900, #ff9900),
+            linear-gradient(#444444, #555555);
+}
+.play-button:pressed {
+    -fx-background-color:
+            linear-gradient(#ff9900, #ff9900),
+            linear-gradient(#222222, #333333);
+}
+.stop-button {
+    -fx-background-color: linear-gradient(#333333, #444444);
+}
+.stop-button:hover {
+    -fx-background-color: linear-gradient(#444444, #555555);
+}
+.stop-button:pressed {
+    -fx-background-color: linear-gradient(#222222, #333333);
+}
