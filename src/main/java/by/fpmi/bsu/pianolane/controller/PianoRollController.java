@@ -2,6 +2,8 @@ package by.fpmi.bsu.pianolane.controller;
 
 import by.fpmi.bsu.pianolane.MidiPlayer;
 import by.fpmi.bsu.pianolane.Note;
+import by.fpmi.bsu.pianolane.ui.NoteContainer;
+import by.fpmi.bsu.pianolane.ui.PianoRoll;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
@@ -16,7 +18,11 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
 import javax.sound.midi.*;
@@ -26,8 +32,12 @@ import java.util.List;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
 
 @Component
+@Slf4j
+@Scope("prototype")
 public class PianoRollController {
 
+    @FXML
+    private PianoRoll root;
     @FXML
     private Pane gridPane;
     @FXML
@@ -41,6 +51,7 @@ public class PianoRollController {
     @FXML
     private Button closeButton;
 
+
     private final int NUM_KEYS = 60;        // 5 октав (60 клавиш)
     private final double KEY_HEIGHT = 30;   // Высота клавиш
     private final String[] NOTES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
@@ -50,8 +61,6 @@ public class PianoRollController {
     private final double cellHeight = 30;  // Высота клетки (соответствует одной клавише)
     private final int numColumns = 48;     // Количество колонок (тактов)
 
-    // Список добавленных нот (прямоугольников)
-    private final List<Rectangle> noteRectangles = new ArrayList<>();
 
     // Плейхед – вертикальная линия, показывающая текущий момент воспроизведения
     private Rectangle playheadLine;
@@ -63,6 +72,11 @@ public class PianoRollController {
 
     private MainController mainController;
 
+    private Integer channelId;
+
+    public PianoRollController(Integer channelId) {
+        this.channelId = channelId;
+    }
 
 
     @Autowired
@@ -74,15 +88,20 @@ public class PianoRollController {
         drawKeyboard();
         drawGrid();
         initPlayhead();
-        initializeBpmSpinner();
-        initializePlayAndStopButton();
+        //initializeBpmSpinner();
+        //initializePlayAndStopButton();
 
-//        closeButton.setOnAction(event -> {
-//            mainController.closePianoRoll();
-//        });
+        closeButton.setOnAction(event -> {
+            mainController.closePianoRoll();
+        });
 
         // Обработка клика по сетке для добавления ноты
         gridPane.addEventHandler(MouseEvent.MOUSE_CLICKED, this::handleGridClick);
+
+        log.info("Fetching previously written notes for channel {}", channelId);
+        List<Note> previouslyWrittenNotes = NoteContainer.getNotesForChannel(channelId);
+        log.info("Fetched notes: {}", previouslyWrittenNotes);
+        gridPane.getChildren().addAll(previouslyWrittenNotes);
     }
 
     private void initializeBpmSpinner() {
@@ -219,7 +238,8 @@ public class PianoRollController {
         noteRect.setFill(Color.BLUE);
         noteRect.setStroke(Color.BLACK);
         gridPane.getChildren().add(noteRect);
-        noteRectangles.add(noteRect);
+        NoteContainer.addNote(channelId, noteRect);
+        log.info("Added Note to NoteContainer with key {}", channelId);
     }
 
     private void stopNotes() {
@@ -229,13 +249,14 @@ public class PianoRollController {
     private void playNotes() {
         midiPlayer.play();
 
+        Sequencer sequencer = SEQUENCER;
         if (playheadTimeline != null) {
             playheadTimeline.stop();
         }
 
         playheadTimeline = new Timeline(new KeyFrame(Duration.millis(10), ev -> {
-            if (SEQUENCER.isRunning()) {
-                long tickPos = SEQUENCER.getTickPosition();
+            if (sequencer.isRunning()) {
+                long tickPos = sequencer.getTickPosition();
                 double newX = (tickPos / (double) ticksPerColumn) * cellWidth;
                 playheadLine.setX(newX);
             } else {

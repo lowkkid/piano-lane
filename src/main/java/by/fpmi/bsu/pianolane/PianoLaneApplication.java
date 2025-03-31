@@ -29,7 +29,7 @@ public class PianoLaneApplication extends Application {
     @Override
     public void start(Stage primaryStage) throws Exception {
         SpringFxmlLoader springFxmlLoader = new SpringFxmlLoader();
-        Parent root = springFxmlLoader.load("piano-roll.fxml");
+        Parent root = springFxmlLoader.load("piano-lane.fxml");
         Scene scene = new Scene(root, 300, 300, Color.BLACK);
 
 

@@ -17,6 +17,7 @@ import javafx.scene.shape.Line;
 import javafx.scene.shape.Polygon;
 import javafx.geometry.Pos;
 import javafx.scene.paint.Color;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -27,6 +28,7 @@ import java.util.List;
 import java.util.ResourceBundle;
 
 @Component
+@Slf4j
 public class ChannelRackController implements Initializable {
 
     @FXML
@@ -68,9 +70,10 @@ public class ChannelRackController implements Initializable {
     }
 
     private void registerChannelRackItem(ChannelRackItem channelRackItem) {
-        channelRackItem.getStepPane().setOnMouseClicked(mouseEvent -> {
-            mainController.openPianoRoll();
-        });
+        log.info("Registering channelRackItem pane withId {}", channelRackItem.getChannelId());
+        channelRackItem.getStepPane().setOnMouseClicked(mouseEvent ->
+            mainController.openPianoRoll(channelRackItem.getChannelId())
+        );
         rows.add(channelRackItem);
     }
 

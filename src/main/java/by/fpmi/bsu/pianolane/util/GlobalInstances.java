@@ -10,6 +10,7 @@ import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.Synthesizer;
+import javax.sound.midi.Track;
 import javax.sound.midi.Transmitter;
 
 public class GlobalInstances {
@@ -31,5 +32,16 @@ public class GlobalInstances {
         } catch (MidiUnavailableException | InvalidMidiDataException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    public static Track createTrack() {
+        Track track = SEQUENCE.createTrack();
+        try {
+            SEQUENCER.open();
+            SEQUENCER.setSequence(SEQUENCE);
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+        }
+        return track;
     }
 }

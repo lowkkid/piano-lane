@@ -11,6 +11,7 @@ import javax.sound.midi.Track;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCE;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SYNTHESIZER;
+import static by.fpmi.bsu.pianolane.util.GlobalInstances.createTrack;
 
 @Data
 public class Channel {
@@ -23,7 +24,7 @@ public class Channel {
     public Channel(int channelId, Instrument instrument) {
         this.channelId = channelId;
         this.instrument = instrument;
-        track = SEQUENCE.createTrack();
+        track = createTrack();
         muted = false;
         soloed = false;
 

@@ -1,6 +1,7 @@
 package by.fpmi.bsu.pianolane.controller;
 
 import by.fpmi.bsu.pianolane.MidiPlayer;
+import by.fpmi.bsu.pianolane.ui.PianoRoll;
 import by.fpmi.bsu.pianolane.util.SpringFxmlLoader;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -11,6 +12,8 @@ import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
 import javafx.scene.layout.StackPane;
 import javafx.util.Duration;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -22,6 +25,7 @@ import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
 @Component
 public class MainController {
 
+    private static final Logger log = LoggerFactory.getLogger(MainController.class);
     @FXML
     private Button menuButton;
 
@@ -78,10 +82,11 @@ public class MainController {
         pianoRollView = null;
     }
 
-    protected void openPianoRoll() {
+    protected void openPianoRoll(int channelId) {
         try {
+            log.info("Opening piano roll for channel {}", channelId);
             SpringFxmlLoader springFxmlLoader = new SpringFxmlLoader();
-            pianoRollView = springFxmlLoader.load("piano-roll.fxml");
+            pianoRollView = springFxmlLoader.load("piano-roll.fxml", channelId);
             mainContent.getChildren().add(pianoRollView);
         } catch (IOException ex) {
             ex.printStackTrace();
