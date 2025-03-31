@@ -146,27 +146,13 @@ public class PianoRollController {
             boolean isMeasureLine = (i % 4 == 0);
 
             // Делаем более толстую линию, если это граница такта.
-            double lineThickness = isMeasureLine ? 2 : 1;
+            double lineThickness = isMeasureLine ? 1.5 : 1;
 
             // Рисуем вертикальную линию от верха до низа сетки.
             Rectangle columnLine = new Rectangle(i * cellWidth, 0, lineThickness, height);
-            columnLine.setFill(isMeasureLine ? Color.DARKGRAY : Color.GRAY);
+            columnLine.setFill(isMeasureLine ? Color.BLACK : Color.GRAY);
             gridPane.getChildren().add(columnLine);
 
-            // Добавляем текст с номером такта (если это граница такта).
-            if (isMeasureLine) {
-                // Номер такта: (i / 4) + 1, если 4 четверти в такте
-                int measureNumber = (i / 4) + 1;
-
-                Text measureText = new Text(
-                        i * cellWidth + 4,  // небольшое смещение вправо, чтобы текст не налезал на линию
-                        12,                 // координата Y (чуть ниже верхнего края сетки)
-                        String.valueOf(measureNumber)
-                );
-                measureText.setFill(Color.WHITE);
-                measureText.setFont(new Font(12));
-                gridPane.getChildren().add(measureText);
-            }
         }
 
         // Горизонтальные линии (клавиши) — оставляем как было

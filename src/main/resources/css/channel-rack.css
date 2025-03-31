@@ -1,0 +1,30 @@
+.top-panel {
+    -fx-pref-height: 40px;
+    x-background-color: #2b2b2b;
+    -fx-padding: 5;
+}
+
+.close-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.close-button:hover {
+    -fx-border-color: white;
+}
+
+.bottom-panel {
+    -fx-padding: 0 0 0 10px;
+    -fx-alignment: center-left;
+    -fx-pref-height: 30px;
+}
+
+.add-button {
+    -fx-pref-width: 30px;
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+}
+
+.add-button:hover {
+    -fx-border-color: white;
+}

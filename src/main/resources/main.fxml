@@ -21,7 +21,7 @@
 
                     <ScrollPane fx:id="horizontalScrollPane" layoutX="120"
                                 style="-fx-background-color: lightgray;">
-                        <Pane fx:id="gridPane" minWidth="1920" minHeight="1080" style="-fx-background-color: lightgray;">
+                        <Pane fx:id="gridPane" style="-fx-background-color: lightgray;">
                         </Pane>
                     </ScrollPane>
             </AnchorPane>

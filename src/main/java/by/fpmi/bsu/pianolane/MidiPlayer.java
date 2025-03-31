@@ -4,11 +4,15 @@ import by.fpmi.bsu.pianolane.observer.NoteDeleteObserver;
 import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
 
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiEvent;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
+import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -16,11 +20,13 @@ import java.util.concurrent.atomic.AtomicInteger;
 public class MidiPlayer implements NoteDeleteObserver, NoteResizedObserver {
 
     private static final AtomicInteger NOTES_SEQUENCE = new AtomicInteger(0);
+    private static final AtomicInteger CHANNEL_SEQUENCE = new AtomicInteger(0);
     private static final Map<Integer, NoteEvent> NOTE_EVENTS = new ConcurrentHashMap<>();
 
     public static Sequencer SEQUENCER;
     public static Sequence SEQUENCE;
     public static Track TRACK;
+    public static List<Integer> CHANNELS = new ArrayList<>();
 
     private float bpm = 120.0f;
 
@@ -42,6 +48,10 @@ public class MidiPlayer implements NoteDeleteObserver, NoteResizedObserver {
     }
 
     private MidiPlayer() {}
+
+    public void addChannel() {
+
+    }
 
     public Integer addNote(int midiNote, int startTick, int noteDuration) {
         try {

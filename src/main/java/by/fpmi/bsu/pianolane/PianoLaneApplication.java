@@ -16,7 +16,7 @@ public class PianoLaneApplication extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception {
-        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("main.fxml"));
+        FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource("piano-lane.fxml"));
         Parent root = loader.load();
         Scene scene = new Scene(root, 300, 300, Color.BLACK);
 

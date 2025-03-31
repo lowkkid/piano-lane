@@ -13,10 +13,20 @@ import java.util.Vector;
 public class Main {
 
     public static void main(String[] args) {
-        List<String> example = new ArrayList<>();
-        example.add("SSSS");
-        example.add("AAAA");
-
-        System.out.println(example.toString());
+        Vector<Synthesizer> synthInfos;
+        MidiDevice device = null;
+        MidiDevice.Info[] infos = MidiSystem.getMidiDeviceInfo();
+        for (int i = 0; i < infos.length; i++) {
+            try {
+                device = MidiSystem.getMidiDevice(infos[i]);
+            } catch (MidiUnavailableException e) {
+                // Handle or throw exception...
+            }
+            if (device instanceof Synthesizer) {
+                for (var x : ((Synthesizer) device).getAvailableInstruments()) {
+                    System.out.println(x);
+                }
+            }
+        }
     }
 }
