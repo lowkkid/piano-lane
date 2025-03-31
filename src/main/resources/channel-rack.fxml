@@ -8,7 +8,7 @@
 <?import javafx.scene.layout.FlowPane?>
 <BorderPane xmlns="http://javafx.com/javafx/21.0.0"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="com.example.ChannelRackController"
+            fx:controller="by.fpmi.bsu.pianolane.controller.ChannelRackController"
             fx:id="rootPane"
             maxWidth="600" maxHeight="400"
             style="-fx-background-color: #2b2b2b;"
@@ -21,7 +21,7 @@
     </top>
 
     <center>
-        <VBox fx:id="instrumentContainer" fillWidth="true" spacing="5"
+        <VBox fx:id="instrumentContainer" spacing="5"
               style="-fx-padding: 10; -fx-background-color: transparent;"/>
     </center>
 

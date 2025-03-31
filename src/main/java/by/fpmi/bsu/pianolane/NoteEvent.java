@@ -1,10 +1,13 @@
 package by.fpmi.bsu.pianolane;
 
+import lombok.extern.slf4j.Slf4j;
+
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
+@Slf4j
 public class NoteEvent {
 
     private MidiEvent noteOnEvent;
@@ -20,13 +23,6 @@ public class NoteEvent {
 
     public NoteEvent(Track track, int midiNote, int startTick, int noteDuration) throws InvalidMidiDataException {
         this.track = track;
-
-        //TODO убрать эту тестовую смену иснтрумента
-        ShortMessage programViolin = new ShortMessage();
-        // Установить на MIDI-канале CHANNEL инструмент №40 (скрипка по стандарту General MIDI).»
-        programViolin.setMessage(ShortMessage.PROGRAM_CHANGE, CHANNEL, 40, 0); // Violin
-        track.add(new MidiEvent(programViolin, 0));
-
         noteOnMessage = new ShortMessage();
         noteOnMessage.setMessage(ShortMessage.NOTE_ON, CHANNEL, midiNote, 100);
         noteOnEvent = new MidiEvent(noteOnMessage, startTick);

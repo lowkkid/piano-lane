@@ -4,7 +4,7 @@
 <?import javafx.scene.control.*?>
 
 <BorderPane xmlns="http://javafx.com/javafx/8.0" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="by.fpmi.bsu.pianolane.PianoRollController"
+            fx:controller="by.fpmi.bsu.pianolane.controller.PianoRollController"
             stylesheets="@css/panel.css">
     <top>
         <HBox alignment="CENTER" styleClass="top-box" prefHeight="50">
@@ -12,6 +12,9 @@
             <Button fx:id="playButton" text="▶" styleClass="play-button"/>
             <Button fx:id="stopButton" text="■" styleClass="stop-button"/>
         </HBox>
+<!--        <HBox alignment="TOP_RIGHT" styleClass="top-panel">-->
+<!--            <Button fx:id="closeButton" text="X" styleClass="close-button"/>-->
+<!--        </HBox>-->
     </top>
     <center>
         <ScrollPane fx:id="verticalScrollPane" fitToWidth="true" style="-fx-background-color: black;">

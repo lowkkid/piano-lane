@@ -1,0 +1,36 @@
+.root {
+    -fx-background-color: #2B2B2B; /* тёмно-серый */
+}
+
+.tree-view {
+    -fx-background-color: #2B2B2B;         /* фон TreeView */
+    -fx-control-inner-background: #2B2B2B; /* фон ячеек */
+    -fx-cell-size: 24;                     /* высота ячеек, если нужно увеличить */
+}
+
+.tree-cell {
+    -fx-text-fill: white;    /* цвет текста */
+    -fx-font-size: 14;       /* размер шрифта */
+    -fx-font-family: "Segoe UI", sans-serif; /* или другой шрифт */
+}
+
+
+.tree-cell:filled:selected,
+.tree-cell:focused:selected {
+    -fx-background-color: #444444; /* цвет фона при выделении */
+    -fx-text-fill: white;
+}
+
+.tree-view .scroll-bar:vertical > .track {
+    -fx-background-color: #3A3A3A; /* трек скролла */
+}
+.tree-view .scroll-bar:vertical > .thumb {
+    -fx-background-color: #666666; /* "ползунок" */
+}
+
+.tree-view .scroll-bar:horizontal > .track {
+    -fx-background-color: #3A3A3A;
+}
+.tree-view .scroll-bar:horizontal > .thumb {
+    -fx-background-color: #666666;
+}

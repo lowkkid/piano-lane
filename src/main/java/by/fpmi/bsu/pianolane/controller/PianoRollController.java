@@ -1,10 +1,11 @@
-package by.fpmi.bsu.pianolane;
+package by.fpmi.bsu.pianolane.controller;
 
+import by.fpmi.bsu.pianolane.MidiPlayer;
+import by.fpmi.bsu.pianolane.Note;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.ScrollPane;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.input.MouseButton;
@@ -15,11 +16,16 @@ import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import javax.sound.midi.*;
 import java.util.ArrayList;
 import java.util.List;
 
+import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
+
+@Component
 public class PianoRollController {
 
     @FXML
@@ -32,6 +38,8 @@ public class PianoRollController {
     private Button stopButton;
     @FXML
     private Spinner<Double> bpmSpinner;
+    @FXML
+    private Button closeButton;
 
     private final int NUM_KEYS = 60;        // 5 октав (60 клавиш)
     private final double KEY_HEIGHT = 30;   // Высота клавиш
@@ -53,12 +61,25 @@ public class PianoRollController {
 
     private final MidiPlayer midiPlayer = MidiPlayer.getInstance();
 
+    private MainController mainController;
+
+
+
+    @Autowired
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
     public void initialize() {
         drawKeyboard();
         drawGrid();
         initPlayhead();
         initializeBpmSpinner();
         initializePlayAndStopButton();
+
+//        closeButton.setOnAction(event -> {
+//            mainController.closePianoRoll();
+//        });
 
         // Обработка клика по сетке для добавления ноты
         gridPane.addEventHandler(MouseEvent.MOUSE_CLICKED, this::handleGridClick);
@@ -207,15 +228,14 @@ public class PianoRollController {
 
     private void playNotes() {
         midiPlayer.play();
-        Sequencer sequencer = MidiPlayer.SEQUENCER;
 
         if (playheadTimeline != null) {
             playheadTimeline.stop();
         }
 
         playheadTimeline = new Timeline(new KeyFrame(Duration.millis(10), ev -> {
-            if (sequencer.isRunning()) {
-                long tickPos = sequencer.getTickPosition();
+            if (SEQUENCER.isRunning()) {
+                long tickPos = SEQUENCER.getTickPosition();
                 double newX = (tickPos / (double) ticksPerColumn) * cellWidth;
                 playheadLine.setX(newX);
             } else {

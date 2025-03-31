@@ -2,6 +2,9 @@ package by.fpmi.bsu.pianolane;
 
 import by.fpmi.bsu.pianolane.observer.NoteDeleteObserver;
 import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
+import lombok.extern.slf4j.Slf4j;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
@@ -17,40 +20,28 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
+import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCE;
+import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
+
+@Slf4j
 public class MidiPlayer implements NoteDeleteObserver, NoteResizedObserver {
 
     private static final AtomicInteger NOTES_SEQUENCE = new AtomicInteger(0);
-    private static final AtomicInteger CHANNEL_SEQUENCE = new AtomicInteger(0);
     private static final Map<Integer, NoteEvent> NOTE_EVENTS = new ConcurrentHashMap<>();
 
-    public static Sequencer SEQUENCER;
-    public static Sequence SEQUENCE;
     public static Track TRACK;
-    public static List<Integer> CHANNELS = new ArrayList<>();
 
     private float bpm = 120.0f;
 
     static {
-        try {
-            SEQUENCER = MidiSystem.getSequencer();
-            SEQUENCE = new Sequence(Sequence.PPQ, 480);
-            TRACK = SEQUENCE.createTrack();
-
-            SEQUENCER.open();
-            SEQUENCER.setSequence(SEQUENCE);
-        } catch (MidiUnavailableException | InvalidMidiDataException e) {
-            throw new RuntimeException(e);
-        }
+        TRACK = SEQUENCE.createTrack();
     }
 
     public static MidiPlayer getInstance() {
         return MidiPlayerInstance.INSTANCE;
     }
 
-    private MidiPlayer() {}
-
-    public void addChannel() {
-
+    private MidiPlayer() {
     }
 
     public Integer addNote(int midiNote, int startTick, int noteDuration) {
@@ -58,7 +49,7 @@ public class MidiPlayer implements NoteDeleteObserver, NoteResizedObserver {
             NoteEvent noteEvent = new NoteEvent(TRACK, midiNote, startTick, noteDuration);
             Integer key = NOTES_SEQUENCE.getAndIncrement();
             NOTE_EVENTS.put(key, noteEvent);
-            System.out.println("Note with key " + key + " added to MidiPlayer");
+            log.info("Note with key {} added to MidiPlayer", key);
             return key;
         } catch (InvalidMidiDataException e) {
             throw new RuntimeException(e);
@@ -71,6 +62,7 @@ public class MidiPlayer implements NoteDeleteObserver, NoteResizedObserver {
         }
         SEQUENCER.setTickPosition(0);
         SEQUENCER.setTempoInBPM(bpm);
+        log.info("Midi player started");
         SEQUENCER.start();
     }
 

@@ -14,7 +14,7 @@
 <BorderPane prefHeight="1080.0" prefWidth="1920.0"
             xmlns="http://javafx.com/javafx/23.0.1"
             xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="com.example.MainController">
+            fx:controller="by.fpmi.bsu.pianolane.controller.MainController">
     <top>
         <VBox fx:id="toolsAndSettings" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: rgb(150, 150, 150);" BorderPane.alignment="CENTER">
             <HBox fx:id="leftInnerBox" alignment="CENTER" styleClass="top-box" prefHeight="50" stylesheets="@css/panel.css">
