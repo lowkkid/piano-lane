@@ -6,7 +6,7 @@ import org.springframework.stereotype.Component;
 import javax.sound.midi.Instrument;
 import javax.sound.midi.Track;
 
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCE;
+import static by.fpmi.bsu.pianolane.util.GlobalInstances.deleteTrack;
 
 @Component
 @Slf4j
@@ -31,7 +31,11 @@ public class ChannelCollection {
 
     public void removeChannel(int channelId) {
         Track trackToDelete = channels[channelId].getTrack();
-        SEQUENCE.deleteTrack(trackToDelete);
+        deleteTrack(trackToDelete);
         channels[channelId] = null;
+    }
+
+    public Channel getChannel(int channelId) {
+        return channels[channelId];
     }
 }

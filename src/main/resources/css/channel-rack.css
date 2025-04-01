@@ -28,3 +28,22 @@
 .add-button:hover {
     -fx-border-color: white;
 }
+
+.dark-context-menu {
+    -fx-background-color: #2a2a2a;
+    -fx-border-color: #3b3b3b;
+    -fx-border-width: 1;
+    -fx-padding: 5;
+}
+
+
+.dark-context-menu .menu-item {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+    -fx-font-size: 14;
+}
+
+.dark-context-menu .menu-item:hover,
+.dark-context-menu .menu-item:focused {
+    -fx-background-color: #3b3b3b;
+}

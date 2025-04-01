@@ -5,18 +5,10 @@ import by.fpmi.bsu.pianolane.util.ChannelCollection;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.StackPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.control.ContextMenu;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
-import javafx.scene.Cursor;
-import javafx.scene.Group;
-import javafx.scene.control.Label;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
-import javafx.geometry.Pos;
-import javafx.scene.paint.Color;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -37,25 +29,24 @@ public class ChannelRackController implements Initializable {
     @FXML
     private Button closeButton;
 
-    @FXML
-    private BorderPane rootPane;
-
     private MainController mainController;
     private ChannelCollection channelCollection;
+
+    private final ContextMenu contextMenu = new ContextMenu();
+    private final MenuItem deleteItem = new MenuItem("Delete");
 
     List<ChannelRackItem> rows = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
-        // Пример нескольких инструментов
-//        addInstrument("808BD", true);
-//        addInstrument("Clap 4", false);
-
-        // Кнопка закрытия (X) – удаляет окно из родительского StackPane
-        closeButton.setOnAction(event -> {
-            mainController.closeChannelRack();
-        });
+        closeButton.setOnAction(event -> mainController.closeChannelRack());
         instrumentContainer.getChildren().addAll(rows);
+        initializeContextMenu();
+    }
+
+    private void initializeContextMenu() {
+        contextMenu.getItems().add(deleteItem);
+        contextMenu.getStyleClass().add("dark-context-menu");
     }
 
     /**
@@ -66,15 +57,29 @@ public class ChannelRackController implements Initializable {
 
         ChannelRackItem item = new ChannelRackItem(channelId, instrument.getName());
         registerChannelRackItem(item);
+        rows.add(item);
         instrumentContainer.getChildren().add(item);
     }
+
+    private void deleteInstrument(ChannelRackItem channelRackItem) {
+        channelCollection.removeChannel(channelRackItem.getChannelId());
+        rows.remove(channelRackItem);
+        instrumentContainer.getChildren().remove(channelRackItem);
+    }
+
 
     private void registerChannelRackItem(ChannelRackItem channelRackItem) {
         log.info("Registering channelRackItem pane withId {}", channelRackItem.getChannelId());
         channelRackItem.getStepPane().setOnMouseClicked(mouseEvent ->
             mainController.openPianoRoll(channelRackItem.getChannelId())
         );
-        rows.add(channelRackItem);
+        channelRackItem.getInstrumentName().setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                deleteItem.setOnAction(e -> deleteInstrument(channelRackItem));
+                contextMenu.show(channelRackItem.getInstrumentName(), event.getScreenX(), event.getScreenY());
+
+            }
+        });
     }
 
     @Autowired

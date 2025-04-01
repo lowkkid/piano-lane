@@ -19,6 +19,15 @@ public class ChannelRackItem extends HBox {
 
     private int channelId;
     private StackPane stepPane = new StackPane();
+    private Label instrumentName;
+
+    private final String defaultInstrumentNameStyle =
+            "-fx-border-color: transparent; -fx-border-width: 1;" +
+            "-fx-text-fill: white; -fx-font-size: 14; -fx-label-padding:  3px;";
+
+    private final String hoveredInstrumentNameStyle =
+            "-fx-border-color: white; -fx-border-width: 1;" +
+            "-fx-text-fill: white; -fx-font-size: 14; -fx-label-padding: 3px";
 
     public ChannelRackItem(int channelId, String instrumentName) {
         super(10);
@@ -40,15 +49,24 @@ public class ChannelRackItem extends HBox {
         StackPane knob1 = createKnob();
         StackPane knob2 = createKnob();
 
-        Label nameLabel = new Label(instrumentName);
-        nameLabel.setStyle("-fx-text-fill: white; -fx-font-size: 14;");
-
+        this.instrumentName = new Label(instrumentName);
+        this.instrumentName.setStyle(defaultInstrumentNameStyle);
 
         stepPane.setPrefHeight(30);
         stepPane.setPrefWidth(250);
         stepPane.setStyle("-fx-background-color: #2a2a2a;");
 
-        getChildren().addAll(indicator, knob1, knob2, nameLabel, stepPane);
+        getChildren().addAll(indicator, knob1, knob2, this.instrumentName, stepPane);
+        addInstrumentNameListeners();
+    }
+
+    private void addInstrumentNameListeners() {
+        instrumentName.setOnMouseEntered(event ->
+                instrumentName.setStyle(hoveredInstrumentNameStyle)
+        );
+        instrumentName.setOnMouseExited(event ->
+                instrumentName.setStyle(defaultInstrumentNameStyle)
+        );
     }
 
 

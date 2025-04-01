@@ -2,14 +2,17 @@ package by.fpmi.bsu.pianolane;
 
 import by.fpmi.bsu.pianolane.observer.NoteDeleteObserver;
 import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
+import by.fpmi.bsu.pianolane.util.Channel;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
+import lombok.Getter;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 public class Note extends Rectangle {
 
     private final int cellWidth = 50;
@@ -22,18 +25,14 @@ public class Note extends Rectangle {
     private static final double RESIZE_AREA_WIDTH = 5;
     private boolean isResizing = false;
 
-    public Note(Integer noteId, double x, double y, double width, double height) {
+    public Note(Integer noteId, Channel channel, double x, double y, double width, double height) {
         super(x, y, width, height);
         this.noteId = noteId;
 
         setRightMouseClickListener();
         setResizeHandlers();
-        subscribeToNoteDeleteEvent(MidiPlayer.getInstance());
-        subscribeToNoteResizedEvent(MidiPlayer.getInstance());
-    }
-
-    public Integer getNoteId() {
-        return noteId;
+        subscribeToNoteDeleteEvent(channel);
+        subscribeToNoteResizedEvent(channel);
     }
 
     private void setRightMouseClickListener() {

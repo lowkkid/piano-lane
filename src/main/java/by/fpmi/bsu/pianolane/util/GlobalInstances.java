@@ -1,10 +1,7 @@
 package by.fpmi.bsu.pianolane.util;
 
-import by.fpmi.bsu.pianolane.config.SpringConfig;
 import by.fpmi.bsu.pianolane.controller.PianoRollController;
-import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
-import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
@@ -45,5 +42,14 @@ public class GlobalInstances {
             throw new RuntimeException(e);
         }
         return track;
+    }
+
+    public static void deleteTrack(Track track) {
+        SEQUENCE.deleteTrack(track);
+        try {
+            SEQUENCER.setSequence(SEQUENCE);
+        } catch (InvalidMidiDataException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

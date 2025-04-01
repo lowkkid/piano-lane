@@ -9,7 +9,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Component;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.CURRENT_PIANO_ROLL_CONTROLLER;
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.SPRING_CONTEXT;
 
 @Component
 @RequiredArgsConstructor
@@ -37,13 +36,8 @@ public class ToolbarController {
     }
 
     private void initializePlayAndStopButton() {
-        playButton.setOnAction(event -> {
-            playNotes();
-        });
-
-        stopButton.setOnAction(event -> {
-            stopNotes();
-        });
+        playButton.setOnAction(event -> playNotes());
+        stopButton.setOnAction(event -> stopNotes());
     }
 
     private void initializeBpmSpinner() {
@@ -68,13 +62,12 @@ public class ToolbarController {
             }
         });
 
-        bpmSpinner.valueProperty().addListener((obs, oldVal, newVal) -> {
-            midiPlayer.setBpm(newVal.floatValue());
-        });
+        bpmSpinner.valueProperty().addListener((obs, oldVal, newVal) -> midiPlayer.setBpm(newVal.floatValue()));
     }
 
     private void stopNotes() {
         midiPlayer.stop();
+        CURRENT_PIANO_ROLL_CONTROLLER.removePlayhead();
     }
 
     private void playNotes() {

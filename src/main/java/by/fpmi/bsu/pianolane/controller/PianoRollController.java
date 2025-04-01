@@ -1,15 +1,13 @@
 package by.fpmi.bsu.pianolane.controller;
 
-import by.fpmi.bsu.pianolane.MidiPlayer;
 import by.fpmi.bsu.pianolane.Note;
 import by.fpmi.bsu.pianolane.ui.NoteContainer;
-import by.fpmi.bsu.pianolane.ui.PianoRoll;
+import by.fpmi.bsu.pianolane.util.Channel;
+import by.fpmi.bsu.pianolane.util.ChannelCollection;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Spinner;
-import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -19,14 +17,10 @@ import javafx.scene.text.Font;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import javax.sound.midi.*;
-import java.util.ArrayList;
 import java.util.List;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
@@ -36,23 +30,16 @@ import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
 @Scope("prototype")
 public class PianoRollController {
 
-    @FXML
-    private PianoRoll root;
+
     @FXML
     private Pane gridPane;
     @FXML
     private Pane keyboardPane;
     @FXML
-    private Button playButton;
-    @FXML
-    private Button stopButton;
-    @FXML
-    private Spinner<Double> bpmSpinner;
-    @FXML
     private Button closeButton;
 
 
-    private final int NUM_KEYS = 60;        // 5 октав (60 клавиш)
+    private final int NUM_KEYS = 60;        // 5 octaves (60 keys)
     private final double KEY_HEIGHT = 30;   // Высота клавиш
     private final String[] NOTES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
@@ -62,17 +49,21 @@ public class PianoRollController {
     private final int numColumns = 48;     // Количество колонок (тактов)
 
 
-    // Плейхед – вертикальная линия, показывающая текущий момент воспроизведения
     private Rectangle playheadLine;
     private Timeline playheadTimeline;
 
     private final int ticksPerColumn = 480; // Один столбец = 480 тиков (четверть ноты)
 
-    private final MidiPlayer midiPlayer = MidiPlayer.getInstance();
-
     private MainController mainController;
 
     private Integer channelId;
+    private Channel channel;
+    private ChannelCollection channelCollection;
+
+    @Autowired
+    public void setChannelCollection(ChannelCollection channelCollection) {
+        this.channelCollection = channelCollection;
+    }
 
     public PianoRollController(Integer channelId) {
         this.channelId = channelId;
@@ -100,12 +91,7 @@ public class PianoRollController {
         List<Note> previouslyWrittenNotes = NoteContainer.getNotesForChannel(channelId);
         log.info("Fetched notes: {}", previouslyWrittenNotes);
         gridPane.getChildren().addAll(previouslyWrittenNotes);
-    }
-
-    private void initPlayhead() {
-        playheadLine = new Rectangle(0, 0, 2, cellHeight * NUM_KEYS);
-        playheadLine.setFill(Color.RED);
-        gridPane.getChildren().add(playheadLine);
+        channel = channelCollection.getChannel(channelId);
     }
 
     // Отрисовка клавиатуры снизу вверх: нота с i=0 отрисовывается внизу
@@ -190,10 +176,10 @@ public class PianoRollController {
         int startTick = col * ticksPerColumn;
         int noteDuration = ticksPerColumn; // Фиксированная длительность (четверть ноты)
 
-        Integer id = midiPlayer.addNote(midiNote, startTick, noteDuration);
+        Integer id = channel.addNote(midiNote, startTick, noteDuration);
 
         // Отрисовка ноты в UI
-        Note noteRect = new Note(id, x, y, cellWidth, cellHeight);
+        Note noteRect = new Note(id, channel, x, y, cellWidth, cellHeight);
         noteRect.setFill(Color.BLUE);
         noteRect.setStroke(Color.BLACK);
         gridPane.getChildren().add(noteRect);
@@ -201,10 +187,24 @@ public class PianoRollController {
         log.info("Added Note to NoteContainer with key {}", channelId);
     }
 
+    private void initPlayhead() {
+        playheadLine = new Rectangle(0, 0, 2, cellHeight * NUM_KEYS);
+        playheadLine.setFill(Color.RED);
+    }
+
+    protected void drawPlayhead() {
+        gridPane.getChildren().add(playheadLine);
+    }
+
+    protected void removePlayhead() {
+        gridPane.getChildren().remove(playheadLine);
+    }
+
     protected void startPlayhead() {
         if (playheadTimeline != null) {
             playheadTimeline.stop();
         }
+        drawPlayhead();
 
         playheadTimeline = new Timeline(new KeyFrame(Duration.millis(10), ev -> {
             if (SEQUENCER.isRunning()) {
@@ -214,6 +214,7 @@ public class PianoRollController {
             } else {
                 playheadTimeline.stop();
                 playheadLine.setX(0);
+                removePlayhead();
             }
         }));
         playheadTimeline.setCycleCount(Timeline.INDEFINITE);

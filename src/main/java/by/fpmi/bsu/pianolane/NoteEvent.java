@@ -18,17 +18,15 @@ public class NoteEvent {
     private final Track track;
 
     private static final int noteOffVelocity = 0;
-    //TODO get rid of one channel for all instruments, let user send any instrument on specific channel
-    private static final int CHANNEL = 0;
 
-    public NoteEvent(Track track, int midiNote, int startTick, int noteDuration) throws InvalidMidiDataException {
+    public NoteEvent(Track track, int channelId, int midiNote, int startTick, int noteDuration) throws InvalidMidiDataException {
         this.track = track;
         noteOnMessage = new ShortMessage();
-        noteOnMessage.setMessage(ShortMessage.NOTE_ON, CHANNEL, midiNote, 100);
+        noteOnMessage.setMessage(ShortMessage.NOTE_ON, channelId, midiNote, 100);
         noteOnEvent = new MidiEvent(noteOnMessage, startTick);
 
         noteOffMessage = new ShortMessage();
-        noteOffMessage.setMessage(ShortMessage.NOTE_OFF, CHANNEL, midiNote, noteOffVelocity);
+        noteOffMessage.setMessage(ShortMessage.NOTE_OFF, channelId, midiNote, noteOffVelocity);
         noteOffEvent = new MidiEvent(noteOffMessage, startTick + noteDuration);
 
         registerNoteEvent();
