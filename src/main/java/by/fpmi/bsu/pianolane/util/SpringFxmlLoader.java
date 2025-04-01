@@ -6,6 +6,7 @@ import javafx.scene.Parent;
 
 import java.io.IOException;
 
+import static by.fpmi.bsu.pianolane.util.GlobalInstances.CURRENT_PIANO_ROLL_CONTROLLER;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SPRING_CONTEXT;
 
 public class SpringFxmlLoader {
@@ -20,7 +21,9 @@ public class SpringFxmlLoader {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlPath));
         loader.setControllerFactory(clazz -> {
             if (clazz == PianoRollController.class) {
-                return SPRING_CONTEXT.getBean(PianoRollController.class, channelId);
+                PianoRollController controller = SPRING_CONTEXT.getBean(PianoRollController.class, channelId);
+                CURRENT_PIANO_ROLL_CONTROLLER = controller;
+                return controller;
             }
             return SPRING_CONTEXT.getBean(clazz);
         });

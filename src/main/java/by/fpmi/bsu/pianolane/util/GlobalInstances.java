@@ -1,6 +1,7 @@
 package by.fpmi.bsu.pianolane.util;
 
 import by.fpmi.bsu.pianolane.config.SpringConfig;
+import by.fpmi.bsu.pianolane.controller.PianoRollController;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
@@ -19,6 +20,7 @@ public class GlobalInstances {
     public static Sequence SEQUENCE;
     public static Synthesizer SYNTHESIZER;
     public static ConfigurableApplicationContext SPRING_CONTEXT;
+    public static PianoRollController CURRENT_PIANO_ROLL_CONTROLLER;
 
     static {
         try {

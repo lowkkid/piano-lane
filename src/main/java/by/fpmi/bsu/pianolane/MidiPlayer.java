@@ -2,6 +2,7 @@ package by.fpmi.bsu.pianolane;
 
 import by.fpmi.bsu.pianolane.observer.NoteDeleteObserver;
 import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
+import org.springframework.stereotype.Component;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
@@ -16,6 +17,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.createTrack;
 
+@Component
 public class MidiPlayer implements NoteDeleteObserver, NoteResizedObserver {
 
     private static final AtomicInteger NOTES_SEQUENCE = new AtomicInteger(0);
