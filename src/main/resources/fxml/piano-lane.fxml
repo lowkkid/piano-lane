@@ -17,13 +17,13 @@
             fx:controller="by.fpmi.bsu.pianolane.controller.MainController">
     <top>
         <VBox fx:id="toolsAndSettings" prefHeight="100.0" prefWidth="200.0" style="-fx-background-color: rgb(150, 150, 150);" BorderPane.alignment="CENTER">
-            <HBox fx:id="leftInnerBox" alignment="CENTER" styleClass="top-box" prefHeight="50" stylesheets="@css/panel.css">
+            <HBox fx:id="leftInnerBox" alignment="CENTER" styleClass="top-box" prefHeight="50" stylesheets="@../css/panel.css">
                 <Spinner fx:id="bpmSpinner" prefWidth="80"/>
                 <Button fx:id="playButton" text="▶" styleClass="play-button"/>
                 <Button fx:id="stopButton" text="■" styleClass="stop-button"/>
             </HBox>
             <HBox alignment="CENTER" styleClass="top-box">
-                <Button fx:id="menuButton" styleClass="menu-button" stylesheets="@css/panel.css">
+                <Button fx:id="menuButton" styleClass="menu-button" stylesheets="@../css/panel.css">
                     <graphic>
                         <FontIcon iconLiteral="bi-list" />
                     </graphic>
@@ -38,7 +38,7 @@
                 <children>
                     <ImageView fitHeight="300.0" fitWidth="350.0" pickOnBounds="true" preserveRatio="true">
                         <image>
-                            <Image url="@images/logo.png" />
+                            <Image url="@../images/logo.png" />
                         </image>
                     </ImageView>
                 </children>

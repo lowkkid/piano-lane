@@ -3,7 +3,6 @@ package by.fpmi.bsu.pianolane;
 import by.fpmi.bsu.pianolane.config.SpringConfig;
 import by.fpmi.bsu.pianolane.util.SpringFxmlLoader;
 import javafx.application.Application;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.paint.Color;
@@ -12,37 +11,39 @@ import javafx.stage.Stage;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
+import static by.fpmi.bsu.pianolane.util.GlobalInstances.SPRING_CONTEXT;
+import static by.fpmi.bsu.pianolane.util.constants.FxmlPaths.PIANO_LANE_FXML;
+
 
 public class PianoLaneApplication extends Application {
 
     public static final double SCREEN_WIDTH = Screen.getPrimary().getBounds().getWidth();
     public static final double SCREEN_HEIGHT = Screen.getPrimary().getBounds().getHeight();
 
-    private ConfigurableApplicationContext springContext;
 
     @Override
     public void init() {
-        springContext = new AnnotationConfigApplicationContext(SpringConfig.class);
+        SPRING_CONTEXT = new AnnotationConfigApplicationContext(SpringConfig.class);
     }
 
 
     @Override
     public void start(Stage primaryStage) throws Exception {
         SpringFxmlLoader springFxmlLoader = new SpringFxmlLoader();
-        Parent root = springFxmlLoader.load("piano-lane.fxml");
+        Parent root = springFxmlLoader.load(PIANO_LANE_FXML);
         Scene scene = new Scene(root, 300, 300, Color.BLACK);
 
 
         primaryStage.setWidth(SCREEN_WIDTH);
         primaryStage.setHeight(SCREEN_HEIGHT);
         primaryStage.setScene(scene);
-        primaryStage.setTitle("JavaFX Full Screen Example");
+        primaryStage.setTitle("Piano Lane application");
         primaryStage.show();
     }
 
     @Override
     public void stop()  {
-        springContext.close();
+        SPRING_CONTEXT.close();
     }
 
     public static void main(String[] args) {

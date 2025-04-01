@@ -1,26 +1,21 @@
 package by.fpmi.bsu.pianolane.controller;
 
 import by.fpmi.bsu.pianolane.MidiPlayer;
-import by.fpmi.bsu.pianolane.ui.PianoRoll;
 import by.fpmi.bsu.pianolane.util.SpringFxmlLoader;
-import javafx.animation.KeyFrame;
-import javafx.animation.Timeline;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
+import javafx.scene.control.SpinnerValueFactory;
 import javafx.scene.layout.StackPane;
-import javafx.util.Duration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.sound.midi.Sequencer;
 import java.io.IOException;
 
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
+import static by.fpmi.bsu.pianolane.util.constants.FxmlPaths.CHANNEL_RACK_FXML;
+import static by.fpmi.bsu.pianolane.util.constants.FxmlPaths.PIANO_ROLL_FXML;
 
 @Component
 public class MainController {
@@ -41,7 +36,6 @@ public class MainController {
 
     private final MidiPlayer midiPlayer = MidiPlayer.getInstance();
 
-
     private Node channelRackView;
     private Node pianoRollView;
 
@@ -49,6 +43,7 @@ public class MainController {
     public void initialize() {
         menuButton.setOnAction(e -> toggleChannelRack());
         initializePlayAndStopButton();
+        initializeBpmSpinner();
     }
 
     /**
@@ -70,7 +65,7 @@ public class MainController {
     protected void openChannelRack() {
         try {
             SpringFxmlLoader springFxmlLoader = new SpringFxmlLoader();
-            channelRackView = springFxmlLoader.load("channel-rack.fxml");
+            channelRackView = springFxmlLoader.load(CHANNEL_RACK_FXML);
             mainContent.getChildren().add(channelRackView);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -86,7 +81,7 @@ public class MainController {
         try {
             log.info("Opening piano roll for channel {}", channelId);
             SpringFxmlLoader springFxmlLoader = new SpringFxmlLoader();
-            pianoRollView = springFxmlLoader.load("piano-roll.fxml", channelId);
+            pianoRollView = springFxmlLoader.load(PIANO_ROLL_FXML, channelId);
             mainContent.getChildren().add(pianoRollView);
         } catch (IOException ex) {
             ex.printStackTrace();
@@ -126,5 +121,32 @@ public class MainController {
 //        }));
 //        playheadTimeline.setCycleCount(Timeline.INDEFINITE);
 //        playheadTimeline.play();
+    }
+
+    private void initializeBpmSpinner() {
+        SpinnerValueFactory<Double> valueFactory =
+                new SpinnerValueFactory.DoubleSpinnerValueFactory(1.0, 200.0, 120.0, 1.0);
+        bpmSpinner.setValueFactory(valueFactory);
+
+        valueFactory.setConverter(new javafx.util.StringConverter<>() {
+            @Override
+            public String toString(Double value) {
+                if (value == null) return "";
+                return String.format("%.1f", value);
+            }
+
+            @Override
+            public Double fromString(String string) {
+                try {
+                    return Double.valueOf(string);
+                } catch (NumberFormatException e) {
+                    return 0.0;
+                }
+            }
+        });
+
+        bpmSpinner.valueProperty().addListener((obs, oldVal, newVal) -> {
+            midiPlayer.setBpm(newVal.floatValue());
+        });
     }
 }

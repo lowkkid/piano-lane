@@ -12,7 +12,7 @@
             fx:id="rootPane"
             maxWidth="600" maxHeight="400"
             style="-fx-background-color: #2b2b2b;"
-            stylesheets="@css/channel-rack.css">
+            stylesheets="@../css/channel-rack.css">
 
     <top>
         <HBox alignment="TOP_RIGHT" styleClass="top-panel">
