@@ -12,7 +12,7 @@ import static by.fpmi.bsu.pianolane.util.GlobalInstances.deleteTrack;
 @Slf4j
 public class ChannelCollection {
 
-    private final Channel[] channels = new Channel[16];
+    private static final Channel[] channels = new Channel[16];
 
     /**
      * @param instrument instrument for new channel
@@ -21,8 +21,19 @@ public class ChannelCollection {
     public int addChannel(Instrument instrument) {
         for (int i = 0; i < 16; i++) {
             if (channels[i] == null) {
-                channels[i] = new Channel(i, instrument);
+                channels[i] = new Channel(i, instrument, false);
                 log.info("Added channel: {}", channels[i]);
+                return i;
+            }
+        }
+        throw new IllegalStateException("No free MIDI channels available");
+    }
+
+    public int addCustomChannel() {
+        for (int i = 0; i < 16; i++) {
+            if (channels[i] == null) {
+                channels[i] = new Channel(i, null, true);
+                log.info("Added custom channel: {}", channels[i]);
                 return i;
             }
         }
@@ -37,5 +48,9 @@ public class ChannelCollection {
 
     public Channel getChannel(int channelId) {
         return channels[channelId];
+    }
+
+    public static boolean isCustom(int channelId) {
+        return channels[channelId] != null && channels[channelId].isCustom();
     }
 }

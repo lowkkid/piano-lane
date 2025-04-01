@@ -7,6 +7,8 @@ import javax.sound.midi.MidiEvent;
 import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
+import static by.fpmi.bsu.pianolane.util.LogUtil.getAllTrackEvents;
+
 @Slf4j
 public class NoteEvent {
 
@@ -30,6 +32,8 @@ public class NoteEvent {
         noteOffEvent = new MidiEvent(noteOffMessage, startTick + noteDuration);
 
         registerNoteEvent();
+        log.info("Registered note event for channel {}. Current events in this track are: {} ", channelId, getAllTrackEvents(track));
+
     }
 
     public void updateLength(int newLength) {

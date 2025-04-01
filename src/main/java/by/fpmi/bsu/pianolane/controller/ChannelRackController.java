@@ -25,15 +25,19 @@ public class ChannelRackController implements Initializable {
 
     @FXML
     private VBox instrumentContainer;
-
     @FXML
     private Button closeButton;
+    @FXML
+    private Button addButton;
 
     private MainController mainController;
     private ChannelCollection channelCollection;
 
-    private final ContextMenu contextMenu = new ContextMenu();
+    private final ContextMenu channelRackItemContextMenu = new ContextMenu();
     private final MenuItem deleteItem = new MenuItem("Delete");
+
+    private final ContextMenu synthesizersContextMenu = new ContextMenu();
+    private final MenuItem customSynthesizerItem = new MenuItem("Custom Synthesizer");
 
     List<ChannelRackItem> rows = new ArrayList<>();
 
@@ -42,11 +46,12 @@ public class ChannelRackController implements Initializable {
         closeButton.setOnAction(event -> mainController.closeChannelRack());
         instrumentContainer.getChildren().addAll(rows);
         initializeContextMenu();
+        setAddButton();
     }
 
     private void initializeContextMenu() {
-        contextMenu.getItems().add(deleteItem);
-        contextMenu.getStyleClass().add("dark-context-menu");
+        channelRackItemContextMenu.getItems().add(deleteItem);
+        channelRackItemContextMenu.getStyleClass().add("dark-context-menu");
     }
 
     /**
@@ -69,17 +74,32 @@ public class ChannelRackController implements Initializable {
 
 
     private void registerChannelRackItem(ChannelRackItem channelRackItem) {
-        log.info("Registering channelRackItem pane withId {}", channelRackItem.getChannelId());
         channelRackItem.getStepPane().setOnMouseClicked(mouseEvent ->
-            mainController.openPianoRoll(channelRackItem.getChannelId())
+                mainController.openPianoRoll(channelRackItem.getChannelId())
         );
         channelRackItem.getInstrumentName().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 deleteItem.setOnAction(e -> deleteInstrument(channelRackItem));
-                contextMenu.show(channelRackItem.getInstrumentName(), event.getScreenX(), event.getScreenY());
+                channelRackItemContextMenu.show(channelRackItem.getInstrumentName(), event.getScreenX(), event.getScreenY());
 
             }
         });
+    }
+
+    private void addCustomChannel() {
+        int channelId = channelCollection.addCustomChannel();
+
+        ChannelRackItem item = new ChannelRackItem(channelId, "Custom Synthesizer");
+        registerChannelRackItem(item);
+        rows.add(item);
+        instrumentContainer.getChildren().add(item);
+    }
+
+    private void setAddButton() {
+        customSynthesizerItem.setOnAction(e -> addCustomChannel());
+        synthesizersContextMenu.getItems().add(customSynthesizerItem);
+        addButton.setOnMouseClicked(event ->
+                synthesizersContextMenu.show(addButton, event.getScreenX(), event.getScreenY()));
     }
 
     @Autowired

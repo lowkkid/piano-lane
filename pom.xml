@@ -65,6 +65,11 @@
             <artifactId>spring-context</artifactId>
             <version>6.2.5</version>
         </dependency>
+        <dependency>
+            <groupId>com.github.wendykierp</groupId>
+            <artifactId>JTransforms</artifactId>
+            <version>3.1</version>
+        </dependency>
     </dependencies>
 
     <build>

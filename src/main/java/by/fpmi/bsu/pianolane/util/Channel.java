@@ -30,15 +30,20 @@ public class Channel implements NoteDeleteObserver, NoteResizedObserver {
     private Instrument instrument;
     private boolean muted;
     private boolean soloed;
+    private boolean isCustom;
 
-    public Channel(int channelId, Instrument instrument) {
+    //TODO: create two different classes - custom and default
+    public Channel(int channelId, Instrument instrument, boolean isCustom) {
         this.channelId = channelId;
         this.instrument = instrument;
         track = createTrack();
         muted = false;
         soloed = false;
+        this.isCustom = isCustom;
 
-        linkInstrumentToChannel();
+        if (!isCustom) {
+            linkInstrumentToChannel();
+        }
     }
 
     public Integer addNote(int midiNote, int startTick, int noteDuration) {
