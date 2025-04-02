@@ -4,7 +4,7 @@
 <?import javafx.scene.canvas.Canvas?>
 <BorderPane xmlns="http://javafx.com/javafx"
             xmlns:fx="http://javafx.com/fxml"
-            fx:controller="by.bsu.fpmi.daw.controllers.VisualizerController">
+            fx:controller="by.fpmi.bsu.synthesizer.controllers.VisualizerController">
     <center>
         <Canvas fx:id="visualizerCanvas" width="400" height="300" AnchorPane.topAnchor="0.0" AnchorPane.bottomAnchor="0.0" AnchorPane.leftAnchor="0.0" AnchorPane.rightAnchor="0.0"/>
     </center>

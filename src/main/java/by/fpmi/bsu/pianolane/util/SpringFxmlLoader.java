@@ -11,13 +11,17 @@ import static by.fpmi.bsu.pianolane.util.GlobalInstances.SPRING_CONTEXT;
 
 public class SpringFxmlLoader {
 
-    public Parent load(String fxmlPath) throws IOException {
+    public Parent load(String fxmlPath) {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlPath));
         loader.setControllerFactory(SPRING_CONTEXT::getBean);
-        return loader.load();
+        try {
+            return loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 
-    public Parent load(String fxmlPath, Integer channelId) throws IOException {
+    public Parent load(String fxmlPath, Integer channelId) {
         FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(fxmlPath));
         loader.setControllerFactory(clazz -> {
             if (clazz == PianoRollController.class) {
@@ -27,6 +31,10 @@ public class SpringFxmlLoader {
             }
             return SPRING_CONTEXT.getBean(clazz);
         });
-        return loader.load();
+        try {
+            return loader.load();
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

@@ -7,6 +7,6 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Scope;
 
 @Configuration
-@ComponentScan(basePackages = "by.fpmi.bsu.pianolane")
+@ComponentScan(basePackages = "by.fpmi.bsu")
 public class SpringConfig {
 }

@@ -1,6 +1,7 @@
 package by.fpmi.bsu.pianolane.controller;
 
 import by.fpmi.bsu.pianolane.ui.ChannelRackItem;
+import by.fpmi.bsu.pianolane.ui.NoteContainer;
 import by.fpmi.bsu.pianolane.util.ChannelCollection;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -81,7 +82,7 @@ public class ChannelRackController implements Initializable {
             if (event.getButton() == MouseButton.SECONDARY) {
                 deleteItem.setOnAction(e -> deleteInstrument(channelRackItem));
                 channelRackItemContextMenu.show(channelRackItem.getInstrumentName(), event.getScreenX(), event.getScreenY());
-
+                NoteContainer.removeNotesInChanel(channelRackItem.getChannelId());
             }
         });
     }
@@ -93,6 +94,11 @@ public class ChannelRackController implements Initializable {
         registerChannelRackItem(item);
         rows.add(item);
         instrumentContainer.getChildren().add(item);
+        item.getInstrumentName().setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.PRIMARY) {
+                mainController.openSynthesizer();
+            }
+        });
     }
 
     private void setAddButton() {

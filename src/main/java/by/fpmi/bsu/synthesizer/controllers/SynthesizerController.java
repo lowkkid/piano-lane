@@ -1,5 +1,6 @@
 package by.fpmi.bsu.synthesizer.controllers;
 
+import by.fpmi.bsu.pianolane.controller.MainController;
 import by.fpmi.bsu.synthesizer.SoundGenerator;
 import by.fpmi.bsu.synthesizer.models.WaveformGenerator;
 import by.fpmi.bsu.synthesizer.models.WaveformType;
@@ -8,11 +9,14 @@ import by.fpmi.bsu.synthesizer.setting.SoundCommonSettings;
 import javafx.fxml.FXML;
 import javafx.scene.canvas.Canvas;
 import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -20,25 +24,15 @@ import java.util.List;
 import java.util.Map;
 
 
-public class MainController {
+@Component
+public class SynthesizerController {
 
-    public static MainController mainController;
+    public static SynthesizerController synthesizerController;
 
     public static Map<String, SoundGenerator> soundGenerators = new HashMap<>();
 
     private final List<SoundGenerator> activeSoundGenerators = new ArrayList<>();
 
-//    static {
-//        soundGenerators.put("C3", new SoundGenerator(C3_FREQUENCY));
-//        soundGenerators.put("C3_SHARP", new SoundGenerator(C3_SHARP_FREQUENCY));
-//        soundGenerators.put("D3", new SoundGenerator(D3_SHARP_FREQUENCY));
-//        soundGenerators.put("D3_SHARP", new SoundGenerator(D3_SHARP_FREQUENCY));
-//        soundGenerators.put("E3", new SoundGenerator(E3_FREQUENCY));
-//        soundGenerators.put("F3", new SoundGenerator(F3_FREQUENCY));
-//        soundGenerators.put("F3_SHARP", new SoundGenerator(F3_SHARP_FREQUENCY));
-//        soundGenerators.put("G3", new SoundGenerator(G3_FREQUENCY));
-//        soundGenerators.put("G3_SHARP", new SoundGenerator(G3_SHARP_FREQUENCY));
-//    }
 
     private SoundCommonSettings commonSettings = SoundCommonSettings.getInstance();
 
@@ -74,16 +68,23 @@ public class MainController {
 
     @FXML
     private CheckBox highPassCheckBox;
-
     @FXML
     private Slider highPassSlider;
+    @FXML
+    private Button closeButton;
 
     private WaveformGenerator waveformGenerator;
-
     private GraphicsContext gcWaveform;
 
+    private MainController mainController;
+
+    @Autowired
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
     public void initialize() {
-        mainController = this;
+        synthesizerController = this;
 
         waveformGenerator = new WaveformGenerator();
 
@@ -129,6 +130,8 @@ public class MainController {
 
         gcWaveform = waveformCanvas.getGraphicsContext2D();
         clearCanvas(gcWaveform);
+
+        closeButton.setOnMouseClicked(e -> mainController.closeSynthesizer());
 
         updateWaveform();
         updateLowPassFilter();

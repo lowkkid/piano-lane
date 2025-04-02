@@ -20,18 +20,16 @@ public class GlobalInstances {
     public static Synthesizer SYNTHESIZER;
     public static ConfigurableApplicationContext SPRING_CONTEXT;
     public static PianoRollController CURRENT_PIANO_ROLL_CONTROLLER;
-    private static CustomReceiver customReceiver;
     public static Receiver DEFAULT_RECEIVER;
 
     static {
         try {
             SYNTHESIZER = MidiSystem.getSynthesizer();
             SYNTHESIZER.open();
+            DEFAULT_RECEIVER = MidiSystem.getReceiver();
             SEQUENCER = MidiSystem.getSequencer(false);
             SEQUENCER.open();
-            Receiver synthReceiver = new SoftReceiverWrapper(synthesizer);
-            customReceiver = new CustomReceiver();
-            SEQUENCER.getTransmitter().setReceiver(customReceiver);
+            SEQUENCER.getTransmitter().setReceiver(new CustomReceiver());
 
             SEQUENCE = new Sequence(Sequence.PPQ, 480);
             SEQUENCER.setSequence(SEQUENCE);

@@ -17,6 +17,7 @@ import java.io.IOException;
 
 import static by.fpmi.bsu.pianolane.util.constants.FxmlPaths.CHANNEL_RACK_FXML;
 import static by.fpmi.bsu.pianolane.util.constants.FxmlPaths.PIANO_ROLL_FXML;
+import static by.fpmi.bsu.pianolane.util.constants.FxmlPaths.SYNTHESIZER_FXML;
 
 @Component
 @Slf4j
@@ -28,11 +29,13 @@ public class MainController {
 
     private Node channelRackView;
     private Node pianoRollView;
+    private Node synthesizerView;
 
     @FXML
     public void initialize() {
 
     }
+
     public void toggleChannelRack() {
         if (channelRackView == null) {
             openChannelRack();
@@ -47,13 +50,9 @@ public class MainController {
     }
 
     protected void openChannelRack() {
-        try {
-            SpringFxmlLoader springFxmlLoader = new SpringFxmlLoader();
-            channelRackView = springFxmlLoader.load(CHANNEL_RACK_FXML);
-            mainContent.getChildren().add(channelRackView);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        SpringFxmlLoader springFxmlLoader = new SpringFxmlLoader();
+        channelRackView = springFxmlLoader.load(CHANNEL_RACK_FXML);
+        mainContent.getChildren().add(channelRackView);
     }
 
     protected void closePianoRoll() {
@@ -62,13 +61,21 @@ public class MainController {
     }
 
     protected void openPianoRoll(int channelId) {
-        try {
-            log.info("Opening piano roll for channel {}", channelId);
-            SpringFxmlLoader springFxmlLoader = new SpringFxmlLoader();
-            pianoRollView = springFxmlLoader.load(PIANO_ROLL_FXML, channelId);
-            mainContent.getChildren().add(pianoRollView);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
+        log.info("Opening piano roll for channel {}", channelId);
+        SpringFxmlLoader springFxmlLoader = new SpringFxmlLoader();
+        pianoRollView = springFxmlLoader.load(PIANO_ROLL_FXML, channelId);
+        mainContent.getChildren().add(pianoRollView);
+
+    }
+
+    protected void openSynthesizer() {
+        SpringFxmlLoader springFxmlLoader = new SpringFxmlLoader();
+        synthesizerView = springFxmlLoader.load(SYNTHESIZER_FXML);
+        mainContent.getChildren().add(synthesizerView);
+    }
+
+    public void closeSynthesizer() {
+        mainContent.getChildren().remove(synthesizerView);
+        synthesizerView = null;
     }
 }

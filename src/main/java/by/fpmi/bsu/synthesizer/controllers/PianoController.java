@@ -4,6 +4,7 @@ import by.fpmi.bsu.synthesizer.SoundGenerator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
+import org.springframework.stereotype.Component;
 
 import javax.sound.sampled.LineUnavailableException;
 import java.io.IOException;
@@ -12,6 +13,7 @@ import java.util.Map;
 
 import static by.fpmi.bsu.synthesizer.constants.NoteFrequencies.*;
 
+@Component
 public class PianoController {
     private final Map<String, SoundGenerator> localSoundGenerators = new HashMap<>();
 

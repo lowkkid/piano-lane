@@ -5,8 +5,8 @@
 
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="by.bsu.fpmi.daw.controllers.PianoController"
-      stylesheets="@css/synthesizer.css"
+      fx:controller="by.fpmi.bsu.synthesizer.controllers.PianoController"
+      stylesheets="@../../css/synthesizer.css"
       >
 <HBox fx:id="pianoPane">
     <StackPane>

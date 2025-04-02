@@ -11,12 +11,12 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
+import static by.fpmi.bsu.pianolane.util.GlobalInstances.DEFAULT_RECEIVER;
 import static by.fpmi.bsu.pianolane.util.LogUtil.getCommandName;
 
 @Slf4j
 public class CustomReceiver implements Receiver {
 
-    private final Receiver synthReceiver;
     private final Map<Integer, SoundGenerator> customGenerators = new HashMap<>();
 
 
@@ -31,7 +31,7 @@ public class CustomReceiver implements Receiver {
         int channel = sm.getChannel();
         int note = sm.getData1();
         int velocity = sm.getData2();
-        if (command != ShortMessage.PROGRAM_CHANGE) {
+        if (command != ShortMessage.PROGRAM_CHANGE && command != ShortMessage.CONTROL_CHANGE) {
             log.info("Received command {} channel {}, data1 {}, data2 {}", getCommandName(command), channel, note, velocity);
         }
 
@@ -48,11 +48,9 @@ public class CustomReceiver implements Receiver {
             } else if (command == ShortMessage.NOTE_OFF || (command == ShortMessage.NOTE_ON && velocity == 0)) {
                 SoundGenerator gen = customGenerators.remove(note + (channel * 1000));
                 if (gen != null) gen.stopSound();
-            } else {
-                synthReceiver.send(msg, timeStamp);
             }
         } else {
-            synthReceiver.send(msg, timeStamp);
+            DEFAULT_RECEIVER.send(msg, timeStamp);
         }
     }
 
