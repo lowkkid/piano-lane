@@ -2,6 +2,7 @@ package by.fpmi.bsu.synthesizer.controllers;
 
 import by.fpmi.bsu.pianolane.controller.MainController;
 import by.fpmi.bsu.synthesizer.SoundGenerator;
+import by.fpmi.bsu.synthesizer.SynthesizerState;
 import by.fpmi.bsu.synthesizer.models.WaveformGenerator;
 import by.fpmi.bsu.synthesizer.models.WaveformType;
 import by.fpmi.bsu.synthesizer.setting.FilterSettings;
@@ -13,8 +14,10 @@ import javafx.scene.control.Button;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.RadioButton;
 import javafx.scene.control.Slider;
+import javafx.scene.control.Toggle;
 import javafx.scene.control.ToggleGroup;
 import javafx.scene.paint.Color;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -25,6 +28,7 @@ import java.util.Map;
 
 
 @Component
+@Slf4j
 public class SynthesizerController {
 
     public static SynthesizerController synthesizerController;
@@ -83,6 +87,13 @@ public class SynthesizerController {
         this.mainController = mainController;
     }
 
+    private SynthesizerState stateService;
+
+    @Autowired
+    public void setStateService(SynthesizerState stateService) {
+        this.stateService = stateService;
+    }
+
     public void initialize() {
         synthesizerController = this;
 
@@ -99,7 +110,27 @@ public class SynthesizerController {
         sawtoothRadioButton.setUserData(WaveformType.SAWTOOTH);
         triangleRadioButton.setUserData(WaveformType.TRIANGLE);
 
-        sineRadioButton.setSelected(true);
+        frequencySlider.setValue(stateService.getFrequency());
+        amplitudeSlider.setValue(stateService.getAmplitude());
+        lowPassCheckBox.setSelected(stateService.isLowPassEnabled());
+        lowPassSlider.setValue(stateService.getLowPassCutoff());
+        highPassCheckBox.setSelected(stateService.isHighPassEnabled());
+        highPassSlider.setValue(stateService.getHighPassCutoff());
+        WaveformType savedWaveform = stateService.getWaveformType();
+
+        System.out.println(savedWaveform);
+        if (savedWaveform != null) {
+            for (Toggle toggle : waveformToggleGroup.getToggles()) {
+                System.out.println(toggle.getUserData());
+                if (toggle.getUserData() == savedWaveform) {
+                    toggle.setSelected(true);
+                    break;
+                }
+            }
+        } else {
+            sineRadioButton.setSelected(true);
+
+        }
 
         // Обработчик изменения выбранной радиокнопки
         waveformToggleGroup.selectedToggleProperty().addListener((obs, oldVal, newVal) -> {
@@ -107,26 +138,43 @@ public class SynthesizerController {
                 WaveformType selectedType = (WaveformType) newVal.getUserData();
                 waveformGenerator.setWaveformType(selectedType);
                 commonSettings.setWaveformType(selectedType);
+                stateService.setWaveformType(selectedType);
                 updateWaveform();
             }
         });
 
-        // Настройка слайдера для изменения частоты
         frequencySlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             waveformGenerator.setFrequency(newVal.doubleValue());
+            stateService.setFrequency(newVal.doubleValue());
             updateWaveform();
         });
 
         amplitudeSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
             commonSettings.setAmplitude(newVal.doubleValue());
+            stateService.setAmplitude(newVal.doubleValue());
             updateWaveform();
         });
 
-        lowPassCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> updateLowPassFilter());
-        lowPassSlider.valueProperty().addListener((obs, oldVal, newVal) -> updateLowPassFilter());
+        lowPassCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            updateLowPassFilter();
+            stateService.setLowPassEnabled(newVal);
+        });
 
-        highPassCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> updateHighPassFilter());
-        highPassSlider.valueProperty().addListener((obs, oldVal, newVal) -> updateHighPassFilter());
+        lowPassSlider.valueProperty().addListener((obs, oldVal, newVal) ->
+        {
+            updateLowPassFilter();
+            stateService.setLowPassCutoff(newVal.doubleValue());
+        });
+
+        highPassCheckBox.selectedProperty().addListener((obs, oldVal, newVal) -> {
+            updateHighPassFilter();
+            stateService.setHighPassEnabled(newVal);
+        });
+
+        highPassSlider.valueProperty().addListener((obs, oldVal, newVal) -> {
+            updateHighPassFilter();
+            stateService.setHighPassCutoff(newVal.doubleValue());
+        });
 
         gcWaveform = waveformCanvas.getGraphicsContext2D();
         clearCanvas(gcWaveform);

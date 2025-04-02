@@ -22,12 +22,6 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Queue;
 
-import static by.fpmi.bsu.synthesizer.models.WaveformType.SAWTOOTH;
-import static by.fpmi.bsu.synthesizer.models.WaveformType.SINE;
-import static by.fpmi.bsu.synthesizer.models.WaveformType.SQUARE;
-import static by.fpmi.bsu.synthesizer.models.WaveformType.TRIANGLE;
-import static by.fpmi.bsu.synthesizer.util.WaveGeneratorUtil.generateWaveSample;
-
 @Getter
 @Setter
 public class SoundGenerator {
@@ -253,68 +247,6 @@ public class SoundGenerator {
         for (int i = 0; i < smoothedMagnitudes.length; i++) {
             smoothedMagnitudes[i] = visualizationSettings.getSmoothingFactor() * smoothedMagnitudes[i] + (1 - visualizationSettings.getSmoothingFactor()) * currentMagnitudes[i];
         }
-    }
-
-    private byte[] generateToneWithFilters() {
-        short[] samples = new short[BUFFER_SIZE / 2];
-
-        for (int i = 0; i < samples.length; i++) {
-            double time = i / (double) SAMPLE_RATE;
-            short value = (short) (generateWaveSample(time, frequency, commonSettings.getWaveformType())
-                    * (commonSettings.getAmplitude() / 100.0) * 32767);
-            samples[i] = value;
-        }
-
-//        if (filterSettings.isLowPassEnabled()) {
-//            samples = applyLowPassFilter(samples, filterSettings.getLowPassCutoff());
-//        }
-//
-//        if (filterSettings.isHighPassEnabled()) {
-//            samples = applyHighPassFilter(samples, filterSettings.getHighPassCutoff());
-//        }
-
-        return shortsToBytes(samples);
-    }
-
-    private short[] applyLowPassFilter(short[] samples, double cutoffFrequency) {
-        short[] filtered = new short[samples.length];
-        double RC = 1.0 / (2 * Math.PI * cutoffFrequency);
-        double dt = 1.0 / SAMPLE_RATE;
-        double alpha = dt / (RC + dt);
-
-        filtered[0] = samples[0];
-        for (int i = 1; i < samples.length; i++) {
-            filtered[i] = (short) (filtered[i - 1] + alpha * (samples[i] - filtered[i - 1]));
-        }
-        return filtered;
-    }
-
-    private byte[] applyLowPassFilter(byte[] source, double cutoffFrequency) {
-        short[] samples = bytesToShorts(source);
-        short[] filtered = new short[samples.length];
-        double RC = 1.0 / (2 * Math.PI * cutoffFrequency);
-        double dt = 1.0 / SAMPLE_RATE;
-        double alpha = dt / (RC + dt);
-
-        filtered[0] = samples[0];
-        for (int i = 1; i < samples.length; i++) {
-            filtered[i] = (short) (filtered[i - 1] + alpha * (samples[i] - filtered[i - 1]));
-        }
-        return shortsToBytes(filtered);
-    }
-
-    private byte[] applyHighPassFilter(byte[] source, double cutoffFrequency) {
-        short[] samples = bytesToShorts(source);
-        short[] filtered = new short[samples.length];
-        double RC = 1.0 / (2 * Math.PI * cutoffFrequency);
-        double dt = 1.0 / SAMPLE_RATE;
-        double alpha = RC / (RC + dt);
-
-        filtered[0] = samples[0];
-        for (int i = 1; i < samples.length; i++) {
-            filtered[i] = (short) (alpha * (filtered[i - 1] + samples[i] - samples[i - 1]));
-        }
-        return shortsToBytes(filtered);
     }
 
     /**
