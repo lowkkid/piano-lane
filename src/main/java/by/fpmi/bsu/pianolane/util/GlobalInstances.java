@@ -2,6 +2,7 @@ package by.fpmi.bsu.pianolane.util;
 
 import by.fpmi.bsu.pianolane.CustomReceiver;
 import by.fpmi.bsu.pianolane.controller.PianoRollController;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -13,6 +14,7 @@ import javax.sound.midi.Sequencer;
 import javax.sound.midi.Synthesizer;
 import javax.sound.midi.Track;
 
+@Slf4j
 public class GlobalInstances {
 
     public static Sequencer SEQUENCER;
@@ -33,6 +35,11 @@ public class GlobalInstances {
 
             SEQUENCE = new Sequence(Sequence.PPQ, 480);
             SEQUENCER.setSequence(SEQUENCE);
+            SEQUENCER.addMetaEventListener(meta -> {
+                if (meta.getType() == 0x2F) {
+                    ChannelCollection.stopSynthesizerChannels();
+                }
+            });
         } catch (MidiUnavailableException | InvalidMidiDataException e) {
             throw new RuntimeException(e);
         }

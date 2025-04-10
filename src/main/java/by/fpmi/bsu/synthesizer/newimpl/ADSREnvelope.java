@@ -1,5 +1,10 @@
 package by.fpmi.bsu.synthesizer.newimpl;
 
+import lombok.extern.slf4j.Slf4j;
+
+import static by.fpmi.bsu.synthesizer.newimpl.Constants.SAMPLE_RATE;
+
+@Slf4j
 public class ADSREnvelope {
     private enum Stage { ATTACK, DECAY, SUSTAIN, RELEASE, FINISHED }
 
@@ -7,24 +12,23 @@ public class ADSREnvelope {
     private final double decayTime;
     private final double sustainLevel;
     private final double releaseTime;
-    private final double sampleRate;
 
     private Stage stage = Stage.FINISHED;
     private int sampleIndex = 0;
     private double currentLevel = 0.0;
+    private double levelAtReleaseStart;
 
     private int attackSamples, decaySamples, releaseSamples;
 
-    public ADSREnvelope(double attack, double decay, double sustain, double release, double sampleRate) {
+    public ADSREnvelope(double attack, double decay, double sustain, double release) {
         this.attackTime = attack;
         this.decayTime = decay;
         this.sustainLevel = sustain;
         this.releaseTime = release;
-        this.sampleRate = sampleRate;
 
-        attackSamples = (int) (attack * sampleRate);
-        decaySamples = (int) (decay * sampleRate);
-        releaseSamples = (int) (release * sampleRate);
+        attackSamples = (int) (attack * SAMPLE_RATE);
+        decaySamples = (int) (decay * SAMPLE_RATE);
+        releaseSamples = (int) (release * SAMPLE_RATE);
     }
 
     public void noteOn() {
@@ -33,6 +37,7 @@ public class ADSREnvelope {
     }
 
     public void noteOff() {
+        this.levelAtReleaseStart = this.currentLevel;
         stage = Stage.RELEASE;
         sampleIndex = 0;
     }
@@ -78,7 +83,7 @@ public class ADSREnvelope {
                     return 0.0f;
                 }
                 double releaseProgress = (double) sampleIndex / releaseSamples;
-                currentLevel *= 1.0 - releaseProgress;
+                currentLevel = levelAtReleaseStart * (1.0 - releaseProgress);
                 sampleIndex++;
                 if (sampleIndex >= releaseSamples) {
                     currentLevel = 0.0;

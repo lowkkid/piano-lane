@@ -88,7 +88,7 @@ public class ChannelRackController implements Initializable {
     }
 
     private void addCustomChannel() {
-        int channelId = channelCollection.addCustomChannel();
+        int channelId = channelCollection.addSynthesizerChannel();
 
         ChannelRackItem item = new ChannelRackItem(channelId, "Custom Synthesizer");
         registerChannelRackItem(item);

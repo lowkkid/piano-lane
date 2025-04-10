@@ -4,11 +4,7 @@ import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
 
 import javax.sound.sampled.AudioFormat;
 import java.io.IOException;
-
-import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
-
-import java.io.IOException;
 
 public class SilentAudioInputStream implements TarsosDSPAudioInputStream {
     private final TarsosDSPAudioFormat format;

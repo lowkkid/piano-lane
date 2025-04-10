@@ -2,7 +2,7 @@ package by.fpmi.bsu.pianolane.controller;
 
 import by.fpmi.bsu.pianolane.Note;
 import by.fpmi.bsu.pianolane.ui.NoteContainer;
-import by.fpmi.bsu.pianolane.util.Channel;
+import by.fpmi.bsu.pianolane.model.Channel;
 import by.fpmi.bsu.pianolane.util.ChannelCollection;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;

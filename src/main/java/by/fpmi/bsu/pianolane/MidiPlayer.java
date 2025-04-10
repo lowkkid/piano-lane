@@ -4,6 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
+import static by.fpmi.bsu.pianolane.util.ChannelCollection.startSynthesizerChannels;
+import static by.fpmi.bsu.pianolane.util.ChannelCollection.stopSynthesizerChannels;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
 
 @Component
@@ -17,12 +19,14 @@ public class MidiPlayer {
         if (SEQUENCER.isRunning()) {
             SEQUENCER.stop();
         }
+        startSynthesizerChannels();
         SEQUENCER.setTickPosition(0);
         SEQUENCER.setTempoInBPM(bpm);
         SEQUENCER.start();
     }
 
     public void stop() {
+        stopSynthesizerChannels();
         SEQUENCER.stop();
         SEQUENCER.setTickPosition(0);
     }

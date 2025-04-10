@@ -2,7 +2,7 @@ package by.fpmi.bsu.pianolane;
 
 import by.fpmi.bsu.pianolane.observer.NoteDeleteObserver;
 import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
-import by.fpmi.bsu.pianolane.util.Channel;
+import by.fpmi.bsu.pianolane.model.Channel;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;

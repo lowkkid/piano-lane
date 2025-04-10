@@ -1,33 +1,71 @@
 package by.fpmi.bsu.synthesizer.newimpl;
 
 import lombok.Data;
-import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
+import be.tarsos.dsp.SpectralPeakProcessor;
 
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 import static by.fpmi.bsu.synthesizer.newimpl.Constants.SAMPLE_RATE;
+import static by.fpmi.bsu.synthesizer.newimpl.SoundUtil.generateWaveform;
 
 @Data
+@Slf4j
 public class Voice {
-    private final double frequency;
-    private final Waveform waveform;
-    private final float velocity;
-    private final ADSREnvelope envelope;
+    private double frequency;
+    private Waveform waveform;
+    private float velocity;
+    private ADSREnvelope envelope;
     private double phase;
-    private final double sampleRate;
+
+    private int unisonCount = 5;
+    private double unisonDetune = 0.01;
 
     private static final float BASE_GAIN = 0.3f;
 
-    public Voice(double frequency, float velocity, Waveform waveform, double sampleRate) {
+    private List<VoiceComponent> components = new ArrayList<>();
+
+    public Voice(double frequency, float velocity, Waveform waveform) {
         // Детюн: до ±1% от основной частоты
-        this.frequency = frequency * (1.0 + (Math.random() * 0.02 - 0.01)); // ±1%
+        this.frequency = frequency;
         this.waveform = waveform;
         this.velocity = velocity;
-        this.sampleRate = sampleRate;
         this.phase = Math.random(); // random phase spread
 
-        this.envelope = new ADSREnvelope(0.5, 0, 1, 2, sampleRate);
+        this.envelope = new ADSREnvelope(0.5, 0, 1, 1);
         this.envelope.noteOn();
+        createUnisonComponents();
+    }
+
+    private void createUnisonComponents() {
+        components.clear();
+
+        if (unisonCount == 1) {
+            // Один голос без расстройки
+            components.add(new VoiceComponent(frequency, 0));
+            return;
+        }
+
+        // Создаем несколько голосов с расстройкой
+        // Создаем несколько голосов с расстройкой
+        for (int i = 0; i < unisonCount; i++) {
+            // Нелинейное распределение расстройки
+            double normalizedPosition = (double)i / (unisonCount - 1);
+            double detune;
+
+            if (unisonCount == 2) {
+                // Для двух голосов: один слегка выше, один слегка ниже
+                detune = (i == 0) ? -unisonDetune/2 : unisonDetune/2;
+            } else {
+                // Для трех и более: нелинейное распределение
+                detune = unisonDetune * (2.0 * normalizedPosition - 1.0);
+                // Применяем небольшую нелинейность
+                detune = Math.signum(detune) * Math.pow(Math.abs(detune), 0.8);
+            }
+
+            components.add(new VoiceComponent(frequency , detune));
+        }
     }
 
     public void noteOff() {
@@ -42,21 +80,20 @@ public class Voice {
         for (int i = 0; i < buffer.length; i++) {
             float env = envelope.nextSample();
             if (envelope.isFinished()) continue;
-            float amp = generateSample(phase) * env * velocity * gain * BASE_GAIN;
+
+            float sum = 0;
+            for (VoiceComponent component : components) {
+                sum += component.generateSample(waveform);
+            }
+
+            // Нормализуем по количеству голосов
+            sum /= Math.sqrt(unisonCount);
+
+            float amp = sum * env * velocity * gain * BASE_GAIN;
             buffer[i] += amp;
 
-            phase += frequency / sampleRate;
+            phase += frequency / SAMPLE_RATE;
             if (phase >= 1.0) phase -= 1.0;
         }
-    }
-
-    private float generateSample(double phase) {
-        return switch (waveform) {
-            case SINE -> (float) Math.sin(2 * Math.PI * phase);
-            case SQUARE -> phase < 0.5 ? 1.0f : -1.0f;
-            case SAW -> (float) (2.0 * (phase - 0.5));
-            case TRIANGLE -> (float) (1.0 - 4.0 * Math.abs(phase - 0.5));
-            case NOISE -> (float) (Math.random() * 2.0 - 1.0);
-        };
     }
 }

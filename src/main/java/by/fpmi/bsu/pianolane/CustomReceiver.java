@@ -1,15 +1,18 @@
 package by.fpmi.bsu.pianolane;
 
+import by.fpmi.bsu.pianolane.model.SynthesizerChannel;
 import by.fpmi.bsu.pianolane.util.ChannelCollection;
 import by.fpmi.bsu.synthesizer.SoundGenerator;
+import by.fpmi.bsu.synthesizer.newimpl.Voice;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sound.midi.MidiMessage;
 import javax.sound.midi.Receiver;
 import javax.sound.midi.ShortMessage;
+import java.util.ArrayDeque;
+import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.Set;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.DEFAULT_RECEIVER;
 import static by.fpmi.bsu.pianolane.util.LogUtil.getCommandName;
@@ -17,7 +20,7 @@ import static by.fpmi.bsu.pianolane.util.LogUtil.getCommandName;
 @Slf4j
 public class CustomReceiver implements Receiver {
 
-    private final Map<Integer, SoundGenerator> customGenerators = new HashMap<>();
+    Map<Integer, Deque<Voice>> midiVoices = new HashMap<>();
 
 
     @Override
@@ -35,19 +38,23 @@ public class CustomReceiver implements Receiver {
             log.info("Received command {} channel {}, data1 {}, data2 {}", getCommandName(command), channel, note, velocity);
         }
 
-        if (ChannelCollection.isCustom(channel)) {
+        if (ChannelCollection.isSynthesizer(channel)) {
+            var synthesizer = ((SynthesizerChannel) ChannelCollection.getChannel(channel)).getSynthPlayer();
             if (command == ShortMessage.NOTE_ON && velocity > 0) {
                 double freq = midiNoteToFreq(note);
-                SoundGenerator generator = new SoundGenerator(freq);
-                try {
-                    generator.playSound();
-                    customGenerators.put(note + (channel * 1000), generator);
-                } catch (Exception e) {
-                    e.printStackTrace();
-                }
+                Voice voice = synthesizer.addVoice(freq, velocity / 127f);
+                midiVoices.computeIfAbsent(note, k -> new ArrayDeque<>()).addLast(voice);
             } else if (command == ShortMessage.NOTE_OFF || (command == ShortMessage.NOTE_ON && velocity == 0)) {
-                SoundGenerator gen = customGenerators.remove(note + (channel * 1000));
-                if (gen != null) gen.stopSound();
+                Deque<Voice> voices = midiVoices.get(note);
+                if (voices != null && !voices.isEmpty()) {
+                    Voice voiceToRelease = voices.pollFirst();
+                    if (voiceToRelease != null) {
+                        voiceToRelease.noteOff();
+                    }
+                    if (voices.isEmpty()) {
+                        midiVoices.remove(note);
+                    }
+                }
             }
         } else {
             DEFAULT_RECEIVER.send(msg, timeStamp);
@@ -56,9 +63,7 @@ public class CustomReceiver implements Receiver {
 
     @Override
     public void close() {
-        for (var generator : customGenerators.values()) {
-            generator.stopSound();
-        }
+
     }
 
     private double midiNoteToFreq(int note) {
