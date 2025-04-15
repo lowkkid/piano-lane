@@ -63,7 +63,7 @@ public class AudioDispatcherFactory {
             @Override
             public void processingFinished() {}
         });
-
+        //dispatcher.addAudioProcessor(new LimiterProcessor(0.4f));
         try {
             dispatcher.addAudioProcessor(new AudioPlayer(format));
         } catch (LineUnavailableException e) {

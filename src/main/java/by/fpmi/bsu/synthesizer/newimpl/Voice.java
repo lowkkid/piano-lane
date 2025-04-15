@@ -2,7 +2,6 @@ package by.fpmi.bsu.synthesizer.newimpl;
 
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-import be.tarsos.dsp.SpectralPeakProcessor;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -19,8 +18,8 @@ public class Voice {
     private ADSREnvelope envelope;
     private double phase;
 
-    private int unisonCount = 5;
-    private double unisonDetune = 0.01;
+    private int unisonCount = 1;
+    private double unisonDetune = 0.3;
 
     private static final float BASE_GAIN = 0.3f;
 
@@ -33,7 +32,7 @@ public class Voice {
         this.velocity = velocity;
         this.phase = Math.random(); // random phase spread
 
-        this.envelope = new ADSREnvelope(0.5, 0, 1, 1);
+        this.envelope = new ADSREnvelope(0.5, 0, 1, 0.1);
         this.envelope.noteOn();
         createUnisonComponents();
     }
@@ -47,24 +46,14 @@ public class Voice {
             return;
         }
 
-        // Создаем несколько голосов с расстройкой
-        // Создаем несколько голосов с расстройкой
         for (int i = 0; i < unisonCount; i++) {
-            // Нелинейное распределение расстройки
-            double normalizedPosition = (double)i / (unisonCount - 1);
-            double detune;
-
-            if (unisonCount == 2) {
-                // Для двух голосов: один слегка выше, один слегка ниже
-                detune = (i == 0) ? -unisonDetune/2 : unisonDetune/2;
-            } else {
-                // Для трех и более: нелинейное распределение
-                detune = unisonDetune * (2.0 * normalizedPosition - 1.0);
-                // Применяем небольшую нелинейность
-                detune = Math.signum(detune) * Math.pow(Math.abs(detune), 0.8);
-            }
-
-            components.add(new VoiceComponent(frequency , detune));
+            // Вычисляем нормированное равномерное распределение в диапазоне (0, 1)
+            double normalizedPosition = (i + 0.5) / unisonCount;
+            // Отображаем на диапазон (-1, 1)
+            double detune = unisonDetune * (2.0 * normalizedPosition - 1.0);
+            // Применяем небольшую нелинейность (опционально)
+            detune = Math.signum(detune) * Math.pow(Math.abs(detune), 0.8);
+            components.add(new VoiceComponent(frequency, detune));
         }
     }
 

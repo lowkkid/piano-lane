@@ -10,7 +10,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static by.fpmi.bsu.synthesizer.newimpl.AudioDispatcherFactory.createAudioDispatcher;
-import static by.fpmi.bsu.synthesizer.newimpl.Constants.SAMPLE_RATE;
 
 @Getter
 @Setter
@@ -21,7 +20,7 @@ public class SynthPlayer {
     private final List<Voice> activeVoices = new ArrayList<>();
     private AudioDispatcher dispatcher;
     private Thread dispatcherThread;
-    private Waveform waveform = Waveform.SINE;
+    private Waveform waveform = Waveform.TRIANGLE;
 
     public void start() {
         dispatcher = createAudioDispatcher(activeVoices);
