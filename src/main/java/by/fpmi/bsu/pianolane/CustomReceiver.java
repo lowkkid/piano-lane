@@ -34,9 +34,9 @@ public class CustomReceiver implements Receiver {
         int channel = sm.getChannel();
         int note = sm.getData1();
         int velocity = sm.getData2();
-        //if (command != ShortMessage.PROGRAM_CHANGE && command != ShortMessage.CONTROL_CHANGE) {
-            log.info("Received command {} channel {}, data1 {}, data2 {}", getCommandName(command), channel, note, velocity);
-        //}
+        if (command != ShortMessage.PROGRAM_CHANGE && command != ShortMessage.CONTROL_CHANGE) {
+            log.debug("Received command {} channel {}, data1 {}, data2 {}", getCommandName(command), channel, note, velocity);
+        }
 
         if (ChannelCollection.isSynthesizer(channel)) {
             var synthesizer = ((SynthesizerChannel) ChannelCollection.getChannel(channel)).getSynthPlayer();
@@ -59,7 +59,6 @@ public class CustomReceiver implements Receiver {
         } else {
             DEFAULT_RECEIVER.send(msg, timeStamp);
         }
-        System.out.println(System.currentTimeMillis() - currentTime + "VOT STOLKO OBRABOTKA SHLA");
     }
 
     @Override

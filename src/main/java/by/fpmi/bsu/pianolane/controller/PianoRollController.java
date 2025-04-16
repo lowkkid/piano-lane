@@ -9,6 +9,7 @@ import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
@@ -31,6 +32,8 @@ import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
 @Scope("prototype")
 public class PianoRollController {
 
+    public ScrollPane horizontalScrollPane;
+    public ScrollPane verticalScrollPane;
     @FXML
     private GridPane gridPane;
     @FXML
@@ -93,6 +96,21 @@ public class PianoRollController {
         log.info("Fetched notes: {}", previouslyWrittenNotes);
         gridPane.getChildren().addAll(previouslyWrittenNotes);
         channel = channelCollection.getChannel(channelId);
+
+        horizontalScrollPane.setVvalue(0);
+        horizontalScrollPane.setVmax(0);
+
+        // Делегируем вертикальную прокрутку на внешний ScrollPane
+        horizontalScrollPane.setOnScroll(event -> {
+            if (event.getDeltaY() != 0) {
+                // Передаем событие прокрутки внешнему ScrollPane
+                double newValue = verticalScrollPane.getVvalue() - event.getDeltaY() / verticalScrollPane.getHeight();
+                // Ограничиваем значение от 0 до 1
+                newValue = Math.min(Math.max(newValue, 0), 1);
+                verticalScrollPane.setVvalue(newValue);
+                event.consume(); // Предотвращаем дальнейшую обработку события
+            }
+        });
     }
 
     // Отрисовка клавиатуры снизу вверх: нота с i=0 отрисовывается внизу

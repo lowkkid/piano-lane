@@ -32,15 +32,15 @@ public class NoteEvent {
         noteOffEvent = new MidiEvent(noteOffMessage, startTick + noteDuration);
 
         registerNoteEvent();
-        log.info("Registered note event for channel {}. Current events in this track are: {} ", channelId, getAllTrackEvents(track));
+        log.debug("Registered note event for channel {}. Current events in this track are:\n {} ", channelId, getAllTrackEvents(track));
 
     }
 
     public void updateLength(int newLength) {
-        //track.remove(noteOffEvent);
-        noteOffEvent.setTick(noteOnEvent.getTick() + newLength);
-        //noteOffEvent = new MidiEvent(noteOffMessage, noteOnEvent.getTick() + newLength);
-        //track.add(noteOffEvent);
+        track.remove(noteOffEvent);
+        noteOffEvent = new MidiEvent(noteOffMessage, noteOnEvent.getTick() + newLength);
+        track.add(noteOffEvent);
+        log.debug("Resized note event. Current events in this track are:\n {} ", getAllTrackEvents(track));
     }
 
     public void destroy() {

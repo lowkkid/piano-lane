@@ -32,7 +32,7 @@ public class GlobalInstances {
             DEFAULT_RECEIVER = MidiSystem.getReceiver();
             SEQUENCER = MidiSystem.getSequencer(false);
             SEQUENCER.open();
-            //SEQUENCER.getTransmitter().setReceiver(DEFAULT_RECEIVER);
+            SEQUENCER.getTransmitter().setReceiver(new CustomReceiver());
 
             SEQUENCE = new Sequence(Sequence.PPQ, 480);
             SEQUENCER.setSequence(SEQUENCE);

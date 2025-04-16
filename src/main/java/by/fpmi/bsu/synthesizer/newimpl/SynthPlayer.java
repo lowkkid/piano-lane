@@ -58,7 +58,6 @@ public class SynthPlayer {
         synchronized (activeSynths) {
             activeSynths.add(synth);
         }
-        System.out.println(currentTime - System.currentTimeMillis() + " ------ VOT STOLKA ZHDAL SHTOB DOBAVIT VOICE");
         return synth;
     }
 
