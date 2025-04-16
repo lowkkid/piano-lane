@@ -6,15 +6,15 @@
 <VBox xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
       fx:controller="by.fpmi.bsu.synthesizer.controllers.PianoController"
-      stylesheets="@../../css/synthesizer.css"
+      stylesheets="@../../css/synthesizer/piano.css"
       >
 <HBox fx:id="pianoPane">
     <StackPane>
         <Button fx:id="C3" text="С3" styleClass="white-key, right-cutout"/>
         <Button fx:id="D3" text="D3" styleClass="white-key, left-right-cutout" translateX="50"/>
         <Button fx:id="E3" text="E3" styleClass="white-key, left-cutout" translateX="100"/>
-        <Button fx:id="C3_SHARP" text="C#3" styleClass="black-key" translateX="25" translateY="-35"/>
-        <Button fx:id="D3_SHARP" text="D#3" styleClass="black-key" translateX="75" translateY="-35"/>
+        <Button fx:id="C3_SHARP" text="C#3" styleClass="black-key" translateX="25" translateY="-22.5"/>
+        <Button fx:id="D3_SHARP" text="D#3" styleClass="black-key" translateX="75" translateY="-22.5"/>
     </StackPane>
     <Region prefWidth="99" mouseTransparent="true"/>
     <StackPane>
@@ -22,17 +22,17 @@
         <Button fx:id="G3" text="G3" styleClass="white-key, left-right-cutout" translateX="50"/>
         <Button fx:id="A3" text="A3" styleClass="white-key, left-right-cutout" translateX="100"/>
         <Button fx:id="B3" text="B3" styleClass="white-key, left-cutout" translateX="150"/>
-        <Button fx:id="F3_SHARP" text="F#3" styleClass="black-key" translateX="25" translateY="-35"/>
-        <Button fx:id="G3_SHARP" text="G#3" styleClass="black-key" translateX="75" translateY="-35"/>
-        <Button fx:id="A3_SHARP" text="A#3" styleClass="black-key" translateX="125" translateY="-35"/>
+        <Button fx:id="F3_SHARP" text="F#3" styleClass="black-key" translateX="25" translateY="-22.5"/>
+        <Button fx:id="G3_SHARP" text="G#3" styleClass="black-key" translateX="75" translateY="-22.5"/>
+        <Button fx:id="A3_SHARP" text="A#3" styleClass="black-key" translateX="125" translateY="-22.5"/>
     </StackPane>
     <Region prefWidth="148" mouseTransparent="true"/>
     <StackPane>
         <Button fx:id="C4" text="С4" styleClass="white-key, right-cutout" />
         <Button fx:id="D4" text="D4" styleClass="white-key, left-right-cutout" translateX="50"/>
         <Button fx:id="E4" text="E4" styleClass="white-key, left-cutout" translateX="100"/>
-        <Button fx:id="C4_SHARP" text="C#4" styleClass="black-key" translateX="25" translateY="-35"/>
-        <Button fx:id="D4_SHARP" text="D#4" styleClass="black-key" translateX="75" translateY="-35"/>
+        <Button fx:id="C4_SHARP" text="C#4" styleClass="black-key" translateX="25" translateY="-22.5"/>
+        <Button fx:id="D4_SHARP" text="D#4" styleClass="black-key" translateX="75" translateY="-22.5"/>
     </StackPane>
     <Region prefWidth="99" mouseTransparent="true"/>
     <StackPane>
@@ -40,17 +40,17 @@
         <Button fx:id="G4" text="G4" styleClass="white-key, left-right-cutout" translateX="50"/>
         <Button fx:id="A4" text="A4" styleClass="white-key, left-right-cutout" translateX="100"/>
         <Button fx:id="B4" text="B4" styleClass="white-key, left-cutout" translateX="150"/>
-        <Button fx:id="F4_SHARP" text="F#4" styleClass="black-key" translateX="25" translateY="-35"/>
-        <Button fx:id="G4_SHARP" text="G#4" styleClass="black-key" translateX="75" translateY="-35"/>
-        <Button fx:id="A4_SHARP" text="A#4" styleClass="black-key" translateX="125" translateY="-35"/>
+        <Button fx:id="F4_SHARP" text="F#4" styleClass="black-key" translateX="25" translateY="-22.5"/>
+        <Button fx:id="G4_SHARP" text="G#4" styleClass="black-key" translateX="75" translateY="-22.5"/>
+        <Button fx:id="A4_SHARP" text="A#4" styleClass="black-key" translateX="125" translateY="-22.5"/>
     </StackPane>
     <Region prefWidth="148" mouseTransparent="true"/>
     <StackPane>
         <Button fx:id="C5" text="С5" styleClass="white-key, right-cutout" />
         <Button fx:id="D5" text="D5" styleClass="white-key, left-right-cutout" translateX="50"/>
         <Button fx:id="E5" text="E5" styleClass="white-key, left-cutout" translateX="100"/>
-        <Button fx:id="С5_SHARP" text="C#5" styleClass="black-key" translateX="25" translateY="-35"/>
-        <Button fx:id="D5_SHARP" text="D#5" styleClass="black-key" translateX="75" translateY="-35"/>
+        <Button fx:id="С5_SHARP" text="C#5" styleClass="black-key" translateX="25" translateY="-22.5"/>
+        <Button fx:id="D5_SHARP" text="D#5" styleClass="black-key" translateX="75" translateY="-22.5"/>
     </StackPane>
     <Region prefWidth="99" mouseTransparent="true"/>
     <StackPane>
@@ -58,9 +58,9 @@
         <Button fx:id="G5" text="G5" styleClass="white-key, left-right-cutout" translateX="50"/>
         <Button fx:id="A5" text="A5" styleClass="white-key, left-right-cutout" translateX="100"/>
         <Button fx:id="B5" text="B5" styleClass="white-key, left-cutout" translateX="150"/>
-        <Button fx:id="F5_SHARP" text="F#5" styleClass="black-key" translateX="25" translateY="-35"/>
-        <Button fx:id="G5_SHARP" text="G#5" styleClass="black-key" translateX="75" translateY="-35"/>
-        <Button fx:id="A5_SHARP" text="A#5" styleClass="black-key" translateX="125" translateY="-35"/>
+        <Button fx:id="F5_SHARP" text="F#5" styleClass="black-key" translateX="25" translateY="-22.5"/>
+        <Button fx:id="G5_SHARP" text="G#5" styleClass="black-key" translateX="75" translateY="-22.5"/>
+        <Button fx:id="A5_SHARP" text="A#5" styleClass="black-key" translateX="125" translateY="-22.5"/>
     </StackPane>
 </HBox>
 </VBox>

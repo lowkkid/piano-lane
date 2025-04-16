@@ -2,8 +2,7 @@ package by.fpmi.bsu.pianolane;
 
 import by.fpmi.bsu.pianolane.model.SynthesizerChannel;
 import by.fpmi.bsu.pianolane.util.ChannelCollection;
-import by.fpmi.bsu.synthesizer.SoundGenerator;
-import by.fpmi.bsu.synthesizer.newimpl.Voice;
+import by.fpmi.bsu.synthesizer.model.Synth;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sound.midi.MidiMessage;
@@ -20,11 +19,12 @@ import static by.fpmi.bsu.pianolane.util.LogUtil.getCommandName;
 @Slf4j
 public class CustomReceiver implements Receiver {
 
-    Map<Integer, Deque<Voice>> midiVoices = new HashMap<>();
+    Map<Integer, Deque<Synth>> midiVoices = new HashMap<>();
 
 
     @Override
     public void send(MidiMessage msg, long timeStamp) {
+        long currentTime = System.currentTimeMillis();
         if (!(msg instanceof ShortMessage sm)) {
             log.info("Custom receiver received a message that is not a ShortMessage");
             return;
@@ -34,24 +34,24 @@ public class CustomReceiver implements Receiver {
         int channel = sm.getChannel();
         int note = sm.getData1();
         int velocity = sm.getData2();
-        if (command != ShortMessage.PROGRAM_CHANGE && command != ShortMessage.CONTROL_CHANGE) {
+        //if (command != ShortMessage.PROGRAM_CHANGE && command != ShortMessage.CONTROL_CHANGE) {
             log.info("Received command {} channel {}, data1 {}, data2 {}", getCommandName(command), channel, note, velocity);
-        }
+        //}
 
         if (ChannelCollection.isSynthesizer(channel)) {
             var synthesizer = ((SynthesizerChannel) ChannelCollection.getChannel(channel)).getSynthPlayer();
             if (command == ShortMessage.NOTE_ON && velocity > 0) {
                 double freq = midiNoteToFreq(note);
-                Voice voice = synthesizer.addVoice(freq, velocity / 127f);
-                midiVoices.computeIfAbsent(note, k -> new ArrayDeque<>()).addLast(voice);
+                Synth synth = synthesizer.addVoice(freq, velocity / 127f);
+                midiVoices.computeIfAbsent(note, k -> new ArrayDeque<>()).addLast(synth);
             } else if (command == ShortMessage.NOTE_OFF || (command == ShortMessage.NOTE_ON && velocity == 0)) {
-                Deque<Voice> voices = midiVoices.get(note);
-                if (voices != null && !voices.isEmpty()) {
-                    Voice voiceToRelease = voices.pollFirst();
-                    if (voiceToRelease != null) {
-                        voiceToRelease.noteOff();
+                Deque<Synth> synths = midiVoices.get(note);
+                if (synths != null && !synths.isEmpty()) {
+                    Synth synthToRelease = synths.pollFirst();
+                    if (synthToRelease != null) {
+                        synthToRelease.noteOff();
                     }
-                    if (voices.isEmpty()) {
+                    if (synths.isEmpty()) {
                         midiVoices.remove(note);
                     }
                 }
@@ -59,6 +59,7 @@ public class CustomReceiver implements Receiver {
         } else {
             DEFAULT_RECEIVER.send(msg, timeStamp);
         }
+        System.out.println(System.currentTimeMillis() - currentTime + "VOT STOLKO OBRABOTKA SHLA");
     }
 
     @Override

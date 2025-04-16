@@ -1,0 +1,57 @@
+.close-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-font-size: 14px; /* можно настроить размер шрифта */
+    -fx-cursor: hand;
+    -fx-text-fill: white;
+}
+
+.close-button:hover {
+    -fx-border-color: white;
+    -fx-border-width: 1;
+}
+
+.tab-pane .tab-header-area .tab-header-background {
+    -fx-background-color: linear-gradient(to top, #363636, #6E6E6E);
+}
+
+.tab-pane .tab-content-area {
+    -fx-padding: 35;
+    -fx-background-color: linear-gradient(to top, #817E7E, #363636);
+    -fx-border-width: 2 0 0 0; /* top, right, bottom, left */
+    -fx-border-color: #1B1A1A;
+}
+
+.tab-pane .tab-content-region {
+    -fx-padding: 35; /* Устанавливаем отступы в 20px */
+}
+
+/* Стили для вкладок */
+.tab {
+    -fx-background-color: #1B1A1A;
+    -fx-text-base-color: white;
+    -fx-padding: 10 20 10 20;
+    -fx-border-width: 2 2 1 2;
+    -fx-border-color: #1B1A1A;
+}
+
+.tab:selected {
+    -fx-background-color: linear-gradient(to top, #363636, #6E6E6E);
+    -fx-text-base-color: white;
+    -fx-effect: none;
+    -fx-border-width: 2 2 1 2;
+    -fx-border-color: #1B1A1A;
+}
+
+.tab .tab-label {
+    -fx-font-size: 14px; /* Размер текста */
+    -fx-font-weight: 900; /* Жирный текст */
+}
+
+
+.tab:selected .tab-label {
+    -fx-effect: null; /* Убираем эффект обводки */
+    -fx-border-width: 0;
+    -fx-border-color: transparent;
+
+}

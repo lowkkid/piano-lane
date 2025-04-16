@@ -3,6 +3,7 @@ package by.fpmi.bsu.pianolane.controller;
 import by.fpmi.bsu.pianolane.Note;
 import by.fpmi.bsu.pianolane.ui.NoteContainer;
 import by.fpmi.bsu.pianolane.model.Channel;
+import by.fpmi.bsu.pianolane.ui.GridPane;
 import by.fpmi.bsu.pianolane.util.ChannelCollection;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
@@ -30,9 +31,8 @@ import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
 @Scope("prototype")
 public class PianoRollController {
 
-
     @FXML
-    private Pane gridPane;
+    private GridPane gridPane;
     @FXML
     private Pane keyboardPane;
     @FXML
@@ -76,6 +76,7 @@ public class PianoRollController {
     }
 
     public void initialize() {
+        gridPane.setChannelId(channelId);
         drawKeyboard();
         drawGrid();
         initPlayhead();

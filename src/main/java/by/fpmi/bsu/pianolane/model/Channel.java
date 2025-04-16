@@ -11,10 +11,12 @@ import javax.sound.midi.Track;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import lombok.ToString;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.createTrack;
 
 @Data
+@ToString
 public abstract class Channel implements NoteDeleteObserver, NoteResizedObserver {
 
     private static final AtomicInteger NOTES_SEQUENCE = new AtomicInteger(0);

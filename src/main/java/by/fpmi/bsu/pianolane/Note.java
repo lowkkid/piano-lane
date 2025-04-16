@@ -3,9 +3,10 @@ package by.fpmi.bsu.pianolane;
 import by.fpmi.bsu.pianolane.observer.NoteDeleteObserver;
 import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
 import by.fpmi.bsu.pianolane.model.Channel;
+import by.fpmi.bsu.pianolane.ui.NoteContainer;
+import by.fpmi.bsu.pianolane.ui.GridPane;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
-import javafx.scene.layout.Pane;
 import javafx.scene.shape.Rectangle;
 import lombok.Getter;
 
@@ -39,7 +40,9 @@ public class Note extends Rectangle {
         this.setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 System.out.println("Note clicked with RMB");
-                ((Pane) this.getParent()).getChildren().remove(this);
+                GridPane roll = (GridPane) this.getParent();
+                roll.getChildren().remove(this);
+                NoteContainer.removeNote(roll.getChannelId(), this);
                 notifyDeleteEventObservers();
             }
         });

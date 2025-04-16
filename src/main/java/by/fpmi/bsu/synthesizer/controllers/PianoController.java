@@ -1,6 +1,5 @@
 package by.fpmi.bsu.synthesizer.controllers;
 
-import by.fpmi.bsu.synthesizer.SoundGenerator;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.layout.HBox;
@@ -15,7 +14,6 @@ import static by.fpmi.bsu.synthesizer.constants.NoteFrequencies.*;
 
 @Component
 public class PianoController {
-    private final Map<String, SoundGenerator> localSoundGenerators = new HashMap<>();
 
     @FXML
     public HBox pianoPane;
@@ -77,28 +75,28 @@ public class PianoController {
     }
 
     private void playSoundForKey(String key, double frequency) throws LineUnavailableException, IOException {
-        SoundGenerator soundGenerator;
-        if (localSoundGenerators.containsKey(key)) {
-            soundGenerator = localSoundGenerators.get(key);
-        } else {
-            soundGenerator = new SoundGenerator(frequency);
-            soundGenerator.addMagnitudeListener(VisualizerController.getInstance());
-            localSoundGenerators.put(key, soundGenerator);
-        }
-
-        new Thread(() -> {
-            try {
-                soundGenerator.playSound(); // Воспроизведение в отдельном потоке
-            } catch (LineUnavailableException | IOException e) {
-                e.printStackTrace();
-            }
-        }).start();
+//        SoundGenerator soundGenerator;
+//        if (localSoundGenerators.containsKey(key)) {
+//            soundGenerator = localSoundGenerators.get(key);
+//        } else {
+//            soundGenerator = new SoundGenerator(frequency);
+//            soundGenerator.addMagnitudeListener(VisualizerController.getInstance());
+//            localSoundGenerators.put(key, soundGenerator);
+//        }
+//
+//        new Thread(() -> {
+//            try {
+//                soundGenerator.playSound(); // Воспроизведение в отдельном потоке
+//            } catch (LineUnavailableException | IOException e) {
+//                e.printStackTrace();
+//            }
+//        }).start();
     }
 
     private void stopSoundForKey(String key) {
-        SoundGenerator soundGenerator = localSoundGenerators.get(key);
-        if (soundGenerator != null) {
-            soundGenerator.stopSound();
-        }
+//        SoundGenerator soundGenerator = localSoundGenerators.get(key);
+//        if (soundGenerator != null) {
+//            soundGenerator.stopSound();
+//        }
     }
 }

@@ -8,11 +8,13 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.Patch;
 import javax.sound.midi.ShortMessage;
+import lombok.ToString;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SYNTHESIZER;
 
 @Getter
 @Setter
+@ToString(callSuper = true)
 public class DefaultChannel extends Channel {
 
     private Instrument instrument;

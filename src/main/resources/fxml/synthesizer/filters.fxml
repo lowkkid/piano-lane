@@ -1,0 +1,3 @@
+<?import javafx.scene.layout.VBox?>
+
+<VBox xmlns="http://javafx.com/javafx/2OscillatorController3.0.1" xmlns:fx="http://javafx.com/fxml/1" prefWidth="357" style="-fx-border-color: red"/>

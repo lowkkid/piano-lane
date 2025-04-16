@@ -22,6 +22,10 @@ public class NoteContainer {
         notesByChannel.put(channelId, currentNotes);
     }
 
+    public static void removeNote(Integer channelId, Note note) {
+        notesByChannel.get(channelId).remove(note);
+    }
+
     public static void removeNotesInChanel(Integer channelId) {
         notesByChannel.remove(channelId);
     }

@@ -1,17 +1,19 @@
-package by.fpmi.bsu.synthesizer.newimpl;
+package by.fpmi.bsu.synthesizer.model;
 
 import static by.fpmi.bsu.synthesizer.newimpl.Constants.SAMPLE_RATE;
 import static by.fpmi.bsu.synthesizer.newimpl.SoundUtil.generateWaveform;
 
-public class VoiceComponent {
+import by.fpmi.bsu.synthesizer.newimpl.Waveform;
+
+public class Voice {
     private double frequency;
     private double phase;
     private double detune;
 
-    public VoiceComponent(double baseFrequency, double detuneAmount) {
+    public Voice(double baseFrequency, double detuneAmount, double phase) {
         this.detune = detuneAmount;
         this.frequency = baseFrequency * (1.0 + detune);
-        this.phase = Math.random();
+        this.phase = phase;
     }
 
     public float generateSample(Waveform waveform) {

@@ -5,6 +5,7 @@ import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
+import by.fpmi.bsu.synthesizer.model.Synth;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -27,7 +28,7 @@ public class AudioDispatcherFactory {
             false
     );
 
-    public static AudioDispatcher createAudioDispatcher(List<Voice> activeVoices) {
+    public static AudioDispatcher createAudioDispatcher(List<Synth> activeSynths) {
         AudioDispatcher dispatcher = new AudioDispatcher(
                 new SilentAudioInputStream(format, bufferSize * 1000),
                 bufferSize,
@@ -42,13 +43,12 @@ public class AudioDispatcherFactory {
                 Arrays.fill(buffer, 0f);
 
 
-                synchronized (activeVoices) {
-                    Iterator<Voice> iterator = activeVoices.iterator();
+                synchronized (activeSynths) {
+                    Iterator<Synth> iterator = activeSynths.iterator();
                     while (iterator.hasNext()) {
-                        Voice voice = iterator.next();
-                        //todo: instead of 0.8 use "level" knob from ui
-                        voice.fillBuffer(buffer, 0.8f);
-                        if (voice.isFinished()) {
+                        Synth synth = iterator.next();
+                        synth.fillBuffer(buffer);
+                        if (synth.isFinished()) {
                             iterator.remove();
                         }
                     }

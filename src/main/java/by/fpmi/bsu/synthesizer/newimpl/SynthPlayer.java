@@ -1,6 +1,8 @@
 package by.fpmi.bsu.synthesizer.newimpl;
 
 import be.tarsos.dsp.AudioDispatcher;
+import by.fpmi.bsu.synthesizer.model.Synth;
+import by.fpmi.bsu.synthesizer.settings.SynthSettings;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -12,18 +14,20 @@ import java.util.List;
 import static by.fpmi.bsu.synthesizer.newimpl.AudioDispatcherFactory.createAudioDispatcher;
 
 @Getter
-@Setter
-@NoArgsConstructor
 @Slf4j
 public class SynthPlayer {
 
-    private final List<Voice> activeVoices = new ArrayList<>();
+    private final List<Synth> activeSynths = new ArrayList<>();
     private AudioDispatcher dispatcher;
     private Thread dispatcherThread;
-    private Waveform waveform = Waveform.TRIANGLE;
+    private final SynthSettings synthSettings;
+
+    public SynthPlayer(SynthSettings synthSettings) {
+        this.synthSettings = synthSettings;
+    }
 
     public void start() {
-        dispatcher = createAudioDispatcher(activeVoices);
+        dispatcher = createAudioDispatcher(activeSynths);
         dispatcherThread = new Thread(dispatcher);
         dispatcherThread.start();
         log.info("Started synth player thread: {}", dispatcherThread.getName());
@@ -48,25 +52,22 @@ public class SynthPlayer {
         }
     }
 
-    public Voice addVoice(double frequency, float velocity) {
-        Voice voice = new Voice(frequency, velocity, waveform);
-        synchronized (activeVoices) {
-            activeVoices.add(voice);
+    public Synth addVoice(double frequency, float velocity) {
+        long currentTime = System.currentTimeMillis();
+        Synth synth = new Synth(synthSettings, frequency, velocity);
+        synchronized (activeSynths) {
+            activeSynths.add(synth);
         }
-        return voice;
-    }
-
-    public void updateWaveForm(Waveform waveform) {
-        this.waveform = waveform;
-        activeVoices.forEach(voice -> voice.setWaveform(waveform));
+        System.out.println(currentTime - System.currentTimeMillis() + " ------ VOT STOLKA ZHDAL SHTOB DOBAVIT VOICE");
+        return synth;
     }
 
     private void stopVoices() {
-        synchronized (activeVoices) {
-            activeVoices.forEach(Voice::noteOff);
+        synchronized (activeSynths) {
+            activeSynths.forEach(Synth::noteOff);
         }
 
-        while (activeVoices.stream().anyMatch(voice -> !voice.isFinished())) {
+        while (activeSynths.stream().anyMatch(synth -> !synth.isFinished())) {
             try {
                 log.info("Can't stop synth thread, because it still has unfinished notes.");
                 Thread.sleep(50);

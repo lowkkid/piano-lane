@@ -1,58 +1,44 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.canvas.Canvas?>
-<?import javafx.scene.control.Button?>
-<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.RadioButton?>
-<?import javafx.scene.control.Slider?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
-<?import javafx.scene.layout.VBox?>
-<?import javafx.scene.layout.StackPane?>
 
-<BorderPane xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="by.fpmi.bsu.synthesizer.controllers.SynthesizerController"
-            stylesheets="@../../css/synthesizer.css"
-            style="-fx-background-color: grey; -fx-pref-width: 1040; -fx-pref-height: 690; -fx-max-height: 690; -fx-max-width: 1040">
+<?import javafx.scene.control.Button?>
+<BorderPane maxHeight="690.0" maxWidth="1040.0"
+            stylesheets="@../../css/synthesizer/synthesizer.css"
+            xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="by.fpmi.bsu.synthesizer.controllers.SynthesizerController">
+
     <top>
-        <VBox spacing="10">
-            <!-- HBox для кнопки закрытия, выравнивание по правому краю -->
-            <HBox alignment="TOP_RIGHT">
-                <Button fx:id="closeButton" text="X" styleClass="close-button"/>
-            </HBox>
-            <!-- Остальные элементы управления -->
-            <HBox alignment="CENTER" spacing="10">
-                <RadioButton fx:id="sineRadioButton" text="Синусоида"/>
-                <RadioButton fx:id="squareRadioButton" text="Квадратная"/>
-                <RadioButton fx:id="sawtoothRadioButton" text="Пилообразная"/>
-                <RadioButton fx:id="triangleRadioButton" text="Треугольная"/>
-            </HBox>
-            <HBox alignment="CENTER" spacing="10">
-                <Slider fx:id="frequencySlider" max="1000" min="100" value="440"/>
-                <Slider fx:id="amplitudeSlider" max="100" value="50"/>
-            </HBox>
-            <HBox alignment="CENTER" spacing="10">
-                <CheckBox fx:id="lowPassCheckBox" text="Low-Pass Фильтр"/>
-                <Slider fx:id="lowPassSlider" max="5000" min="100" value="1000"/>
-                <Label text="Частота среза (Гц)"/>
-            </HBox>
-            <HBox alignment="CENTER" spacing="10">
-                <CheckBox fx:id="highPassCheckBox" text="High-Pass Фильтр"/>
-                <Slider fx:id="highPassSlider" max="10000" min="100" value="500"/>
-                <Label text="Частота среза (Гц)"/>
-            </HBox>
-        </VBox>
+        <HBox prefHeight="40" style="-fx-background-color: #363636; -fx-border-width: 1; -fx-border-color: #1B1A1A" alignment="TOP_RIGHT">
+            <Button fx:id="closeButton" text="X" styleClass="close-button"/>
+        </HBox>
+
     </top>
 
+
     <center>
-        <HBox alignment="CENTER" spacing="10">
-            <Canvas fx:id="waveformCanvas" height="300" width="400"/>
-            <fx:include source="visualizer.fxml"/>
-        </HBox>
+        <TabPane>
+            <Tab closable="false" text="OSC">
+                <HBox fx:id="mainContainer">
+<!--                    <fx:include fx:id="oscillatorA" source="oscillator.fxml" />-->
+<!--                    <Region HBox.hgrow="ALWAYS" />-->
+<!--                    <fx:include fx:id="oscillatorB" source="oscillator.fxml" />-->
+<!--                    <Region HBox.hgrow="ALWAYS" />-->
+<!--                    <VBox prefWidth="357" style="-fx-border-color: red"/>-->
+                </HBox>
+            </Tab>
+            <Tab closable="false" text="Effects">
+                <Label text="Content of Tab 2" />
+            </Tab>
+        </TabPane>
     </center>
 
+
     <bottom>
-        <fx:include source="piano.fxml"/>
+        <fx:include source="piano.fxml" />
     </bottom>
 </BorderPane>

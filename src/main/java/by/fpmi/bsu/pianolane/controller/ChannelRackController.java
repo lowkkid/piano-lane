@@ -96,7 +96,7 @@ public class ChannelRackController implements Initializable {
         instrumentContainer.getChildren().add(item);
         item.getInstrumentName().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.PRIMARY) {
-                mainController.openSynthesizer();
+                mainController.openSynthesizer(channelId);
             }
         });
     }

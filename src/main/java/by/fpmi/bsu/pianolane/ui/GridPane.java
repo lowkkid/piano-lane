@@ -6,7 +6,7 @@ import lombok.Setter;
 
 @Getter
 @Setter
-public class PianoRoll extends BorderPane {
+public class GridPane extends BorderPane {
 
     private int channelId;
 }

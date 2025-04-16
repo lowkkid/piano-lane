@@ -1,11 +1,11 @@
-package by.fpmi.bsu.synthesizer.newimpl;
+package by.fpmi.bsu.synthesizer.model;
 
 import lombok.extern.slf4j.Slf4j;
 
 import static by.fpmi.bsu.synthesizer.newimpl.Constants.SAMPLE_RATE;
 
 @Slf4j
-public class ADSREnvelope {
+public class Envelope {
     private enum Stage { ATTACK, DECAY, SUSTAIN, RELEASE, FINISHED }
 
     private final double attackTime;
@@ -20,7 +20,7 @@ public class ADSREnvelope {
 
     private int attackSamples, decaySamples, releaseSamples;
 
-    public ADSREnvelope(double attack, double decay, double sustain, double release) {
+    public Envelope(double attack, double decay, double sustain, double release) {
         this.attackTime = attack;
         this.decayTime = decay;
         this.sustainLevel = sustain;
@@ -29,6 +29,7 @@ public class ADSREnvelope {
         attackSamples = (int) (attack * SAMPLE_RATE);
         decaySamples = (int) (decay * SAMPLE_RATE);
         releaseSamples = (int) (release * SAMPLE_RATE);
+        noteOn();
     }
 
     public void noteOn() {

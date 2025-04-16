@@ -3,7 +3,7 @@
 <?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<?import by.fpmi.bsu.pianolane.ui.PianoRoll?>
+<?import by.fpmi.bsu.pianolane.ui.GridPane?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0" xmlns:fx="http://javafx.com/fxml/1"
            fx:controller="by.fpmi.bsu.pianolane.controller.PianoRollController"
            stylesheets="@../css/panel.css">
@@ -25,8 +25,8 @@
 
                     <ScrollPane fx:id="horizontalScrollPane" layoutX="120"
                                 style="-fx-background-color: lightgray;">
-                        <Pane fx:id="gridPane" style="-fx-background-color: lightgray;">
-                        </Pane>
+                        <GridPane fx:id="gridPane" style="-fx-background-color: lightgray;">
+                        </GridPane>
                     </ScrollPane>
             </AnchorPane>
         </ScrollPane>

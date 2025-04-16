@@ -70,13 +70,6 @@ public class SynthTest {
 //        main.start();
 //        Thread.sleep(4000);
 //        activeVoices.get(0).noteOff();
-        SynthPlayer synthPlayer = new SynthPlayer();
-        synthPlayer.addVoice(300, 70);
-        //synthPlayer.addVoice(400, 70);
-        synthPlayer.start();
-        Thread.sleep(2000);
-        synthPlayer.stop();
-        Thread.sleep(3000);
 
     }
 

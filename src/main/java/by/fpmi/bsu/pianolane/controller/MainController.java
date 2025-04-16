@@ -68,9 +68,9 @@ public class MainController {
 
     }
 
-    protected void openSynthesizer() {
+    protected void openSynthesizer(int channelId) {
         SpringFxmlLoader springFxmlLoader = new SpringFxmlLoader();
-        synthesizerView = springFxmlLoader.load(SYNTHESIZER_FXML);
+        synthesizerView = springFxmlLoader.load(SYNTHESIZER_FXML, channelId);
         mainContent.getChildren().add(synthesizerView);
     }
 

@@ -2,6 +2,7 @@ package by.fpmi.bsu.pianolane.util;
 
 import by.fpmi.bsu.pianolane.CustomReceiver;
 import by.fpmi.bsu.pianolane.controller.PianoRollController;
+import javax.sound.midi.ShortMessage;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ConfigurableApplicationContext;
 
@@ -31,7 +32,7 @@ public class GlobalInstances {
             DEFAULT_RECEIVER = MidiSystem.getReceiver();
             SEQUENCER = MidiSystem.getSequencer(false);
             SEQUENCER.open();
-            SEQUENCER.getTransmitter().setReceiver(new CustomReceiver());
+            //SEQUENCER.getTransmitter().setReceiver(DEFAULT_RECEIVER);
 
             SEQUENCE = new Sequence(Sequence.PPQ, 480);
             SEQUENCER.setSequence(SEQUENCE);
