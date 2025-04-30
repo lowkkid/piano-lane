@@ -1,4 +1,6 @@
-package by.fpmi.bsu.pianolane;
+package by.fpmi.bsu.pianolane.ui.pianoroll;
+
+import static by.fpmi.bsu.pianolane.ui.Constants.NOTE_AND_VELOCITY_COLOR;
 
 import by.fpmi.bsu.pianolane.observer.NoteDeleteObserver;
 import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
@@ -7,6 +9,7 @@ import by.fpmi.bsu.pianolane.ui.NoteContainer;
 import by.fpmi.bsu.pianolane.ui.GridPane;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
+import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import lombok.Getter;
 
@@ -29,6 +32,8 @@ public class Note extends Rectangle {
     public Note(Integer noteId, Channel channel, double x, double y, double width, double height) {
         super(x, y, width, height);
         this.noteId = noteId;
+        setFill(NOTE_AND_VELOCITY_COLOR);
+        setStroke(Color.BLACK);
 
         setRightMouseClickListener();
         setResizeHandlers();
@@ -104,7 +109,7 @@ public class Note extends Rectangle {
 
     private void notifyResizeEventObservers() {
         for (NoteResizedObserver observer : noteResizedObservers) {
-            observer.onNoteResized(noteId, (int) this.getWidth());
+            observer.onNoteResized(noteId, (int) getWidth());
         }
     }
 }

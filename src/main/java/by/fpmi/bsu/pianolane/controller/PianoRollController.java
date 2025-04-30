@@ -1,17 +1,20 @@
 package by.fpmi.bsu.pianolane.controller;
 
-import by.fpmi.bsu.pianolane.Note;
+import by.fpmi.bsu.pianolane.ui.pianoroll.Note;
 import by.fpmi.bsu.pianolane.ui.NoteContainer;
 import by.fpmi.bsu.pianolane.model.Channel;
 import by.fpmi.bsu.pianolane.ui.GridPane;
+import by.fpmi.bsu.pianolane.ui.pianoroll.Velocity;
 import by.fpmi.bsu.pianolane.util.ChannelCollection;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.ScrollPane;
+import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -25,6 +28,7 @@ import org.springframework.stereotype.Component;
 
 import java.util.List;
 
+import static by.fpmi.bsu.pianolane.util.CopyUtil.copy;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
 
 @Component
@@ -32,14 +36,25 @@ import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
 @Scope("prototype")
 public class PianoRollController {
 
-    public ScrollPane horizontalScrollPane;
-    public ScrollPane verticalScrollPane;
+    @FXML
+    public ScrollPane notesHorizontalScrollPane;
+    @FXML
+    public ScrollPane notesVerticalScrollPane;
+    @FXML
+    public ScrollPane velocityWrapperScrollPane;
+    public AnchorPane velocityContainer;
+    @FXML
+    private ScrollPane velocityHorizontalScrollPane;
     @FXML
     private GridPane gridPane;
+    @FXML
+    private GridPane velocityPane;
     @FXML
     private Pane keyboardPane;
     @FXML
     private Button closeButton;
+    @FXML
+    private SplitPane splitPane;
 
 
     private final int NUM_KEYS = 60;        // 5 octaves (60 keys)
@@ -79,6 +94,7 @@ public class PianoRollController {
     }
 
     public void initialize() {
+        splitPane.setDividerPositions(0.8);
         gridPane.setChannelId(channelId);
         drawKeyboard();
         drawGrid();
@@ -97,20 +113,44 @@ public class PianoRollController {
         gridPane.getChildren().addAll(previouslyWrittenNotes);
         channel = channelCollection.getChannel(channelId);
 
-        horizontalScrollPane.setVvalue(0);
-        horizontalScrollPane.setVmax(0);
+        notesHorizontalScrollPane.setVvalue(0);
+        notesHorizontalScrollPane.setVmax(0);
+        velocityHorizontalScrollPane.setVvalue(0);
+        velocityHorizontalScrollPane.setVmax(0);
 
         // Делегируем вертикальную прокрутку на внешний ScrollPane
-        horizontalScrollPane.setOnScroll(event -> {
+        notesHorizontalScrollPane.setOnScroll(event -> {
             if (event.getDeltaY() != 0) {
                 // Передаем событие прокрутки внешнему ScrollPane
-                double newValue = verticalScrollPane.getVvalue() - event.getDeltaY() / verticalScrollPane.getHeight();
+                double newValue = notesVerticalScrollPane.getVvalue() - event.getDeltaY() / notesVerticalScrollPane.getHeight();
                 // Ограничиваем значение от 0 до 1
                 newValue = Math.min(Math.max(newValue, 0), 1);
-                verticalScrollPane.setVvalue(newValue);
+                notesVerticalScrollPane.setVvalue(newValue);
                 event.consume(); // Предотвращаем дальнейшую обработку события
             }
         });
+
+        // Bind horizontal scrolling between the two panes
+        notesHorizontalScrollPane.hvalueProperty().bindBidirectional(
+                velocityHorizontalScrollPane.hvalueProperty());
+
+        // Instead of the existing scroll handlers, use this simpler approach:
+        notesHorizontalScrollPane.setOnScroll(event -> {
+            if (event.getDeltaY() != 0) {
+                double newValue = notesVerticalScrollPane.getVvalue() - event.getDeltaY() / notesVerticalScrollPane.getHeight();
+                notesVerticalScrollPane.setVvalue(Math.min(Math.max(newValue, 0), 1));
+                event.consume();
+            }
+        });
+
+        addRightStripe();
+        System.out.println(velocityPane.getPrefHeight());
+        addVelocityIndicators(); // Replace setupAdjustableIndicator() with this
+    }
+
+    private void addVelocityIndicators() {
+        Velocity indicator = new Velocity(velocityPane, 220);
+        velocityPane.getChildren().add(indicator);
     }
 
     // Отрисовка клавиатуры снизу вверх: нота с i=0 отрисовывается внизу
@@ -140,7 +180,7 @@ public class PianoRollController {
         double width = cellWidth * numColumns;
         double height = cellHeight * NUM_KEYS;
         gridPane.setPrefSize(width, height);
-
+        velocityPane.setPrefWidth(width );
         // Допустим, у нас 4 четверти в такте (4/4).
         // Тогда каждые 4 вертикальные линии = 1 такт.
         // Условимся, что i — это индекс четверти (бита), а i % 4 == 0 — граница нового такта.
@@ -156,6 +196,7 @@ public class PianoRollController {
             Rectangle columnLine = new Rectangle(i * cellWidth, 0, lineThickness, height);
             columnLine.setFill(isMeasureLine ? Color.BLACK : Color.GRAY);
             gridPane.getChildren().add(columnLine);
+            velocityPane.getChildren().add(copy(columnLine));
 
         }
 
@@ -168,10 +209,28 @@ public class PianoRollController {
         }
     }
 
+    private void addRightStripe() {
+        // Create the vertical stripe
+        Rectangle stripe = new Rectangle();
+        stripe.setWidth(10);
+        stripe.setFill(Color.web("#2b2b2b")); // Dark gray
+
+        // Set the constraints in the AnchorPane
+        AnchorPane.setRightAnchor(stripe, 0.0);
+        AnchorPane.setTopAnchor(stripe, 20.0); // Starting below the separator band
+        AnchorPane.setBottomAnchor(stripe, 0.0);
+
+        // Adjust velocityHorizontalScrollPane to make room for stripe
+        AnchorPane.setRightAnchor(velocityHorizontalScrollPane, 13.0);
+
+        // Add stripe to the velocityContainer
+        velocityContainer.getChildren().add(stripe);
+    }
+
 
     // Обработка клика по сетке: рассчитываем позицию с учетом переворота оси Y
     private void handleGridClick(MouseEvent event) {
-        if (event.isConsumed() || event.getButton() != MouseButton.PRIMARY) {
+        if (event.isConsumed() || event.getButton() != MouseButton.PRIMARY || event.getEventType() != MouseEvent.MOUSE_CLICKED) {
             return;
         }
 
@@ -199,8 +258,6 @@ public class PianoRollController {
 
         // Отрисовка ноты в UI
         Note noteRect = new Note(id, channel, x, y, cellWidth, cellHeight);
-        noteRect.setFill(Color.BLUE);
-        noteRect.setStroke(Color.BLACK);
         gridPane.getChildren().add(noteRect);
         NoteContainer.addNote(channelId, noteRect);
         log.info("Added Note to NoteContainer with key {}", channelId);

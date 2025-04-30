@@ -1,6 +1,6 @@
 package by.fpmi.bsu.pianolane.ui;
 
-import by.fpmi.bsu.pianolane.Note;
+import by.fpmi.bsu.pianolane.ui.pianoroll.Note;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;

@@ -16,7 +16,7 @@ public class SilentAudioInputStream implements TarsosDSPAudioInputStream {
     }
 
     @Override
-    public int read(byte[] buffer, int offset, int length) throws IOException {
+    public int read(byte[] buffer, int offset, int length) {
         int copyLength = Math.min(length, silentBuffer.length);
         System.arraycopy(silentBuffer, 0, buffer, offset, copyLength);
         return copyLength;
