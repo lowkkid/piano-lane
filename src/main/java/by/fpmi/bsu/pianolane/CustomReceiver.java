@@ -19,7 +19,8 @@ import static by.fpmi.bsu.pianolane.util.LogUtil.getCommandName;
 @Slf4j
 public class CustomReceiver implements Receiver {
 
-    Map<Integer, Deque<Synth>> midiVoices = new HashMap<>();
+    private final ChannelCollection channelCollection = ChannelCollection.getInstance();
+    private final Map<Integer, Deque<Synth>> activeSynthsPerNote = new HashMap<>();
 
 
     @Override
@@ -37,21 +38,21 @@ public class CustomReceiver implements Receiver {
             log.debug("Received command {} channel {}, data1 {}, data2 {}", getCommandName(command), channel, note, velocity);
         }
 
-        if (ChannelCollection.isSynthesizer(channel)) {
-            var synthesizer = ((SynthesizerChannel) ChannelCollection.getChannel(channel)).getSynthPlayer();
+        if (channelCollection.isSynthesizer(channel)) {
+            var synthesizer = ((SynthesizerChannel) channelCollection.getChannel(channel)).getSynthPlayer();
             if (command == ShortMessage.NOTE_ON && velocity > 0) {
                 double freq = midiNoteToFreq(note);
-                Synth synth = synthesizer.addVoice(freq, velocity / 127f);
-                midiVoices.computeIfAbsent(note, k -> new ArrayDeque<>()).addLast(synth);
+                Synth synth = synthesizer.addSynth(freq, velocity / 127f);
+                activeSynthsPerNote.computeIfAbsent(note, k -> new ArrayDeque<>()).addLast(synth);
             } else if (command == ShortMessage.NOTE_OFF || (command == ShortMessage.NOTE_ON && velocity == 0)) {
-                Deque<Synth> synths = midiVoices.get(note);
+                Deque<Synth> synths = activeSynthsPerNote.get(note);
                 if (synths != null && !synths.isEmpty()) {
                     Synth synthToRelease = synths.pollFirst();
                     if (synthToRelease != null) {
                         synthToRelease.noteOff();
                     }
                     if (synths.isEmpty()) {
-                        midiVoices.remove(note);
+                        activeSynthsPerNote.remove(note);
                     }
                 }
             }

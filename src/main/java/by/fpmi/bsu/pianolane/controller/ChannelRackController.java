@@ -32,7 +32,7 @@ public class ChannelRackController implements Initializable {
     private Button addButton;
 
     private MainController mainController;
-    private ChannelCollection channelCollection;
+    private final ChannelCollection channelCollection = ChannelCollection.getInstance();
 
     private final ContextMenu channelRackItemContextMenu = new ContextMenu();
     private final MenuItem deleteItem = new MenuItem("Delete");
@@ -40,7 +40,7 @@ public class ChannelRackController implements Initializable {
     private final ContextMenu synthesizersContextMenu = new ContextMenu();
     private final MenuItem customSynthesizerItem = new MenuItem("Custom Synthesizer");
 
-    List<ChannelRackItem> rows = new ArrayList<>();
+    private final List<ChannelRackItem> rows = new ArrayList<>();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -55,11 +55,8 @@ public class ChannelRackController implements Initializable {
         channelRackItemContextMenu.getStyleClass().add("dark-context-menu");
     }
 
-    /**
-     * Добавляет строку инструмента в VBox instrumentContainer.
-     */
     protected void addInstrument(Instrument instrument) {
-        int channelId = channelCollection.addChannel(instrument);
+        int channelId = channelCollection.addDefaultChannel(instrument);
 
         ChannelRackItem item = new ChannelRackItem(channelId, instrument.getName());
         registerChannelRackItem(item);
@@ -111,10 +108,5 @@ public class ChannelRackController implements Initializable {
     @Autowired
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
-    }
-
-    @Autowired
-    public void setChannelCollection(ChannelCollection channelCollection) {
-        this.channelCollection = channelCollection;
     }
 }

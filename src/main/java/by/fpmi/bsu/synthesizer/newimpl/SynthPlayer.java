@@ -4,8 +4,6 @@ import be.tarsos.dsp.AudioDispatcher;
 import by.fpmi.bsu.synthesizer.model.Synth;
 import by.fpmi.bsu.synthesizer.settings.SynthSettings;
 import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -52,8 +50,7 @@ public class SynthPlayer {
         }
     }
 
-    public Synth addVoice(double frequency, float velocity) {
-        long currentTime = System.currentTimeMillis();
+    public Synth addSynth(double frequency, float velocity) {
         Synth synth = new Synth(synthSettings, frequency, velocity);
         synchronized (activeSynths) {
             activeSynths.add(synth);

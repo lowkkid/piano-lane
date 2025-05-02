@@ -1,7 +1,7 @@
 package by.fpmi.bsu.pianolane.model;
 
+import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 
 import javax.sound.midi.Instrument;
 import javax.sound.midi.Track;
@@ -11,83 +11,84 @@ import java.util.concurrent.Executors;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.deleteTrack;
 
-@Component
 @Slf4j
 public class ChannelCollection {
 
-    private static final Channel[] channels = new Channel[16];
-    private static int SYNTHESIZER_THREAD_POOL_SIZE = 0;
+    public static ChannelCollection getInstance() {
+        return ChannelCollectionHolder.INSTANCE;
+    }
+
+    private final Channel[] channels = new Channel[16];
+    private int synthesizersThreadPoolCount = 0;
     /**
      * This service only used when stopping synthesizer threads,
      * because it's need to be done asynchronously and independently of each other
      */
-    private static ExecutorService executorService;
+    private ExecutorService executorService;
 
     /**
      * @param instrument instrument for new channel
      * @return id of created Channel
      */
-    public static int addChannel(Instrument instrument) {
+    public int addDefaultChannel(Instrument instrument) {
         for (int i = 0; i < 16; i++) {
             if (channels[i] == null) {
                 channels[i] = new DefaultChannel(i, instrument);
-                log.info("Added channel: {}", channels[i]);
+                log.info("Added default channel: {}", channels[i]);
                 return i;
             }
         }
         throw new IllegalStateException("No free MIDI channels available");
     }
 
-    public static int addSynthesizerChannel() {
+    public int addSynthesizerChannel() {
         for (int i = 0; i < 16; i++) {
             if (channels[i] == null) {
                 channels[i] = new SynthesizerChannel(i);
                 log.info("Added synthesizer channel: {}", channels[i]);
-                executorService = Executors.newFixedThreadPool(++SYNTHESIZER_THREAD_POOL_SIZE);
+                executorService = Executors.newFixedThreadPool(++synthesizersThreadPoolCount);
                 return i;
             }
         }
         throw new IllegalStateException("No free MIDI channels available");
     }
 
-    public static void removeChannel(int channelId) {
+    public void removeChannel(int channelId) {
         Track trackToDelete = channels[channelId].getTrack();
         deleteTrack(trackToDelete);
         channels[channelId] = null;
     }
 
-    public static Channel getChannel(int channelId) {
+    public Channel getChannel(int channelId) {
         return channels[channelId];
     }
 
-    public static boolean isSynthesizer(int channelId) {
+    public boolean isSynthesizer(int channelId) {
         return channels[channelId] != null && channels[channelId] instanceof SynthesizerChannel;
     }
 
-    public static void startSynthesizerChannels() {
+    public void startSynthesizerChannels() {
         log.info("Starting synthesizers threads");
-        for (int i = 0; i < 16; i++) {
-            if (channels[i] != null) {
-                if (channels[i] instanceof SynthesizerChannel) {
-                    ((SynthesizerChannel) channels[i]).getSynthPlayer().start();
-                }
-            }
-        }
+        Arrays.stream(channels)
+                .filter(channel -> channel instanceof SynthesizerChannel)
+                .map(channel -> (SynthesizerChannel) channel)
+                .forEach(synthChannel -> synthChannel.getSynthPlayer().start());
     }
 
-    public static void stopSynthesizerChannels() {
-        log.info("Stopping synthesizers threads");
-        for (int i = 0; i < 16; i++) {
-            final int channelIndex = i;
-            if (channels[i] != null) {
-                if (channels[i] instanceof SynthesizerChannel) {
-                    executorService.submit(() -> {
-                        SynthesizerChannel channel = (SynthesizerChannel) channels[channelIndex];
-                        log.info("Stopping synthesizer from channel {} in thread {}", channelIndex, Thread.currentThread().getName());
-                        channel.getSynthPlayer().stop();
-                    });
-                }
-            }
-        }
+    public void stopSynthesizerChannels() {
+        Arrays.stream(channels)
+                .filter(channel -> channel instanceof SynthesizerChannel)
+                .map(channel -> (SynthesizerChannel) channel)
+                .forEach(synthChannel -> executorService.submit(() -> {
+                    log.info("Stopping synthesizer from channel {} in thread {}", synthChannel.getChannelId(), Thread.currentThread().getName());
+                    synthChannel.getSynthPlayer().stop();
+                }));
+    }
+
+    private ChannelCollection() {
+    }
+
+    private static class ChannelCollectionHolder {
+        private static final ChannelCollection INSTANCE = new ChannelCollection();
     }
 }

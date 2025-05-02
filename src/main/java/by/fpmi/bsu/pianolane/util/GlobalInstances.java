@@ -25,6 +25,8 @@ public class GlobalInstances {
     public static PianoRollController CURRENT_PIANO_ROLL_CONTROLLER;
     public static Receiver DEFAULT_RECEIVER;
 
+    private static final ChannelCollection channelCollection = ChannelCollection.getInstance();
+
     static {
         try {
             SYNTHESIZER = MidiSystem.getSynthesizer();
@@ -38,7 +40,7 @@ public class GlobalInstances {
             SEQUENCER.setSequence(SEQUENCE);
             SEQUENCER.addMetaEventListener(meta -> {
                 if (meta.getType() == 0x2F) {
-                    ChannelCollection.stopSynthesizerChannels();
+                    channelCollection.stopSynthesizerChannels();
                 }
             });
         } catch (MidiUnavailableException | InvalidMidiDataException e) {
