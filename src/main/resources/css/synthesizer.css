@@ -1,0 +1,69 @@
+.white-key {
+    -fx-background-color: white;
+    -fx-border-color: black;
+    -fx-pref-width: 50px;
+    -fx-pref-height: 200px;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-cursor: hand;
+    -fx-border-width: 0.5;
+    -fx-alignment: bottom-center;
+}
+
+.right-cutout {
+    -fx-shape: "M0,0 L35,0 L35,130 L50,130 L50,200 L0,200 Z";
+}
+
+.left-cutout {
+    -fx-shape: "M15,0 L50,0 L50,200 L0,200 L0,130 L15,130 Z";
+}
+
+.left-right-cutout {
+    -fx-shape: "M15,0 L35,0 L35,130 L50,130 L50,200 L0,200 L0,130 L15,130 Z";
+}
+
+.white-key:hover {
+    -fx-background-color: #d1d1d1;
+}
+
+.white-key:pressed {
+    -fx-background-color: #d9d9d9;
+    -fx-translate-y: 3px;
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.5), 10, 0.5, 0, 2);
+}
+
+
+.black-key {
+    -fx-background-color: black;
+    -fx-border-color: black;
+    -fx-pref-width: 30px;
+    -fx-pref-height: 130px;
+    -fx-background-radius: 0;
+    -fx-border-radius: 0;
+    -fx-cursor: hand;
+    -fx-text-fill: transparent;
+}
+
+.black-key:hover {
+    -fx-background-color: #2f2f2f;
+}
+
+.black-key:pressed {
+    -fx-background-color: #333333;
+    -fx-translate-y: -33px;
+    -fx-effect: innershadow(gaussian, rgba(0, 0, 0, 0.7), 8, 0.5, 0, 2);
+}
+
+
+.close-button {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+    -fx-font-size: 14px; /* можно настроить размер шрифта */
+    -fx-cursor: hand;
+}
+
+.close-button:hover {
+    -fx-border-color: white;
+    -fx-border-width: 1;
+}
+

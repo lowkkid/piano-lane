@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.canvas.Canvas?>
+<VBox fx:id="oscillatorRoot" xmlns="http://javafx.com/javafx"
+      xmlns:fx="http://javafx.com/fxml"
+      fx:controller="by.fpmi.bsu.synthesizer.controllers.OscillatorController"
+      prefWidth="270"
+      stylesheets="@../../css/synthesizer/oscillator.css">
+    <HBox prefHeight="25" alignment="CENTER_LEFT" style="-fx-background-color: #1a2634;">
+        <CheckBox fx:id="switchCheckbox" styleClass="switch-checkbox" minHeight="25" maxHeight="25"/>
+        <Label fx:id="oscillatorNameLabel" alignment="CENTER" minHeight="25" maxHeight="25"
+               style="-fx-text-fill: white; -fx-padding: 0 7 0 7; -fx-border-color: #3a4a5a;"/>
+        <ChoiceBox fx:id="waveformChoiceBox" prefWidth="130" minHeight="25" maxHeight="25"
+                   style="-fx-background-color: #1a2634; -fx-text-fill: white; -fx-border-color: #3a4a5a;"/>
+        <Button fx:id="prevButton" text="&lt;" minHeight="25" maxHeight="25" styleClass="wave-switch-button"/>
+        <Button fx:id="nextButton" text="&gt;" minHeight="25" maxHeight="25" styleClass="wave-switch-button"/>
+    </HBox>
+    <Canvas fx:id="waveformCanvas" height="120" width="270"/>
+    <Region VBox.vgrow="ALWAYS"/>
+    <HBox fx:id="mainControlBox" minHeight="60"/>
+    <Canvas fx:id="envelopeCanvas" height="140" width="270"/>
+    <HBox fx:id="envelopeControlBox" maxHeight="40"/>
+</VBox>

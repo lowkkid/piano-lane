@@ -1,34 +1,81 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.*?>
 <?import javafx.scene.control.*?>
 
-<?import by.fpmi.bsu.pianolane.ui.PianoRoll?>
+<?import by.fpmi.bsu.pianolane.ui.GridPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.layout.Pane?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0" xmlns:fx="http://javafx.com/fxml/1"
-           fx:controller="by.fpmi.bsu.pianolane.controller.PianoRollController"
-           stylesheets="@../css/panel.css">
+            fx:controller="by.fpmi.bsu.pianolane.controller.PianoRollController"
+            stylesheets="@../css/panel.css">
     <top>
-<!--        <HBox alignment="CENTER" styleClass="top-box" prefHeight="50">-->
-<!--            <Spinner fx:id="bpmSpinner" prefWidth="80"/>-->
-<!--            <Button fx:id="playButton" text="▶" styleClass="play-button"/>-->
-<!--            <Button fx:id="stopButton" text="■" styleClass="stop-button"/>-->
-<!--        </HBox>-->
-        <HBox alignment="TOP_RIGHT" styleClass="top-panel">
-            <Button fx:id="closeButton" text="X" styleClass="close-button"/>
-        </HBox>
+        <AnchorPane fx:id="pianoRollTopPanel" style="-fx-background-color: #4a4a4a;" prefHeight="50">
+            <Button fx:id="closeButton" text="X" styleClass="close-button"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+
+<!--            &lt;!&ndash; HBox слева на всю высоту &ndash;&gt;-->
+<!--            <HBox fx:id="leftToolbox" prefWidth="110"-->
+<!--                  AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0"-->
+<!--                  AnchorPane.bottomAnchor="0.0"-->
+<!--                  style="-fx-background-color: #333333;">-->
+<!--                <Button text="Tool" styleClass="tool-button"/>-->
+<!--            </HBox>-->
+
+            <ScrollPane fx:id="headerScrollPane"
+                        hbarPolicy="NEVER" vbarPolicy="NEVER"
+                        AnchorPane.leftAnchor="110.0" AnchorPane.rightAnchor="0.0"
+                        AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="35.0"
+                        style="-fx-background-color: transparent; -fx-padding: 0;"
+                        fitToHeight="true" fitToWidth="true">
+                    <AnchorPane fx:id="headerContent" style="-fx-background-color: #2b2b2b;"
+                          prefWidth="1000" minHeight="15"/>
+            </ScrollPane>
+        </AnchorPane>
     </top>
     <center>
-        <ScrollPane fx:id="verticalScrollPane" fitToWidth="true" style="-fx-background-color: black;">
-            <AnchorPane fx:id="pianoRollContainer" style="-fx-background-color: black;">
-                    <Pane fx:id="keyboardPane" prefWidth="120" stylesheets="@/css/piano-keys.css" layoutX="0">
-                    </Pane>
+        <SplitPane fx:id="splitPane" orientation="VERTICAL"
+                   style="-fx-background-color: lightgray; -fx-divider-position: 0.5;">
 
-                    <ScrollPane fx:id="horizontalScrollPane" layoutX="120"
-                                style="-fx-background-color: lightgray;">
-                        <Pane fx:id="gridPane" style="-fx-background-color: lightgray;">
-                        </Pane>
+            <ScrollPane fx:id="notesVerticalScrollPane" fitToWidth="true" hbarPolicy="NEVER"
+                        style="-fx-background-color: black;">
+                <AnchorPane fx:id="pianoRollContainer" style="-fx-background-color: black;">
+
+                    <Pane fx:id="keyboardPane" prefWidth="120" stylesheets="@/css/piano-keys.css"
+                          AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"/>
+                    <ScrollPane fx:id="notesHorizontalScrollPane"
+                                AnchorPane.leftAnchor="120"
+                                AnchorPane.topAnchor="0"
+                                AnchorPane.rightAnchor="0"
+                                AnchorPane.bottomAnchor="0"
+                                style="-fx-background-color: lightgray;"
+                                vbarPolicy="NEVER"
+                                fitToHeight="true">
+                        <GridPane fx:id="gridPane" style="-fx-background-color: lightgray;"/>
                     </ScrollPane>
+                </AnchorPane>
+            </ScrollPane>
+            <AnchorPane fx:id="velocityContainer" style="-fx-background-color: #2b2b2b;">
+                <Pane prefHeight="20" style="-fx-background-color: #2b2b2b;"
+                      AnchorPane.topAnchor="0"
+                      AnchorPane.leftAnchor="0"
+                      AnchorPane.rightAnchor="0"/>
+
+                <Pane fx:id="velocityLeftPane" prefWidth="120" style="-fx-background-color: #2b2b2b;"
+                      AnchorPane.leftAnchor="0" AnchorPane.topAnchor="20" AnchorPane.bottomAnchor="0"/>
+
+                <ScrollPane fx:id="velocityHorizontalScrollPane"
+                            style="-fx-background-color: lightgray;"
+                            AnchorPane.leftAnchor="120"
+                            AnchorPane.topAnchor="20"
+                            AnchorPane.rightAnchor="0"
+                            AnchorPane.bottomAnchor="0"
+                            vbarPolicy="NEVER"
+                            hbarPolicy="NEVER"
+                            fitToHeight="true">
+                    <GridPane fx:id="velocityPane" style="-fx-background-color: lightgray"/>
+                </ScrollPane>
             </AnchorPane>
-        </ScrollPane>
+        </SplitPane>
     </center>
 </BorderPane>

@@ -1,44 +1,41 @@
-package by.fpmi.bsu.pianolane.util;
+package by.fpmi.bsu.pianolane.model;
 
 import by.fpmi.bsu.pianolane.NoteEvent;
-import by.fpmi.bsu.pianolane.observer.NoteDeleteObserver;
+import by.fpmi.bsu.pianolane.observer.MidiNoteDeleteObserver;
 import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
+import by.fpmi.bsu.pianolane.observer.VelocityChangedObserver;
 import lombok.Data;
 
-import javax.sound.midi.Instrument;
 import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MidiEvent;
-import javax.sound.midi.Patch;
-import javax.sound.midi.ShortMessage;
 import javax.sound.midi.Track;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
+import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.SYNTHESIZER;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.createTrack;
 
 @Data
-public class Channel implements NoteDeleteObserver, NoteResizedObserver {
+@ToString
+@Slf4j
+public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObserver, VelocityChangedObserver {
 
     private static final AtomicInteger NOTES_SEQUENCE = new AtomicInteger(0);
     private static final Map<Integer, NoteEvent> NOTE_EVENTS = new ConcurrentHashMap<>();
 
-    private int channelId;
-    private Track track;
-    private Instrument instrument;
-    private boolean muted;
-    private boolean soloed;
+    protected int channelId;
+    protected Track track;
+    protected boolean muted;
+    protected boolean soloed;
 
-    public Channel(int channelId, Instrument instrument) {
+
+    public Channel(int channelId) {
         this.channelId = channelId;
-        this.instrument = instrument;
         track = createTrack();
         muted = false;
         soloed = false;
-
-        linkInstrumentToChannel();
     }
 
     public Integer addNote(int midiNote, int startTick, int noteDuration) {
@@ -62,10 +59,6 @@ public class Channel implements NoteDeleteObserver, NoteResizedObserver {
         eventToDelete.destroy();
     }
 
-    public void resizeNote(Integer key, int newLength) {
-        NOTE_EVENTS.get(key).updateLength(newLength);
-    }
-
     @Override
     public void onNoteDeleted(Integer noteId) {
         System.out.println("Delete note " + noteId);
@@ -77,19 +70,12 @@ public class Channel implements NoteDeleteObserver, NoteResizedObserver {
         System.out.println("Midi player tries to resize note " + noteId + " with length " + newLength);
         //TODO: get rid of magic numbers
         int midiLength = newLength / 50 * 480;
-        resizeNote(noteId, midiLength);
+        NOTE_EVENTS.get(noteId).updateLength(midiLength);
     }
 
-    private void linkInstrumentToChannel() {
-        SYNTHESIZER.loadInstrument(this.instrument);
-        Patch patch = instrument.getPatch();
-
-        try {
-            ShortMessage programChange = new ShortMessage();
-            programChange.setMessage(ShortMessage.PROGRAM_CHANGE, channelId, patch.getProgram(), 0);
-            track.add(new MidiEvent(programChange, 0));
-        } catch (InvalidMidiDataException e) {
-            e.printStackTrace();
-        }
+    @Override
+    public void onVelocityChanged(Integer noteId, int newVelocity) {
+        log.debug("Changing velocity for note with id {} to {}", noteId, newVelocity);
+        NOTE_EVENTS.get(noteId).updateVelocity(newVelocity);
     }
 }

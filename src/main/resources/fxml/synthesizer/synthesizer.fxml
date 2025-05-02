@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+
+<?import javafx.scene.control.Button?>
+<BorderPane maxHeight="690.0" maxWidth="1040.0"
+            stylesheets="@../../css/synthesizer/synthesizer.css"
+            xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="by.fpmi.bsu.synthesizer.controllers.SynthesizerController">
+
+    <top>
+        <HBox prefHeight="40" style="-fx-background-color: #363636; -fx-border-width: 1; -fx-border-color: #1B1A1A" alignment="TOP_RIGHT">
+            <Button fx:id="closeButton" text="X" styleClass="close-button"/>
+        </HBox>
+
+    </top>
+
+
+    <center>
+        <TabPane>
+            <Tab closable="false" text="OSC">
+                <HBox fx:id="mainContainer">
+<!--                    <fx:include fx:id="oscillatorA" source="oscillator.fxml" />-->
+<!--                    <Region HBox.hgrow="ALWAYS" />-->
+<!--                    <fx:include fx:id="oscillatorB" source="oscillator.fxml" />-->
+<!--                    <Region HBox.hgrow="ALWAYS" />-->
+<!--                    <VBox prefWidth="357" style="-fx-border-color: red"/>-->
+                </HBox>
+            </Tab>
+            <Tab closable="false" text="Effects">
+                <Label text="Content of Tab 2" />
+            </Tab>
+        </TabPane>
+    </center>
+
+
+    <bottom>
+        <fx:include source="piano.fxml" />
+    </bottom>
+</BorderPane>

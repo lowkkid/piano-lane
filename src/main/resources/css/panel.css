@@ -1,3 +1,13 @@
+.split-pane > .split-pane-divider {
+    -fx-background-color: black;
+    -fx-padding: 0 2 0 2; /* делаем разделитель толще */
+}
+
+.split-pane {
+    -fx-background-color: lightgray;
+    -fx-padding: 0;
+}
+
 .top-box {
     -fx-background-color: rgb(150, 150, 150);
     -fx-alignment: center;
