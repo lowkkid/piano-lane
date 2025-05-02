@@ -39,7 +39,6 @@ public class ChannelRackController implements Initializable {
 
     private final ContextMenu synthesizersContextMenu = new ContextMenu();
     private final MenuItem customSynthesizerItem = new MenuItem("Custom Synthesizer");
-    private boolean wasLoadedBefore = false;
 
     List<ChannelRackItem> rows = new ArrayList<>();
 
@@ -48,10 +47,6 @@ public class ChannelRackController implements Initializable {
         closeButton.setOnAction(event -> mainController.closeChannelRack());
         instrumentContainer.getChildren().addAll(rows);
         initializeContextMenu();
-//        if (!wasLoadedBefore) {
-//            setAddButton();
-//            wasLoadedBefore = true;
-//        }
         setAddButton();
     }
 

@@ -3,8 +3,6 @@ package by.fpmi.bsu.pianolane.ui.pianoroll;
 import static by.fpmi.bsu.pianolane.ui.Constants.NOTE_AND_VELOCITY_COLOR;
 import static by.fpmi.bsu.pianolane.util.constants.DefaultValues.NORMALIZED_DEFAULT_VELOCITY_VALUE;
 
-import by.fpmi.bsu.pianolane.observer.MidiNoteDeleteObserver;
-import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
 import by.fpmi.bsu.pianolane.observer.VelocityChangedObserver;
 import java.util.ArrayList;
 import java.util.List;

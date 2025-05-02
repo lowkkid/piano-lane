@@ -233,7 +233,7 @@ public class PianoRollController {
         double height = cellHeight * NUM_KEYS;
         gridPane.setPrefSize(width, height);
         velocityPane.setPrefWidth(width);
-        headerContent.setPrefWidth(width + 4 * cellWidth + 10);
+        headerContent.setPrefWidth(width - 10);
         // Допустим, у нас 4 четверти в такте (4/4).
         // Тогда каждые 4 вертикальные линии = 1 такт.
         // Условимся, что i — это индекс четверти (бита), а i % 4 == 0 — граница нового такта.
@@ -252,6 +252,8 @@ public class PianoRollController {
             velocityPane.getChildren().add(copy(columnLine));
             if (isMeasureLine) drawBarNumber(i / 4, i * cellWidth);
         }
+
+        drawBarNumber(numColumns / 4, numColumns * cellWidth);
 
         // Горизонтальные линии (клавиши) — оставляем как было
         for (int r = 0; r <= NUM_KEYS; r++) {

@@ -4,7 +4,6 @@
 
 <?import by.fpmi.bsu.pianolane.ui.GridPane?>
 <?import javafx.scene.layout.BorderPane?>
-<?import javafx.scene.layout.HBox?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0" xmlns:fx="http://javafx.com/fxml/1"
@@ -29,10 +28,8 @@
                         AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="35.0"
                         style="-fx-background-color: transparent; -fx-padding: 0;"
                         fitToHeight="true" fitToWidth="true">
-                <content>
                     <AnchorPane fx:id="headerContent" style="-fx-background-color: #2b2b2b;"
                           prefWidth="1000" minHeight="15"/>
-                </content>
             </ScrollPane>
         </AnchorPane>
     </top>
