@@ -24,7 +24,6 @@ public class CustomReceiver implements Receiver {
 
     @Override
     public void send(MidiMessage msg, long timeStamp) {
-        long currentTime = System.currentTimeMillis();
         if (!(msg instanceof ShortMessage sm)) {
             log.info("Custom receiver received a message that is not a ShortMessage");
             return;

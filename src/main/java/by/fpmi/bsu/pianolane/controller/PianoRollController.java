@@ -1,24 +1,31 @@
 package by.fpmi.bsu.pianolane.controller;
 
+import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNote;
+import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNoteContainer;
 import by.fpmi.bsu.pianolane.ui.pianoroll.Note;
-import by.fpmi.bsu.pianolane.ui.NoteContainer;
 import by.fpmi.bsu.pianolane.model.Channel;
 import by.fpmi.bsu.pianolane.ui.GridPane;
-import by.fpmi.bsu.pianolane.ui.pianoroll.Velocity;
 import by.fpmi.bsu.pianolane.util.ChannelCollection;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
+import javafx.application.Platform;
+import javafx.beans.value.ChangeListener;
+import javafx.event.Event;
 import javafx.fxml.FXML;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
+import javafx.scene.control.Label;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
@@ -37,11 +44,15 @@ import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
 public class PianoRollController {
 
     @FXML
+    public AnchorPane headerContent;
+    @FXML
+    private ScrollPane headerScrollPane;
+    @FXML
+    private AnchorPane pianoRollTopPanel;
+    @FXML
     public ScrollPane notesHorizontalScrollPane;
     @FXML
     public ScrollPane notesVerticalScrollPane;
-    @FXML
-    public ScrollPane velocityWrapperScrollPane;
     public AnchorPane velocityContainer;
     @FXML
     private ScrollPane velocityHorizontalScrollPane;
@@ -57,14 +68,14 @@ public class PianoRollController {
     private SplitPane splitPane;
 
 
-    private final int NUM_KEYS = 60;        // 5 octaves (60 keys)
-    private final double KEY_HEIGHT = 30;   // Высота клавиш
+    private static final int NUM_KEYS = 60;        // 5 octaves (60 keys)
+    private static final double KEY_HEIGHT = 30;   // Высота клавиш
     private final String[] NOTES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
     // Параметры сетки
     private final double cellWidth = 50;   // Ширина клетки (по времени)
     private final double cellHeight = 30;  // Высота клетки (соответствует одной клавише)
-    private final int numColumns = 48;     // Количество колонок (тактов)
+    private final int numColumns = 96;     // Количество колонок (тактов)
 
 
     private Rectangle playheadLine;
@@ -93,7 +104,65 @@ public class PianoRollController {
         this.mainController = mainController;
     }
 
+    private void initializeTopPanel() {
+        pianoRollTopPanel.setPrefHeight(50); // Общая высота верхней панели
+
+        // Удаляем отступы у ScrollPane для полного заполнения
+        headerScrollPane.setPadding(new Insets(0));
+
+        // Заставляем содержимое занимать всю доступную высоту и ширину
+        headerScrollPane.setFitToHeight(true);
+        headerScrollPane.setFitToWidth(true);
+
+        headerContent.setMinHeight(15);   // Минимальная высота
+
+        // Скрываем полосы прокрутки
+        headerScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+        headerScrollPane.setVbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
+
+        // Удаляем фон и рамку ScrollPane (если есть)
+        headerScrollPane.setStyle("-fx-background-color: transparent; -fx-background: transparent; -fx-border-width: 0;");
+    }
+
+    private ChangeListener<Number> notesScrollListener;
+
+    private void initializeScrollSynchronization() {
+        // Создаем слушатель только для notesHorizontalScrollPane
+        notesScrollListener = (obs, oldVal, newVal) -> {
+            // Вычисляем скорректированное значение с учетом смещения в 10 пикселей
+            double notesTotalWidth = notesHorizontalScrollPane.getContent().getBoundsInLocal().getWidth() -
+                    notesHorizontalScrollPane.getViewportBounds().getWidth();
+            double pixelsMoved = notesTotalWidth * newVal.doubleValue();
+
+            double headerTotalWidth = headerScrollPane.getContent().getBoundsInLocal().getWidth() -
+                    headerScrollPane.getViewportBounds().getWidth();
+
+            // Вычитаем 10 пикселей из позиции прокрутки
+            double adjustedPixelsMoved = pixelsMoved;
+            double adjustedHValue = adjustedPixelsMoved / headerTotalWidth;
+
+            // Ограничиваем значение в диапазоне [0, 1]
+            adjustedHValue = Math.min(1.0, Math.max(0.0, adjustedHValue));
+
+            // Устанавливаем скорректированное значение
+            headerScrollPane.setHvalue(adjustedHValue);
+
+        };
+
+        // Добавляем слушатель только к notesHorizontalScrollPane
+        notesHorizontalScrollPane.hvalueProperty().addListener(notesScrollListener);
+
+        // Обработка случая, когда содержимое ScrollPane изменяется
+        notesHorizontalScrollPane.viewportBoundsProperty().addListener((obs, oldVal, newVal) -> {
+            // Пересчитываем синхронизацию при изменении размера viewport
+            double currentHValue = notesHorizontalScrollPane.getHvalue();
+            notesScrollListener.changed(notesHorizontalScrollPane.hvalueProperty(), currentHValue, currentHValue);
+        });
+        headerScrollPane.addEventFilter(ScrollEvent.ANY, Event::consume);
+    }
+
     public void initialize() {
+        initializeTopPanel();
         splitPane.setDividerPositions(0.8);
         gridPane.setChannelId(channelId);
         drawKeyboard();
@@ -108,27 +177,16 @@ public class PianoRollController {
         gridPane.addEventHandler(MouseEvent.MOUSE_CLICKED, this::handleGridClick);
 
         log.info("Fetching previously written notes for channel {}", channelId);
-        List<Note> previouslyWrittenNotes = NoteContainer.getNotesForChannel(channelId);
+        List<MidiNote> previouslyWrittenNotes = MidiNoteContainer.getAllNotesForChannel(channelId);
         log.info("Fetched notes: {}", previouslyWrittenNotes);
-        gridPane.getChildren().addAll(previouslyWrittenNotes);
+        gridPane.getChildren().addAll(previouslyWrittenNotes.stream().map(MidiNote::getNote).toList());
+        velocityPane.getChildren().addAll(previouslyWrittenNotes.stream().map(MidiNote::getVelocity).toList());
         channel = channelCollection.getChannel(channelId);
 
         notesHorizontalScrollPane.setVvalue(0);
         notesHorizontalScrollPane.setVmax(0);
         velocityHorizontalScrollPane.setVvalue(0);
         velocityHorizontalScrollPane.setVmax(0);
-
-        // Делегируем вертикальную прокрутку на внешний ScrollPane
-        notesHorizontalScrollPane.setOnScroll(event -> {
-            if (event.getDeltaY() != 0) {
-                // Передаем событие прокрутки внешнему ScrollPane
-                double newValue = notesVerticalScrollPane.getVvalue() - event.getDeltaY() / notesVerticalScrollPane.getHeight();
-                // Ограничиваем значение от 0 до 1
-                newValue = Math.min(Math.max(newValue, 0), 1);
-                notesVerticalScrollPane.setVvalue(newValue);
-                event.consume(); // Предотвращаем дальнейшую обработку события
-            }
-        });
 
         // Bind horizontal scrolling between the two panes
         notesHorizontalScrollPane.hvalueProperty().bindBidirectional(
@@ -144,13 +202,7 @@ public class PianoRollController {
         });
 
         addRightStripe();
-        System.out.println(velocityPane.getPrefHeight());
-        addVelocityIndicators(); // Replace setupAdjustableIndicator() with this
-    }
-
-    private void addVelocityIndicators() {
-        Velocity indicator = new Velocity(velocityPane, 220);
-        velocityPane.getChildren().add(indicator);
+        Platform.runLater(this::initializeScrollSynchronization);
     }
 
     // Отрисовка клавиатуры снизу вверх: нота с i=0 отрисовывается внизу
@@ -180,7 +232,8 @@ public class PianoRollController {
         double width = cellWidth * numColumns;
         double height = cellHeight * NUM_KEYS;
         gridPane.setPrefSize(width, height);
-        velocityPane.setPrefWidth(width );
+        velocityPane.setPrefWidth(width);
+        headerContent.setPrefWidth(width + 4 * cellWidth + 10);
         // Допустим, у нас 4 четверти в такте (4/4).
         // Тогда каждые 4 вертикальные линии = 1 такт.
         // Условимся, что i — это индекс четверти (бита), а i % 4 == 0 — граница нового такта.
@@ -197,7 +250,7 @@ public class PianoRollController {
             columnLine.setFill(isMeasureLine ? Color.BLACK : Color.GRAY);
             gridPane.getChildren().add(columnLine);
             velocityPane.getChildren().add(copy(columnLine));
-
+            if (isMeasureLine) drawBarNumber(i / 4, i * cellWidth);
         }
 
         // Горизонтальные линии (клавиши) — оставляем как было
@@ -207,6 +260,20 @@ public class PianoRollController {
             rowLine.setFill(Color.GRAY);
             gridPane.getChildren().add(rowLine);
         }
+    }
+
+    private double barNumbersOffsetX = 7.0;
+
+    private void drawBarNumber(Integer number, double x) {
+        Label label = new Label(number.toString());
+
+        label.setTextFill(Color.WHITE);
+        label.setFont(Font.font("System", FontWeight.NORMAL, 12));
+
+        AnchorPane.setLeftAnchor(label, x + barNumbersOffsetX);
+        AnchorPane.setBottomAnchor(label, 2.0);
+
+        headerContent.getChildren().add(label);
     }
 
     private void addRightStripe() {
@@ -257,10 +324,19 @@ public class PianoRollController {
         Integer id = channel.addNote(midiNote, startTick, noteDuration);
 
         // Отрисовка ноты в UI
-        Note noteRect = new Note(id, channel, x, y, cellWidth, cellHeight);
-        gridPane.getChildren().add(noteRect);
-        NoteContainer.addNote(channelId, noteRect);
-        log.info("Added Note to NoteContainer with key {}", channelId);
+//        Note noteRect = new Note(id, channel, x, y, cellWidth, cellHeight);
+        MidiNote note = MidiNote.builder()
+                .id(id)
+                .channel(channel)
+                .noteParent(gridPane)
+                .velocityParent(velocityPane)
+                .commonCoordinateX(x)
+                .noteCoordinateY(y)
+                .noteWidth(cellWidth)
+                .noteHeight(cellHeight)
+                .build();
+        MidiNoteContainer.addNote(channelId, note);
+        log.info("Added Note to MidiNoteContainer with key {}", channelId);
     }
 
     private void initPlayhead() {

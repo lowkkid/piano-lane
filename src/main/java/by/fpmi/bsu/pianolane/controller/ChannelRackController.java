@@ -1,7 +1,7 @@
 package by.fpmi.bsu.pianolane.controller;
 
 import by.fpmi.bsu.pianolane.ui.ChannelRackItem;
-import by.fpmi.bsu.pianolane.ui.NoteContainer;
+import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNoteContainer;
 import by.fpmi.bsu.pianolane.util.ChannelCollection;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -39,6 +39,7 @@ public class ChannelRackController implements Initializable {
 
     private final ContextMenu synthesizersContextMenu = new ContextMenu();
     private final MenuItem customSynthesizerItem = new MenuItem("Custom Synthesizer");
+    private boolean wasLoadedBefore = false;
 
     List<ChannelRackItem> rows = new ArrayList<>();
 
@@ -47,6 +48,10 @@ public class ChannelRackController implements Initializable {
         closeButton.setOnAction(event -> mainController.closeChannelRack());
         instrumentContainer.getChildren().addAll(rows);
         initializeContextMenu();
+//        if (!wasLoadedBefore) {
+//            setAddButton();
+//            wasLoadedBefore = true;
+//        }
         setAddButton();
     }
 
@@ -82,7 +87,7 @@ public class ChannelRackController implements Initializable {
             if (event.getButton() == MouseButton.SECONDARY) {
                 deleteItem.setOnAction(e -> deleteInstrument(channelRackItem));
                 channelRackItemContextMenu.show(channelRackItem.getInstrumentName(), event.getScreenX(), event.getScreenY());
-                NoteContainer.removeNotesInChanel(channelRackItem.getChannelId());
+                MidiNoteContainer.removeAllNotesForChanel(channelRackItem.getChannelId());
             }
         });
     }

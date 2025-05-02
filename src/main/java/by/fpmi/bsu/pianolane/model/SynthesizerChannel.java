@@ -17,8 +17,6 @@ public class SynthesizerChannel extends Channel {
     public SynthesizerChannel(int channelId) {
         super(channelId);
         var settings = createSynthSettings(channelId);
-        System.out.println("SETTINGS +========================================= " + settings);
         synthPlayer = new SynthPlayer(settings);
-        System.out.println("CREATED SYNTH PLAYER = " + synthPlayer.toString());
     }
 }

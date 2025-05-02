@@ -52,6 +52,7 @@ public class MainController {
     protected void openChannelRack() {
         SpringFxmlLoader springFxmlLoader = new SpringFxmlLoader();
         channelRackView = springFxmlLoader.load(CHANNEL_RACK_FXML);
+        makeDraggable(channelRackView);
         mainContent.getChildren().add(channelRackView);
     }
 
@@ -64,6 +65,7 @@ public class MainController {
         log.info("Opening piano roll for channel {}", channelId);
         SpringFxmlLoader springFxmlLoader = new SpringFxmlLoader();
         pianoRollView = springFxmlLoader.load(PIANO_ROLL_FXML, channelId);
+        makeDraggable(pianoRollView);
         mainContent.getChildren().add(pianoRollView);
 
     }
@@ -71,11 +73,43 @@ public class MainController {
     protected void openSynthesizer(int channelId) {
         SpringFxmlLoader springFxmlLoader = new SpringFxmlLoader();
         synthesizerView = springFxmlLoader.load(SYNTHESIZER_FXML, channelId);
+        makeDraggable(synthesizerView);
         mainContent.getChildren().add(synthesizerView);
     }
 
     public void closeSynthesizer() {
         mainContent.getChildren().remove(synthesizerView);
         synthesizerView = null;
+    }
+
+    private void makeDraggable(Node node) {
+        // Переменные для хранения начальной позиции клика
+        final Delta dragDelta = new Delta();
+
+        // Обработчик нажатия мыши
+        node.setOnMousePressed(mouseEvent -> {
+            // Сохраняем начальную позицию клика относительно текущего положения узла
+            dragDelta.x = node.getTranslateX() - mouseEvent.getSceneX();
+            dragDelta.y = node.getTranslateY() - mouseEvent.getSceneY();
+
+            // Поднимаем элемент наверх при клике
+            node.toFront();
+        });
+
+        // Обработчик перетаскивания
+        node.setOnMouseDragged(mouseEvent -> {
+            // Вычисляем новую позицию
+            double newX = mouseEvent.getSceneX() + dragDelta.x;
+            double newY = mouseEvent.getSceneY() + dragDelta.y;
+
+            // Устанавливаем новую позицию без ограничений минимума в 0
+            node.setTranslateX(newX);
+            node.setTranslateY(newY);
+        });
+    }
+
+    // Вспомогательный класс для хранения смещения
+    private static class Delta {
+        double x, y;
     }
 }

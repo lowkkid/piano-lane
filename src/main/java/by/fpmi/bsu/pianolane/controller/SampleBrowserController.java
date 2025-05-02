@@ -29,7 +29,7 @@ public class SampleBrowserController {
     private ChannelRackController channelRackController;
 
     public void initialize() {
-        TreeItem<Instrument> rootItem = new TreeItem<>(null); // Корневой без данных
+        TreeItem<Instrument> rootItem = new TreeItem<>(null);
         rootItem.setExpanded(true);
 
         try {

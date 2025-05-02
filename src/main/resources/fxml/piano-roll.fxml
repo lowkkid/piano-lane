@@ -11,9 +11,30 @@
             fx:controller="by.fpmi.bsu.pianolane.controller.PianoRollController"
             stylesheets="@../css/panel.css">
     <top>
-        <HBox alignment="TOP_RIGHT" styleClass="top-panel">
-            <Button fx:id="closeButton" text="X" styleClass="close-button"/>
-        </HBox>
+        <AnchorPane fx:id="pianoRollTopPanel" style="-fx-background-color: #4a4a4a;" prefHeight="50">
+            <Button fx:id="closeButton" text="X" styleClass="close-button"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+
+<!--            &lt;!&ndash; HBox слева на всю высоту &ndash;&gt;-->
+<!--            <HBox fx:id="leftToolbox" prefWidth="110"-->
+<!--                  AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0"-->
+<!--                  AnchorPane.bottomAnchor="0.0"-->
+<!--                  style="-fx-background-color: #333333;">-->
+<!--                <Button text="Tool" styleClass="tool-button"/>-->
+<!--            </HBox>-->
+
+            <ScrollPane fx:id="headerScrollPane"
+                        hbarPolicy="NEVER" vbarPolicy="NEVER"
+                        AnchorPane.leftAnchor="110.0" AnchorPane.rightAnchor="0.0"
+                        AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="35.0"
+                        style="-fx-background-color: transparent; -fx-padding: 0;"
+                        fitToHeight="true" fitToWidth="true">
+                <content>
+                    <AnchorPane fx:id="headerContent" style="-fx-background-color: #2b2b2b;"
+                          prefWidth="1000" minHeight="15"/>
+                </content>
+            </ScrollPane>
+        </AnchorPane>
     </top>
     <center>
         <SplitPane fx:id="splitPane" orientation="VERTICAL"

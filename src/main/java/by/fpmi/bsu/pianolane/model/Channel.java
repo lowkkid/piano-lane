@@ -1,8 +1,9 @@
 package by.fpmi.bsu.pianolane.model;
 
 import by.fpmi.bsu.pianolane.NoteEvent;
-import by.fpmi.bsu.pianolane.observer.NoteDeleteObserver;
+import by.fpmi.bsu.pianolane.observer.MidiNoteDeleteObserver;
 import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
+import by.fpmi.bsu.pianolane.observer.VelocityChangedObserver;
 import lombok.Data;
 
 import javax.sound.midi.InvalidMidiDataException;
@@ -12,12 +13,14 @@ import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import lombok.ToString;
+import lombok.extern.slf4j.Slf4j;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.createTrack;
 
 @Data
 @ToString
-public abstract class Channel implements NoteDeleteObserver, NoteResizedObserver {
+@Slf4j
+public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObserver, VelocityChangedObserver {
 
     private static final AtomicInteger NOTES_SEQUENCE = new AtomicInteger(0);
     private static final Map<Integer, NoteEvent> NOTE_EVENTS = new ConcurrentHashMap<>();
@@ -56,10 +59,6 @@ public abstract class Channel implements NoteDeleteObserver, NoteResizedObserver
         eventToDelete.destroy();
     }
 
-    public void resizeNote(Integer key, int newLength) {
-        NOTE_EVENTS.get(key).updateLength(newLength);
-    }
-
     @Override
     public void onNoteDeleted(Integer noteId) {
         System.out.println("Delete note " + noteId);
@@ -71,6 +70,12 @@ public abstract class Channel implements NoteDeleteObserver, NoteResizedObserver
         System.out.println("Midi player tries to resize note " + noteId + " with length " + newLength);
         //TODO: get rid of magic numbers
         int midiLength = newLength / 50 * 480;
-        resizeNote(noteId, midiLength);
+        NOTE_EVENTS.get(noteId).updateLength(midiLength);
+    }
+
+    @Override
+    public void onVelocityChanged(Integer noteId, int newVelocity) {
+        log.debug("Changing velocity for note with id {} to {}", noteId, newVelocity);
+        NOTE_EVENTS.get(noteId).updateVelocity(newVelocity);
     }
 }
