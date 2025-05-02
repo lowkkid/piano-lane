@@ -4,9 +4,6 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-import javax.sound.midi.InvalidMidiDataException;
-
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCE;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
 
 @Component
@@ -19,11 +16,6 @@ public class MidiPlayer {
     public void play() {
         if (SEQUENCER.isRunning()) {
             SEQUENCER.stop();
-        }
-        try {
-            SEQUENCER.setSequence(SEQUENCE);
-        } catch (InvalidMidiDataException e) {
-            throw new RuntimeException(e);
         }
         SEQUENCER.setTickPosition(0);
         SEQUENCER.setTempoInBPM(bpm);

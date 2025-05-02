@@ -1,13 +1,11 @@
 package by.fpmi.bsu.pianolane.util;
 
-import by.fpmi.bsu.pianolane.CustomReceiver;
 import by.fpmi.bsu.pianolane.controller.PianoRollController;
 import org.springframework.context.ConfigurableApplicationContext;
 
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
-import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.Synthesizer;
@@ -20,17 +18,16 @@ public class GlobalInstances {
     public static Synthesizer SYNTHESIZER;
     public static ConfigurableApplicationContext SPRING_CONTEXT;
     public static PianoRollController CURRENT_PIANO_ROLL_CONTROLLER;
-    public static Receiver DEFAULT_RECEIVER;
 
     static {
         try {
+            SEQUENCER = MidiSystem.getSequencer();
+            SEQUENCE = new Sequence(Sequence.PPQ, 480);
+            SEQUENCER.open();
+            SEQUENCER.setSequence(SEQUENCE);
+
             SYNTHESIZER = MidiSystem.getSynthesizer();
             SYNTHESIZER.open();
-            DEFAULT_RECEIVER = MidiSystem.getReceiver();
-            SEQUENCER = MidiSystem.getSequencer(false);
-            SEQUENCE = new Sequence(Sequence.PPQ, 480);
-            SEQUENCER.getTransmitter().setReceiver(new CustomReceiver());
-            SEQUENCER.open();
         } catch (MidiUnavailableException | InvalidMidiDataException e) {
             throw new RuntimeException(e);
         }
