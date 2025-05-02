@@ -2,7 +2,7 @@ package by.fpmi.bsu.pianolane.util;
 
 import by.fpmi.bsu.pianolane.CustomReceiver;
 import by.fpmi.bsu.pianolane.controller.PianoRollController;
-import javax.sound.midi.ShortMessage;
+import by.fpmi.bsu.pianolane.model.ChannelCollection;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ConfigurableApplicationContext;
 

@@ -5,7 +5,7 @@ import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNoteContainer;
 import by.fpmi.bsu.pianolane.ui.pianoroll.Note;
 import by.fpmi.bsu.pianolane.model.Channel;
 import by.fpmi.bsu.pianolane.ui.GridPane;
-import by.fpmi.bsu.pianolane.util.ChannelCollection;
+import by.fpmi.bsu.pianolane.model.ChannelCollection;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;

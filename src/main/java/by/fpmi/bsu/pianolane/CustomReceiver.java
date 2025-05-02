@@ -1,7 +1,7 @@
 package by.fpmi.bsu.pianolane;
 
 import by.fpmi.bsu.pianolane.model.SynthesizerChannel;
-import by.fpmi.bsu.pianolane.util.ChannelCollection;
+import by.fpmi.bsu.pianolane.model.ChannelCollection;
 import by.fpmi.bsu.synthesizer.model.Synth;
 import lombok.extern.slf4j.Slf4j;
 

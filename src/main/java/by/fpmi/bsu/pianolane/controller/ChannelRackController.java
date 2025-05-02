@@ -2,7 +2,7 @@ package by.fpmi.bsu.pianolane.controller;
 
 import by.fpmi.bsu.pianolane.ui.ChannelRackItem;
 import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNoteContainer;
-import by.fpmi.bsu.pianolane.util.ChannelCollection;
+import by.fpmi.bsu.pianolane.model.ChannelCollection;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;

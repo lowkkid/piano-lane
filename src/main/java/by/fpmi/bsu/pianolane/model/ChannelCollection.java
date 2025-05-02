@@ -1,8 +1,5 @@
-package by.fpmi.bsu.pianolane.util;
+package by.fpmi.bsu.pianolane.model;
 
-import by.fpmi.bsu.pianolane.model.Channel;
-import by.fpmi.bsu.pianolane.model.DefaultChannel;
-import by.fpmi.bsu.pianolane.model.SynthesizerChannel;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 

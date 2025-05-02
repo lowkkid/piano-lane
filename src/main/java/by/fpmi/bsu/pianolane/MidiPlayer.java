@@ -4,8 +4,8 @@ import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
 
-import static by.fpmi.bsu.pianolane.util.ChannelCollection.startSynthesizerChannels;
-import static by.fpmi.bsu.pianolane.util.ChannelCollection.stopSynthesizerChannels;
+import static by.fpmi.bsu.pianolane.model.ChannelCollection.startSynthesizerChannels;
+import static by.fpmi.bsu.pianolane.model.ChannelCollection.stopSynthesizerChannels;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
 
 @Component
