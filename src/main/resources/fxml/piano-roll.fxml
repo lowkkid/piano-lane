@@ -6,21 +6,38 @@
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
+<?import javafx.scene.layout.HBox?>
+<?import org.kordamp.ikonli.javafx.FontIcon?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="by.fpmi.bsu.pianolane.controller.PianoRollController"
             stylesheets="@../css/panel.css">
     <top>
         <AnchorPane fx:id="pianoRollTopPanel" style="-fx-background-color: #4a4a4a;" prefHeight="50">
-            <Button fx:id="closeButton" text="X" styleClass="close-button"
-                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0"/>
+            <Button fx:id="closeButton"
+                    AnchorPane.rightAnchor="0.0" AnchorPane.topAnchor="0.0" styleClass="piano-roll-toolbar-button">
+                <graphic>
+                    <FontIcon iconLiteral="bx-x"/>
+                </graphic>
+            </Button>
 
-<!--            &lt;!&ndash; HBox слева на всю высоту &ndash;&gt;-->
-<!--            <HBox fx:id="leftToolbox" prefWidth="110"-->
-<!--                  AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="0.0"-->
-<!--                  AnchorPane.bottomAnchor="0.0"-->
-<!--                  style="-fx-background-color: #333333;">-->
-<!--                <Button text="Tool" styleClass="tool-button"/>-->
-<!--            </HBox>-->
+            <HBox fx:id="leftToolbox" prefWidth="110"
+                  AnchorPane.leftAnchor="0.0" AnchorPane.topAnchor="35.0"
+                  AnchorPane.bottomAnchor="0.0"
+                  style="-fx-background-color: #2b2b2b;"
+                  prefHeight="15"
+            maxHeight="15"
+            minHeight="15">
+                <Button fx:id="settingsButton" styleClass="piano-roll-toolbar-button">
+                    <graphic>
+                        <FontIcon iconLiteral="bx-cog" />
+                    </graphic>
+                </Button>
+                <Button fx:id="magnetButton" styleClass="piano-roll-toolbar-button">
+                    <graphic>
+                        <FontIcon iconLiteral="bx-magnet" />
+                    </graphic>
+                </Button>
+            </HBox>
 
             <ScrollPane fx:id="headerScrollPane"
                         hbarPolicy="NEVER" vbarPolicy="NEVER"
@@ -28,8 +45,8 @@
                         AnchorPane.bottomAnchor="0.0" AnchorPane.topAnchor="35.0"
                         style="-fx-background-color: transparent; -fx-padding: 0;"
                         fitToHeight="true" fitToWidth="true">
-                    <AnchorPane fx:id="headerContent" style="-fx-background-color: #2b2b2b;"
-                          prefWidth="1000" minHeight="15"/>
+                <AnchorPane fx:id="headerContent" style="-fx-background-color: #2b2b2b;"
+                            prefWidth="1000" minHeight="15"/>
             </ScrollPane>
         </AnchorPane>
     </top>

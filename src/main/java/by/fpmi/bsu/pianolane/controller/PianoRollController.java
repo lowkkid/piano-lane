@@ -21,6 +21,7 @@ import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -45,6 +46,7 @@ public class PianoRollController {
 
     @FXML
     public AnchorPane headerContent;
+    public HBox leftToolbox;
     @FXML
     private ScrollPane headerScrollPane;
     @FXML
@@ -87,12 +89,7 @@ public class PianoRollController {
 
     private Integer channelId;
     private Channel channel;
-    private ChannelCollection channelCollection;
-
-    @Autowired
-    public void setChannelCollection(ChannelCollection channelCollection) {
-        this.channelCollection = channelCollection;
-    }
+    private ChannelCollection channelCollection = ChannelCollection.getInstance();
 
     public PianoRollController(Integer channelId) {
         this.channelId = channelId;
@@ -114,7 +111,8 @@ public class PianoRollController {
         headerScrollPane.setFitToHeight(true);
         headerScrollPane.setFitToWidth(true);
 
-        headerContent.setMinHeight(15);   // Минимальная высота
+        headerContent.setMinHeight(15);
+        leftToolbox.setMinHeight(15);// Минимальная высота
 
         // Скрываем полосы прокрутки
         headerScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);

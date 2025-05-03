@@ -107,3 +107,26 @@
     -fx-icon-color: white;
 }
 
+.piano-roll-toolbar-button {
+    -fx-background-color: transparent;
+    -fx-text-fill: white;
+    -fx-padding: 5 10 5 10;
+    -fx-cursor: hand;
+    -fx-pref-height: 40;
+    -fx-alignment: center;
+}
+
+.piano-roll-toolbar-button:hover {
+    -fx-border-width: 1;
+    -fx-border-color: white;
+}
+
+.piano-roll-toolbar-button:pressed {
+    -fx-background-color: #4a4a4a;
+}
+
+.piano-roll-toolbar-button .ikonli-font-icon {
+    -fx-icon-size: 16px;
+    -fx-icon-color: white;
+}
+
