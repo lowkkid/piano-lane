@@ -69,7 +69,7 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
     public void onNoteResized(Integer noteId, int newLength) {
         System.out.println("Midi player tries to resize note " + noteId + " with length " + newLength);
         //TODO: get rid of magic numbers
-        int midiLength = newLength / 50 * 480;
+        int midiLength = (int) (newLength * 9.6);
         NOTE_EVENTS.get(noteId).updateLength(midiLength);
     }
 

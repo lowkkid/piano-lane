@@ -1,5 +1,6 @@
 package by.fpmi.bsu.pianolane.ui.pianoroll;
 
+import by.fpmi.bsu.pianolane.controller.PianoRollController;
 import by.fpmi.bsu.pianolane.model.Channel;
 import by.fpmi.bsu.pianolane.observer.MidiNoteDeleteObserver;
 import by.fpmi.bsu.pianolane.ui.GridPane;
@@ -8,8 +9,10 @@ import java.util.List;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Getter
+@Slf4j
 public class MidiNote {
 
     private final Integer id;
@@ -45,6 +48,9 @@ public class MidiNote {
                 velocityParent.getChildren().remove(velocity);
                 MidiNoteContainer.removeNote(channel.getChannelId(), this);
                 notifyDeleteEventObservers();
+            } else if (event.getButton() == MouseButton.PRIMARY) {
+                log.info("Note clicked with LMB");
+                PianoRollController.NEW_NOTE_WIDTH = note.getWidth();
             }
         });
 

@@ -6,6 +6,8 @@ import by.fpmi.bsu.pianolane.ui.pianoroll.Note;
 import by.fpmi.bsu.pianolane.model.Channel;
 import by.fpmi.bsu.pianolane.ui.GridPane;
 import by.fpmi.bsu.pianolane.model.ChannelCollection;
+import java.util.ArrayList;
+import java.util.function.Supplier;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
@@ -13,8 +15,11 @@ import javafx.beans.value.ChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
+import javafx.geometry.Side;
 import javafx.scene.control.Button;
+import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Label;
+import javafx.scene.control.MenuItem;
 import javafx.scene.control.ScrollPane;
 import javafx.scene.control.SplitPane;
 import javafx.scene.input.MouseButton;
@@ -52,6 +57,8 @@ public class PianoRollController {
     @FXML
     private AnchorPane pianoRollTopPanel;
     @FXML
+    private Button magnetButton;
+    @FXML
     public ScrollPane notesHorizontalScrollPane;
     @FXML
     public ScrollPane notesVerticalScrollPane;
@@ -69,21 +76,23 @@ public class PianoRollController {
     @FXML
     private SplitPane splitPane;
 
+    public static double NEW_NOTE_WIDTH = 50;
+    private static final double GRID_QUARTER_NOTE_WIDTH = 50;
+    private static int GRID_DIVISION_FACTOR = 1;
+    public static final Supplier<Double> GRID_CELL_WIDTH = () -> GRID_QUARTER_NOTE_WIDTH / (double) GRID_DIVISION_FACTOR;
+    private static final Supplier<Double> TICKS_PER_COLUMN = () -> 480 / (double) GRID_DIVISION_FACTOR;
 
     private static final int NUM_KEYS = 60;        // 5 octaves (60 keys)
     private static final double KEY_HEIGHT = 30;   // Высота клавиш
     private final String[] NOTES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
     // Параметры сетки
-    private final double cellWidth = 50;   // Ширина клетки (по времени)
     private final double cellHeight = 30;  // Высота клетки (соответствует одной клавише)
     private final int numColumns = 96;     // Количество колонок (тактов)
 
 
     private Rectangle playheadLine;
     private Timeline playheadTimeline;
-
-    private final int ticksPerColumn = 480; // Один столбец = 480 тиков (четверть ноты)
 
     private MainController mainController;
 
@@ -99,6 +108,62 @@ public class PianoRollController {
     @Autowired
     public void setMainController(MainController mainController) {
         this.mainController = mainController;
+    }
+
+    private boolean isMenuShowing = false;
+
+    private void initializeMagnetButton() {
+        // Создаем контекстное меню для кнопки магнита
+        ContextMenu magnetMenu = new ContextMenu();
+
+        // Создаем пункты меню
+        MenuItem oneBeaItem = new MenuItem("1 beat");
+        MenuItem halfBeatItem = new MenuItem("1/2 beat");
+        MenuItem quarterBeatItem = new MenuItem("1/4 beat");
+
+        // Добавляем слушатели событий
+        oneBeaItem.setOnAction(event -> {
+            GRID_DIVISION_FACTOR = 1;
+            showEighthNoteLines(false);
+            showSixteenthNoteLines(false);
+        });
+
+        halfBeatItem.setOnAction(event -> {
+            GRID_DIVISION_FACTOR = 2;
+            showEighthNoteLines(true);
+            showSixteenthNoteLines(false);
+        });
+
+        quarterBeatItem.setOnAction(event -> {
+            GRID_DIVISION_FACTOR = 4;
+            showEighthNoteLines(true);
+            showSixteenthNoteLines(true);
+        });
+
+        // Применяем CSS-стиль для всего меню
+        magnetMenu.getStyleClass().add("magnet-menu");
+
+        // Добавляем CSS-класс для каждого пункта
+        oneBeaItem.getStyleClass().add("magnet-menu-item");
+        halfBeatItem.getStyleClass().add("magnet-menu-item");
+        quarterBeatItem.getStyleClass().add("magnet-menu-item");
+
+        // Добавляем пункты в меню
+        magnetMenu.getItems().addAll(oneBeaItem, halfBeatItem, quarterBeatItem);
+
+        // Привязываем меню к кнопке с логикой переключения
+        magnetButton.setOnAction(event -> {
+            if (isMenuShowing) {
+                magnetMenu.hide();
+                isMenuShowing = false;
+            } else {
+                magnetMenu.show(magnetButton, Side.BOTTOM, 0, 0);
+                isMenuShowing = true;
+            }
+        });
+
+        // Обновляем состояние при скрытии меню
+        magnetMenu.setOnHidden(event -> isMenuShowing = false);
     }
 
     private void initializeTopPanel() {
@@ -161,10 +226,12 @@ public class PianoRollController {
 
     public void initialize() {
         initializeTopPanel();
+        initializeMagnetButton();
         splitPane.setDividerPositions(0.8);
         gridPane.setChannelId(channelId);
         drawKeyboard();
         drawGrid();
+        initializeOptionalGridDivision();
         initPlayhead();
 
         closeButton.setOnAction(event -> {
@@ -203,6 +270,26 @@ public class PianoRollController {
         Platform.runLater(this::initializeScrollSynchronization);
     }
 
+    private void initializeOptionalGridDivision() {
+        switch (GRID_DIVISION_FACTOR) {
+            case 1:
+                showEighthNoteLines(false);
+                showSixteenthNoteLines(false);
+                break;
+            case 2:
+                showEighthNoteLines(true);
+                showSixteenthNoteLines(false);
+                break;
+            case 4:
+                showEighthNoteLines(true);
+                showSixteenthNoteLines(true);
+                break;
+            default:
+                log.warn("Got unsupported value for GRID_DIVISION_FACTOR: {} ,when initializing PianoRoll", GRID_DIVISION_FACTOR);
+                break;
+        }
+    }
+
     // Отрисовка клавиатуры снизу вверх: нота с i=0 отрисовывается внизу
     private void drawKeyboard() {
         for (int i = 0; i < NUM_KEYS; i++) {
@@ -225,18 +312,22 @@ public class PianoRollController {
         }
     }
 
-    // Отрисовка сетки с перевернутой осью Y
+    private final List<Rectangle> eighthNoteLines = new ArrayList<>();
+    private final List<Rectangle> sixteenthNoteLines = new ArrayList<>();
+
     private void drawGrid() {
-        double width = cellWidth * numColumns;
+        double width = GRID_QUARTER_NOTE_WIDTH * numColumns;
         double height = cellHeight * NUM_KEYS;
         gridPane.setPrefSize(width, height);
         velocityPane.setPrefWidth(width);
         headerContent.setPrefWidth(width - 10);
-        // Допустим, у нас 4 четверти в такте (4/4).
-        // Тогда каждые 4 вертикальные линии = 1 такт.
-        // Условимся, что i — это индекс четверти (бита), а i % 4 == 0 — граница нового такта.
 
-        for (int i = 0; i < numColumns; i++) {
+        // Очищаем предыдущие коллекции перед новой отрисовкой
+        eighthNoteLines.clear();
+        sixteenthNoteLines.clear();
+
+        // Основные линии (четверти)
+        for (int i = 0; i <= numColumns; i++) {
             // Каждые 4 колонки считаем новой границей такта.
             boolean isMeasureLine = (i % 4 == 0);
 
@@ -244,14 +335,43 @@ public class PianoRollController {
             double lineThickness = isMeasureLine ? 1.5 : 1;
 
             // Рисуем вертикальную линию от верха до низа сетки.
-            Rectangle columnLine = new Rectangle(i * cellWidth, 0, lineThickness, height);
+            Rectangle columnLine = new Rectangle(i * GRID_QUARTER_NOTE_WIDTH, 0, lineThickness, height);
             columnLine.setFill(isMeasureLine ? Color.BLACK : Color.GRAY);
             gridPane.getChildren().add(columnLine);
             velocityPane.getChildren().add(copy(columnLine));
-            if (isMeasureLine) drawBarNumber(i / 4, i * cellWidth);
-        }
+            if (isMeasureLine) drawBarNumber(i / 4, i * GRID_QUARTER_NOTE_WIDTH);
 
-        drawBarNumber(numColumns / 4, numColumns * cellWidth);
+            // Добавляем линии для 1/8 и 1/16, если текущая позиция не совпадает с четвертью
+            if (i < numColumns) {
+                // Линия 1/8 (посередине между четвертями)
+                double eighthPosition = i * GRID_QUARTER_NOTE_WIDTH + GRID_QUARTER_NOTE_WIDTH / 2;
+                Rectangle eighthLine = new Rectangle(eighthPosition, 0, 1, height);
+                eighthLine.setFill(Color.gray(0.6, 0.7)); // Более светлый серый
+                eighthLine.setVisible(false); // По умолчанию невидимы
+                gridPane.getChildren().add(eighthLine);
+                eighthNoteLines.add(eighthLine);
+
+                Rectangle velocityEightLine = copy(eighthLine);
+                velocityPane.getChildren().add(velocityEightLine);
+                eighthNoteLines.add(velocityEightLine);
+
+                // Линии 1/16 (через каждую 1/4 от четверти)
+                for (int j = 1; j <= 3; j++) {
+                    if (j == 2) continue; // Пропускаем среднюю линию, так как это уже 1/8
+
+                    double sixteenthPosition = i * GRID_QUARTER_NOTE_WIDTH + (GRID_QUARTER_NOTE_WIDTH / 4) * j;
+                    Rectangle sixteenthLine = new Rectangle(sixteenthPosition, 0, 1, height);
+                    sixteenthLine.setFill(Color.gray(0.7, 0.7)); // Еще более светлый серый
+                    sixteenthLine.setVisible(false); // По умолчанию невидимы
+                    gridPane.getChildren().add(sixteenthLine);
+                    sixteenthNoteLines.add(sixteenthLine);
+
+                    Rectangle velocitySixteenthLine = copy(eighthLine);
+                    velocityPane.getChildren().add(velocitySixteenthLine);
+                    eighthNoteLines.add(velocitySixteenthLine);
+                }
+            }
+        }
 
         // Горизонтальные линии (клавиши) — оставляем как было
         for (int r = 0; r <= NUM_KEYS; r++) {
@@ -259,6 +379,19 @@ public class PianoRollController {
             Rectangle rowLine = new Rectangle(0, y, width, 1);
             rowLine.setFill(Color.GRAY);
             gridPane.getChildren().add(rowLine);
+        }
+    }
+
+    // Методы для управления видимостью линий
+    public void showEighthNoteLines(boolean show) {
+        for (Rectangle line : eighthNoteLines) {
+            line.setVisible(show);
+        }
+    }
+
+    public void showSixteenthNoteLines(boolean show) {
+        for (Rectangle line : sixteenthNoteLines) {
+            line.setVisible(show);
         }
     }
 
@@ -307,9 +440,9 @@ public class PianoRollController {
 
         double x = event.getX();
         double y = event.getY();
-        int col = (int) (x / cellWidth);
+        int col = (int) (x / GRID_CELL_WIDTH.get());
         int row = NUM_KEYS - 1 - (int) (y / cellHeight);
-        double noteX = col * cellWidth;
+        double noteX = col * GRID_CELL_WIDTH.get();
         double noteY = (NUM_KEYS - 1 - row) * cellHeight;
 
         addNote(noteX, noteY, col, row);
@@ -318,8 +451,8 @@ public class PianoRollController {
 
     private void addNote(double x, double y, int col, int row) {
         int midiNote = row + 24;
-        int startTick = col * ticksPerColumn;
-        int noteDuration = ticksPerColumn; // Фиксированная длительность (четверть ноты)
+        int startTick = (int) (col * TICKS_PER_COLUMN.get());
+        int noteDuration = (int) (NEW_NOTE_WIDTH * 9.6); // Фиксированная длительность (четверть ноты)
 
         Integer id = channel.addNote(midiNote, startTick, noteDuration);
 
@@ -330,7 +463,7 @@ public class PianoRollController {
                 .velocityParent(velocityPane)
                 .commonCoordinateX(x)
                 .noteCoordinateY(y)
-                .noteWidth(cellWidth)
+                .noteWidth(NEW_NOTE_WIDTH)
                 .noteHeight(cellHeight)
                 .build();
         MidiNoteContainer.addNote(channelId, note);
@@ -358,7 +491,7 @@ public class PianoRollController {
         playheadTimeline = new Timeline(new KeyFrame(Duration.millis(10), ev -> {
             if (SEQUENCER.isRunning()) {
                 long tickPos = SEQUENCER.getTickPosition();
-                double newX = (tickPos / (double) ticksPerColumn) * cellWidth;
+                double newX = (tickPos / TICKS_PER_COLUMN.get()) * GRID_CELL_WIDTH.get();
                 playheadLine.setX(newX);
             } else {
                 playheadTimeline.stop();

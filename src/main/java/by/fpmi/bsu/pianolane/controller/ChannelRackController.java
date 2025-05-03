@@ -61,7 +61,9 @@ public class ChannelRackController implements Initializable {
         ChannelRackItem item = new ChannelRackItem(channelId, instrument.getName());
         registerChannelRackItem(item);
         rows.add(item);
-        instrumentContainer.getChildren().add(item);
+        if (instrumentContainer != null) {
+            instrumentContainer.getChildren().add(item);
+        }
     }
 
     private void deleteInstrument(ChannelRackItem channelRackItem) {

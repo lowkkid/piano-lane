@@ -1,9 +1,9 @@
 package by.fpmi.bsu.pianolane.ui.pianoroll;
 
+import static by.fpmi.bsu.pianolane.controller.PianoRollController.GRID_CELL_WIDTH;
 import static by.fpmi.bsu.pianolane.ui.Constants.NOTE_AND_VELOCITY_COLOR;
 
 import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
-import by.fpmi.bsu.pianolane.model.Channel;
 import javafx.scene.Cursor;
 import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
@@ -17,7 +17,6 @@ import java.util.List;
 public class Note extends Rectangle {
 
     private static final double RESIZE_AREA_WIDTH = 5;
-    private final int cellWidth = 50;
 
     private final Integer noteId;
     private final List<NoteResizedObserver> noteResizedObservers = new ArrayList<>();
@@ -53,6 +52,7 @@ public class Note extends Rectangle {
         this.setOnMouseDragged(event -> {
             if (isResizing) {
                 double newWidth = event.getX() - this.getX();
+                double cellWidth = GRID_CELL_WIDTH.get();
                 newWidth = Math.round(newWidth / cellWidth) * cellWidth;
                 newWidth = Math.max(newWidth, cellWidth);
                 this.setWidth(newWidth);

@@ -130,3 +130,10 @@
     -fx-icon-color: white;
 }
 
+.magnet-menu-item:hover {
+    -fx-background-color: #347deb;
+}
+.magnet-menu-item {
+    -fx-padding: 5px 10px;
+}
+
