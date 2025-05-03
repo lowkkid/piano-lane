@@ -22,9 +22,6 @@ public class LogUtil {
                 int channel = sm.getChannel();
                 int data1 = sm.getData1();
                 int data2 = sm.getData2();
-
-
-
                 events.add(String.format("Tick: %4d | %s | Channel: %d | Data1: %d | Data2: %d\n",
                         tick, getCommandName(command), channel, data1, data2));
             } else if (message instanceof MetaMessage meta) {

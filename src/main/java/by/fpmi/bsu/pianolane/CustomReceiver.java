@@ -15,6 +15,7 @@ import java.util.Map;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.DEFAULT_RECEIVER;
 import static by.fpmi.bsu.pianolane.util.LogUtil.getCommandName;
+import static by.fpmi.bsu.pianolane.util.MathUtil.midiNoteToFreq;
 
 @Slf4j
 public class CustomReceiver implements Receiver {
@@ -64,9 +65,5 @@ public class CustomReceiver implements Receiver {
     @Override
     public void close() {
 
-    }
-
-    private double midiNoteToFreq(int note) {
-        return 440.0 * Math.pow(2, (note - 69) / 12.0);
     }
 }

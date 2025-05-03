@@ -43,6 +43,7 @@ import java.util.List;
 
 import static by.fpmi.bsu.pianolane.util.CopyUtil.copy;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
+import static by.fpmi.bsu.pianolane.util.MathUtil.uiToMidiNoteLength;
 
 @Component
 @Slf4j
@@ -452,7 +453,7 @@ public class PianoRollController {
     private void addNote(double x, double y, int col, int row) {
         int midiNote = row + 24;
         int startTick = (int) (col * TICKS_PER_COLUMN.get());
-        int noteDuration = (int) (NEW_NOTE_WIDTH * 9.6); // Фиксированная длительность (четверть ноты)
+        int noteDuration = uiToMidiNoteLength(NEW_NOTE_WIDTH);
 
         Integer id = channel.addNote(midiNote, startTick, noteDuration);
 

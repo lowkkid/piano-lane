@@ -16,6 +16,7 @@ import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.createTrack;
+import static by.fpmi.bsu.pianolane.util.MathUtil.uiToMidiNoteLength;
 
 @Data
 @ToString
@@ -52,7 +53,7 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
     public void deleteNote(Integer key) {
         NoteEvent eventToDelete = NOTE_EVENTS.get(key);
         if (eventToDelete == null) {
-            System.out.println("No NoteEvent found for key " + key);
+            log.warn("Tried to delete note event with key {}, but NoteEvent was not found for specified key",key);
             return;
         }
         NOTE_EVENTS.remove(key);
@@ -61,15 +62,14 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
 
     @Override
     public void onNoteDeleted(Integer noteId) {
-        System.out.println("Delete note " + noteId);
+        log.debug("Deleting note {}", noteId);
         deleteNote(noteId);
     }
 
     @Override
     public void onNoteResized(Integer noteId, int newLength) {
-        System.out.println("Midi player tries to resize note " + noteId + " with length " + newLength);
-        //TODO: get rid of magic numbers
-        int midiLength = (int) (newLength * 9.6);
+        log.debug("Resizing note {} with new length {}", noteId, newLength);
+        int midiLength = uiToMidiNoteLength(newLength);
         NOTE_EVENTS.get(noteId).updateLength(midiLength);
     }
 

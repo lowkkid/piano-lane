@@ -1,5 +1,7 @@
 package by.fpmi.bsu.synthesizer.model;
 
+import static by.fpmi.bsu.pianolane.util.MathUtil.normalizeAmplitudeWithUnison;
+
 import by.fpmi.bsu.synthesizer.settings.OscillatorSettings;
 import java.util.ArrayList;
 import java.util.List;
@@ -42,9 +44,7 @@ public class Oscillator {
         for (Voice voice : voices) {
             sum += voice.generateSample(settings.getWaveform());
         }
-
-        //TODO: create map with sqrt results for 1-16, instead of Math.sqrt
-        sum /= (float) Math.sqrt(settings.getUnison());
+        sum = normalizeAmplitudeWithUnison(sum, settings.getUnison());
 
         return sum * env * (float) settings.getLevel();
     }
