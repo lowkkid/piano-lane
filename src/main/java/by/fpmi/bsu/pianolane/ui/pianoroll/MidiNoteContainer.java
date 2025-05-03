@@ -16,6 +16,7 @@ public class MidiNoteContainer {
         List<MidiNote> currentNotes = notesByChannel.getOrDefault(channelId, new ArrayList<>());
         currentNotes.add(note);
         notesByChannel.put(channelId, currentNotes);
+        log.info("Added Note to MidiNoteContainer with key {}", channelId);
     }
 
     public static void removeNote(Integer channelId, MidiNote note) {

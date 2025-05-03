@@ -63,7 +63,7 @@ public class SpringFxmlLoader {
             });
             return loader.load();
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка загрузки oscillator.fxml", e);
+            throw new RuntimeException(e);
         }
     }
 
@@ -72,7 +72,7 @@ public class SpringFxmlLoader {
             FXMLLoader loader = new FXMLLoader(getClass().getClassLoader().getResource(FILTERS_FXML));
             return loader.load();
         } catch (IOException e) {
-            throw new RuntimeException("Ошибка загрузки oscillator.fxml", e);
+            throw new RuntimeException(e);
         }
     }
 }

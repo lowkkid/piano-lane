@@ -323,8 +323,6 @@ public class PianoRollController {
 
         Integer id = channel.addNote(midiNote, startTick, noteDuration);
 
-        // Отрисовка ноты в UI
-//        Note noteRect = new Note(id, channel, x, y, cellWidth, cellHeight);
         MidiNote note = MidiNote.builder()
                 .id(id)
                 .channel(channel)
@@ -336,7 +334,6 @@ public class PianoRollController {
                 .noteHeight(cellHeight)
                 .build();
         MidiNoteContainer.addNote(channelId, note);
-        log.info("Added Note to MidiNoteContainer with key {}", channelId);
     }
 
     private void initPlayhead() {
