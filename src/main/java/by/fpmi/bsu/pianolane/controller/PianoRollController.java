@@ -1,16 +1,23 @@
 package by.fpmi.bsu.pianolane.controller;
 
+import by.fpmi.bsu.pianolane.observer.MidiNoteDeleteObserver;
+import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
+import by.fpmi.bsu.pianolane.observer.VelocityChangedObserver;
 import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNote;
 import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNoteContainer;
 import by.fpmi.bsu.pianolane.ui.pianoroll.Note;
 import by.fpmi.bsu.pianolane.model.Channel;
 import by.fpmi.bsu.pianolane.ui.GridPane;
 import by.fpmi.bsu.pianolane.model.ChannelCollection;
+import by.fpmi.bsu.pianolane.ui.pianoroll.Velocity;
 import java.util.ArrayList;
+import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import javafx.animation.KeyFrame;
 import javafx.animation.Timeline;
 import javafx.application.Platform;
+import javafx.beans.property.DoubleProperty;
+import javafx.beans.property.SimpleDoubleProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.event.Event;
 import javafx.fxml.FXML;
@@ -77,10 +84,10 @@ public class PianoRollController {
     @FXML
     private SplitPane splitPane;
 
-    public static double NEW_NOTE_WIDTH = 50;
+    private static double NEW_NOTE_WIDTH = 50;
     private static final double GRID_QUARTER_NOTE_WIDTH = 50;
     private static int GRID_DIVISION_FACTOR = 1;
-    public static final Supplier<Double> GRID_CELL_WIDTH = () -> GRID_QUARTER_NOTE_WIDTH / (double) GRID_DIVISION_FACTOR;
+    private static final Supplier<Double> GRID_CELL_WIDTH = () -> GRID_QUARTER_NOTE_WIDTH / (double) GRID_DIVISION_FACTOR;
     private static final Supplier<Double> TICKS_PER_COLUMN = () -> 480 / (double) GRID_DIVISION_FACTOR;
 
     private static final int NUM_KEYS = 60;        // 5 octaves (60 keys)
@@ -99,7 +106,13 @@ public class PianoRollController {
 
     private Integer channelId;
     private Channel channel;
-    private ChannelCollection channelCollection = ChannelCollection.getInstance();
+    private final ChannelCollection channelCollection = ChannelCollection.getInstance();
+    private final MidiNoteContainer midiNoteContainer = MidiNoteContainer.getInstance();
+
+    private final List<VelocityChangedObserver> velocityChangedObservers = new ArrayList<>();
+    private final List<NoteResizedObserver> noteResizedObservers = new ArrayList<>();
+    private final List<MidiNoteDeleteObserver> midiNoteDeleteObservers = new ArrayList<>();
+
 
     public PianoRollController(Integer channelId) {
         this.channelId = channelId;
@@ -235,15 +248,12 @@ public class PianoRollController {
         initializeOptionalGridDivision();
         initPlayhead();
 
-        closeButton.setOnAction(event -> {
-            mainController.closePianoRoll();
-        });
+        closeButton.setOnAction(event -> mainController.closePianoRoll());
 
-        // Обработка клика по сетке для добавления ноты
         gridPane.addEventHandler(MouseEvent.MOUSE_CLICKED, this::handleGridClick);
 
         log.info("Fetching previously written notes for channel {}", channelId);
-        List<MidiNote> previouslyWrittenNotes = MidiNoteContainer.getAllNotesForChannel(channelId);
+        List<MidiNote> previouslyWrittenNotes = midiNoteContainer.getAllNotesForChannel(channelId);
         log.info("Fetched notes: {}", previouslyWrittenNotes);
         gridPane.getChildren().addAll(previouslyWrittenNotes.stream().map(MidiNote::getNote).toList());
         velocityPane.getChildren().addAll(previouslyWrittenNotes.stream().map(MidiNote::getVelocity).toList());
@@ -268,6 +278,9 @@ public class PianoRollController {
         });
 
         addRightStripe();
+        subscribeToMidiNoteDeleteEvent(channel);
+        subscribeToNoteResizedEvent(channel);
+        subscribeToVelocityChangedEvent(channel);
         Platform.runLater(this::initializeScrollSynchronization);
     }
 
@@ -455,11 +468,10 @@ public class PianoRollController {
         int startTick = (int) (col * TICKS_PER_COLUMN.get());
         int noteDuration = uiToMidiNoteLength(NEW_NOTE_WIDTH);
 
-        Integer id = channel.addNote(midiNote, startTick, noteDuration);
+        Integer noteId = channel.addNote(midiNote, startTick, noteDuration);
 
         MidiNote note = MidiNote.builder()
-                .id(id)
-                .channel(channel)
+                .id(noteId)
                 .noteParent(gridPane)
                 .velocityParent(velocityPane)
                 .commonCoordinateX(x)
@@ -467,7 +479,14 @@ public class PianoRollController {
                 .noteWidth(NEW_NOTE_WIDTH)
                 .noteHeight(cellHeight)
                 .build();
-        MidiNoteContainer.addNote(channelId, note);
+        midiNoteContainer.addNote(channelId, note);
+        setupMidiNoteListeners(note);
+    }
+
+    private void setupMidiNoteListeners(MidiNote midiNote) {
+        setupMidiNoteDeleteListener(midiNote);
+        setupNoteResizeListener(midiNote.getNote());
+        setupVelocityChangeListener(midiNote.getVelocity());
     }
 
     private void initPlayhead() {
@@ -502,5 +521,101 @@ public class PianoRollController {
         }));
         playheadTimeline.setCycleCount(Timeline.INDEFINITE);
         playheadTimeline.play();
+    }
+
+    private void setupMidiNoteDeleteListener(MidiNote midiNote) {
+        Note note = midiNote.getNote();
+        Velocity velocity = midiNote.getVelocity();
+        note.setOnMouseClicked(event -> {
+            if (event.getButton() == MouseButton.SECONDARY) {
+                System.out.println("Note clicked with RMB");
+                gridPane.getChildren().remove(note);
+                velocityPane.getChildren().remove(velocity);
+                midiNoteContainer.removeNote(channelId, midiNote);
+                notifyMidiNoteDeleteEventObservers(midiNote.getId());
+            } else if (event.getButton() == MouseButton.PRIMARY) {
+                log.info("Note clicked with LMB");
+                PianoRollController.NEW_NOTE_WIDTH = note.getWidth();
+            }
+        });
+    }
+
+    private void setupVelocityChangeListener(Velocity velocity) {
+        AtomicBoolean dragging = new AtomicBoolean(false);
+
+        final DoubleProperty initialY = new SimpleDoubleProperty();
+        final DoubleProperty initialHeight = new SimpleDoubleProperty();
+
+        velocity.getHandle().setOnMousePressed(e -> {
+            dragging.set(true);
+            initialY.set(e.getSceneY());
+            initialHeight.set(velocity.getHeightPercentage());
+            e.consume();
+        });
+
+        velocity.getHandle().setOnMouseDragged(e -> {
+            if (dragging.get()) {
+                double deltaY = -(e.getSceneY() - initialY.get()) / velocityPane.getHeight();
+                double newPercentage = Math.min(1.0, Math.max(0.1, initialHeight.get() + deltaY));
+                velocity.setHeightPercentage(newPercentage);
+                e.consume();
+            }
+        });
+
+        velocity.getHandle().setOnMouseReleased(e -> {
+            dragging.set(false);
+            notifyVelocityChangedEventObservers(velocity.getNoteId(), velocity.getVelocityValue());
+            e.consume();
+        });
+    }
+
+    private void setupNoteResizeListener(Note note) {
+        note.setOnMouseDragged(event -> {
+            if (note.isResizing()) {
+                double newWidth = event.getX() - note.getX();
+                double cellWidth = GRID_CELL_WIDTH.get();
+                newWidth = Math.round(newWidth / cellWidth) * cellWidth;
+                newWidth = Math.max(newWidth, cellWidth);
+                note.setWidth(newWidth);
+                event.consume();
+            }
+        });
+
+        note.setOnMouseReleased(event -> {
+            note.setResizing(false);;
+            event.consume();
+            notifyResizeEventObservers(note.getNoteId(), (int) note.getWidth());
+        });
+    }
+
+    public void subscribeToMidiNoteDeleteEvent(MidiNoteDeleteObserver...midiNoteDeleteObservers) {
+        this.midiNoteDeleteObservers.addAll(List.of(midiNoteDeleteObservers));
+    }
+
+    private void notifyMidiNoteDeleteEventObservers(Integer deletedNoteId) {
+        for (MidiNoteDeleteObserver observer : midiNoteDeleteObservers) {
+            observer.onNoteDeleted(deletedNoteId);
+        }
+    }
+
+    public void subscribeToNoteResizedEvent(NoteResizedObserver noteResizedObserver) {
+        noteResizedObservers.add(noteResizedObserver);
+    }
+
+    private void notifyResizeEventObservers(Integer noteId, Integer newWidth) {
+        for (NoteResizedObserver observer : noteResizedObservers) {
+            observer.onNoteResized(noteId, newWidth);
+        }
+    }
+
+    public void subscribeToVelocityChangedEvent(VelocityChangedObserver velocityChangedObserver) {
+        velocityChangedObservers.add(velocityChangedObserver);
+    }
+
+    private void notifyVelocityChangedEventObservers(Integer noteId, Integer newVelocity) {
+        System.out.println("UPDATING VELOCITY WITH " + newVelocity);
+        for (VelocityChangedObserver observer : velocityChangedObservers) {
+            observer.onVelocityChanged(noteId, newVelocity);
+        }
     }
 }

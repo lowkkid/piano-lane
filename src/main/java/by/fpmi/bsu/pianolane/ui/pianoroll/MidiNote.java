@@ -1,76 +1,33 @@
 package by.fpmi.bsu.pianolane.ui.pianoroll;
 
-import by.fpmi.bsu.pianolane.controller.PianoRollController;
-import by.fpmi.bsu.pianolane.model.Channel;
-import by.fpmi.bsu.pianolane.observer.MidiNoteDeleteObserver;
 import by.fpmi.bsu.pianolane.ui.GridPane;
-import java.util.ArrayList;
-import java.util.List;
-import javafx.scene.input.MouseButton;
+import java.io.Serializable;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Slf4j
-public class MidiNote {
+public class MidiNote implements Serializable {
 
     private final Integer id;
-    private final Channel channel;
     private final Note note;
     private final Velocity velocity;
-    private final GridPane noteParent;
-    private final Pane velocityParent;
-    private final List<MidiNoteDeleteObserver> midiNoteDeleteObservers = new ArrayList<>();
 
     public static Builder builder() {
         return new Builder();
     }
 
-    private MidiNote(Integer id, Channel channel, Note note, Velocity velocity, GridPane noteParent, Pane velocityParent) {
+    private MidiNote(Integer id, Note note, Velocity velocity) {
         this.id = id;
-        this.channel = channel;
         this.note = note;
         this.velocity = velocity;
-        this.noteParent = noteParent;
-        this.velocityParent = velocityParent;
-
-        subscribeToMidiNoteDeleteEvent(this.channel);
-        setMidiNoteDeleteListener();
-    }
-
-
-    private void setMidiNoteDeleteListener() {
-        note.setOnMouseClicked(event -> {
-            if (event.getButton() == MouseButton.SECONDARY) {
-                System.out.println("Note clicked with RMB");
-                noteParent.getChildren().remove(note);
-                velocityParent.getChildren().remove(velocity);
-                MidiNoteContainer.removeNote(channel.getChannelId(), this);
-                notifyDeleteEventObservers();
-            } else if (event.getButton() == MouseButton.PRIMARY) {
-                log.info("Note clicked with LMB");
-                PianoRollController.NEW_NOTE_WIDTH = note.getWidth();
-            }
-        });
-
-    }
-
-    private void notifyDeleteEventObservers() {
-        for (MidiNoteDeleteObserver observer : midiNoteDeleteObservers) {
-            observer.onNoteDeleted(id);
-        }
-    }
-
-    public void subscribeToMidiNoteDeleteEvent(MidiNoteDeleteObserver midiNoteDeleteObserver) {
-        midiNoteDeleteObservers.add(midiNoteDeleteObserver);
     }
 
     public static class Builder {
         private GridPane noteParent;
         private Pane velocityParent;
         private Integer id;
-        private Channel channel;
         private double commonCoordinateX;
         private double noteCoordinateY;
         private double noteWidth;
@@ -88,11 +45,6 @@ public class MidiNote {
 
         public Builder id(Integer id) {
             this.id = id;
-            return this;
-        }
-
-        public Builder channel(Channel channel) {
-            this.channel = channel;
             return this;
         }
 
@@ -118,12 +70,10 @@ public class MidiNote {
 
         public MidiNote build() {
             Note note = new Note(id, commonCoordinateX, noteCoordinateY, noteWidth, noteHeight);
-            note.subscribeToNoteResizedEvent(channel);
             noteParent.getChildren().add(note);
             Velocity velocity = new Velocity(id, velocityParent,  commonCoordinateX);
             velocityParent.getChildren().add(velocity);
-            velocity.subscribeToVelocityChangedEvent(channel);
-            return new MidiNote(id, channel, note, velocity, noteParent, velocityParent);
+            return new MidiNote(id, note, velocity);
         }
     }
 }

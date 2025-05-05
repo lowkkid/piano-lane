@@ -41,6 +41,7 @@ public class ChannelRackController implements Initializable {
     private final MenuItem customSynthesizerItem = new MenuItem("Custom Synthesizer");
 
     private final List<ChannelRackItem> rows = new ArrayList<>();
+    private final MidiNoteContainer midiNoteContainer = MidiNoteContainer.getInstance();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -81,7 +82,7 @@ public class ChannelRackController implements Initializable {
             if (event.getButton() == MouseButton.SECONDARY) {
                 deleteItem.setOnAction(e -> deleteInstrument(channelRackItem));
                 channelRackItemContextMenu.show(channelRackItem.getInstrumentName(), event.getScreenX(), event.getScreenY());
-                MidiNoteContainer.removeAllNotesForChanel(channelRackItem.getChannelId());
+                midiNoteContainer.removeAllNotesForChanel(channelRackItem.getChannelId());
             }
         });
     }
