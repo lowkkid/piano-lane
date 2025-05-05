@@ -12,7 +12,6 @@ import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
-import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
 import lombok.RequiredArgsConstructor;
@@ -20,7 +19,6 @@ import org.springframework.stereotype.Component;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.CURRENT_PIANO_ROLL_CONTROLLER;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCE;
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.updateSequence;
 
 @Component
@@ -173,7 +171,7 @@ public class ToolbarController {
         alert.showAndWait();
     }
 
-    private void saveToFile(String absolutePath) throws Exception {
+    private void saveToFile(String absolutePath) {
         saveSequence(absolutePath);
         System.out.println("Сохранение в файл: " + absolutePath);
     }

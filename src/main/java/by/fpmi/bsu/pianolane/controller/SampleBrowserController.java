@@ -10,9 +10,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
 import javax.sound.midi.Instrument;
-import javax.sound.midi.MidiUnavailableException;
-
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.SYNTHESIZER;
 
 @Component
 @Slf4j
@@ -27,13 +24,9 @@ public class SampleBrowserController {
         TreeItem<Instrument> rootItem = new TreeItem<>(null);
         rootItem.setExpanded(true);
 
-        for (Instrument instrument : SYNTHESIZER.getAvailableInstruments()) {
-            TreeItem<Instrument> instrumentItem = new TreeItem<>(instrument);
-            rootItem.getChildren().add(instrumentItem);
-        }
-//        InstrumentsUtil.getInstruments().stream()
-//                .map(TreeItem::new)
-//                .forEach(rootItem.getChildren()::add);
+        InstrumentsUtil.getInstruments().stream()
+                .map(TreeItem::new)
+                .forEach(rootItem.getChildren()::add);
 
         sampleTree.setRoot(rootItem);
 
