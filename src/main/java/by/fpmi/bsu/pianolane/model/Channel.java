@@ -15,8 +15,8 @@ import java.util.concurrent.atomic.AtomicInteger;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.createTrack;
 import static by.fpmi.bsu.pianolane.util.MathUtil.uiToMidiNoteLength;
+import static by.fpmi.bsu.pianolane.util.TracksUtil.createTrackWithId;
 
 @Data
 @ToString
@@ -34,7 +34,7 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
 
     public Channel(int channelId) {
         this.channelId = channelId;
-        track = createTrack();
+        track = createTrackWithId(String.valueOf(channelId));
         muted = false;
         soloed = false;
     }

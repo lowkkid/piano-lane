@@ -1,5 +1,7 @@
 package by.fpmi.bsu.pianolane.model;
 
+import static by.fpmi.bsu.pianolane.util.TracksUtil.deleteTrack;
+
 import java.util.Arrays;
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,7 +11,6 @@ import javax.sound.midi.Track;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.deleteTrack;
 
 @Slf4j
 public class ChannelCollection {

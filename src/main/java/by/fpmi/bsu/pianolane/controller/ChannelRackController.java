@@ -87,7 +87,7 @@ public class ChannelRackController implements Initializable {
         });
     }
 
-    private void addCustomChannel() {
+    private void addSynthesizer() {
         int channelId = channelCollection.addSynthesizerChannel();
 
         ChannelRackItem item = new ChannelRackItem(channelId, "Custom Synthesizer");
@@ -102,7 +102,7 @@ public class ChannelRackController implements Initializable {
     }
 
     private void setAddButton() {
-        customSynthesizerItem.setOnAction(e -> addCustomChannel());
+        customSynthesizerItem.setOnAction(e -> addSynthesizer());
         synthesizersContextMenu.getItems().add(customSynthesizerItem);
         addButton.setOnMouseClicked(event ->
                 synthesizersContextMenu.show(addButton, event.getScreenX(), event.getScreenY()));

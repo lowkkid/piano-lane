@@ -3,6 +3,7 @@
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.layout.VBox?>
+<?import javafx.scene.layout.Region?>
 <VBox fx:id="toolsAndSettings"
       prefHeight="100.0"
       prefWidth="200.0"
@@ -10,15 +11,39 @@
       xmlns="http://javafx.com/javafx/8.0"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="by.fpmi.bsu.pianolane.controller.ToolbarController">
-    <HBox fx:id="leftInnerBox" alignment="CENTER" styleClass="top-box" prefHeight="50" stylesheets="@../css/panel.css">
+    <HBox fx:id="upperButtons" styleClass="top-box" prefHeight="50" stylesheets="@../css/panel.css" style="-fx-padding: 0 10 0 10">
+        <Button fx:id="saveProjectButton" styleClass="menu-button">
+            <graphic>
+                <FontIcon iconLiteral="bx-save" />
+            </graphic>
+        </Button>
+        <Region prefWidth="10"/>
+        <Button fx:id="loadProjectButton" styleClass="menu-button">
+            <graphic>
+                <FontIcon iconLiteral="bx-upload"/>
+            </graphic>
+        </Button>
+
+        <Region HBox.hgrow="ALWAYS"/>
+
         <Spinner fx:id="bpmSpinner" prefWidth="80"/>
-        <Button fx:id="playButton" text="▶" styleClass="play-button"/>
-        <Button fx:id="stopButton" text="■" styleClass="stop-button"/>
+        <Button fx:id="playButton" styleClass="menu-button">
+            <graphic>
+                <FontIcon iconLiteral="bx-play"/>
+            </graphic>
+        </Button>
+        <Button fx:id="stopButton" styleClass="menu-button">
+            <graphic>
+                <FontIcon iconLiteral="bx-stop"/>
+            </graphic>
+        </Button>
+
+        <Region HBox.hgrow="ALWAYS"/>
     </HBox>
     <HBox alignment="CENTER" styleClass="top-box">
         <Button fx:id="menuButton" styleClass="menu-button" stylesheets="@../css/panel.css">
             <graphic>
-                <FontIcon iconLiteral="bi-list" />
+                <FontIcon iconLiteral="bx-list-ul" />
             </graphic>
         </Button>
     </HBox>

@@ -48,19 +48,8 @@ public class GlobalInstances {
         }
     }
 
-    public static Track createTrack() {
-        Track track = SEQUENCE.createTrack();
-        try {
-            SEQUENCER.open();
-            SEQUENCER.setSequence(SEQUENCE);
-        } catch (Exception e) {
-            throw new RuntimeException(e);
-        }
-        return track;
-    }
-
-    public static void deleteTrack(Track track) {
-        SEQUENCE.deleteTrack(track);
+    public static void updateSequence(Sequence sequence) {
+        SEQUENCE = sequence;
         try {
             SEQUENCER.setSequence(SEQUENCE);
         } catch (InvalidMidiDataException e) {

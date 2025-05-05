@@ -1,6 +1,10 @@
 package by.fpmi.bsu.pianolane;
 
 import static by.fpmi.bsu.pianolane.util.constants.DefaultValues.DEFAULT_VELOCITY_VALUE;
+
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
@@ -10,14 +14,17 @@ import javax.sound.midi.Track;
 import static by.fpmi.bsu.pianolane.util.LogUtil.getAllTrackEvents;
 
 @Slf4j
+@Getter
+@NoArgsConstructor
 public class NoteEvent {
 
     private MidiEvent noteOnEvent;
-    private final ShortMessage noteOnMessage;
+    private ShortMessage noteOnMessage;
 
     private MidiEvent noteOffEvent;
-    private final ShortMessage noteOffMessage;
-    private final Track track;
+    private ShortMessage noteOffMessage;
+    @Setter
+    private Track track;
 
     private static final int noteOffVelocity = 0;
 
@@ -51,6 +58,7 @@ public class NoteEvent {
         } catch (InvalidMidiDataException e) {
             throw new RuntimeException(e);
         }
+        noteOnMessage = newNoteOnMessage;
         noteOnEvent = new MidiEvent(newNoteOnMessage, noteOnEvent.getTick());
         track.add(noteOnEvent);
     }

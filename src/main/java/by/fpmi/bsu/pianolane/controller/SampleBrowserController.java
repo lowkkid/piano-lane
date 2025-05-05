@@ -1,5 +1,6 @@
 package by.fpmi.bsu.pianolane.controller;
 
+import by.fpmi.bsu.pianolane.util.InstrumentsUtil;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
@@ -26,16 +27,13 @@ public class SampleBrowserController {
         TreeItem<Instrument> rootItem = new TreeItem<>(null);
         rootItem.setExpanded(true);
 
-        try {
-            SYNTHESIZER.open();
-            for (Instrument instrument : SYNTHESIZER.getAvailableInstruments()) {
-                TreeItem<Instrument> instrumentItem = new TreeItem<>(instrument);
-                rootItem.getChildren().add(instrumentItem);
-            }
-            SYNTHESIZER.close();
-        } catch (MidiUnavailableException e) {
-            e.printStackTrace();
+        for (Instrument instrument : SYNTHESIZER.getAvailableInstruments()) {
+            TreeItem<Instrument> instrumentItem = new TreeItem<>(instrument);
+            rootItem.getChildren().add(instrumentItem);
         }
+//        InstrumentsUtil.getInstruments().stream()
+//                .map(TreeItem::new)
+//                .forEach(rootItem.getChildren()::add);
 
         sampleTree.setRoot(rootItem);
 
