@@ -1,7 +1,6 @@
 package by.fpmi.bsu.pianolane.ui.pianoroll;
 
 import static by.fpmi.bsu.pianolane.ui.Constants.NOTE_AND_VELOCITY_COLOR;
-import static by.fpmi.bsu.pianolane.util.constants.DefaultValues.NORMALIZED_DEFAULT_VELOCITY_VALUE;
 
 import java.io.Serializable;
 import javafx.beans.property.DoubleProperty;

@@ -18,8 +18,6 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
-import javax.sound.midi.MidiEvent;
-import javax.sound.midi.ShortMessage;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.io.TempDir;

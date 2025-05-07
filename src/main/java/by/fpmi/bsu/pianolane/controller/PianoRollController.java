@@ -589,7 +589,7 @@ public class PianoRollController {
         });
 
         note.setOnMouseReleased(event -> {
-            note.setResizing(false);;
+            note.setResizing(false);
             event.consume();
             notifyResizeEventObservers(note.getNoteId(), (int) note.getWidth());
         });

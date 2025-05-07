@@ -37,7 +37,7 @@ public class DefaultChannel extends Channel {
             programChange.setMessage(ShortMessage.PROGRAM_CHANGE, channelId, patch.getProgram(), 0);
             track.add(new MidiEvent(programChange, 0));
         } catch (InvalidMidiDataException e) {
-            e.printStackTrace();
+            throw new RuntimeException(e);
         }
     }
 

@@ -1,6 +1,5 @@
 package by.fpmi.bsu.pianolane.serialization;
 
-import by.fpmi.bsu.pianolane.wrappers.NoteOffMessage;
 import by.fpmi.bsu.pianolane.wrappers.NoteOnMessage;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.Serializer;

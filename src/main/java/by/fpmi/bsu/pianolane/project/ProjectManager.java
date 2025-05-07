@@ -23,7 +23,6 @@ import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNoteContainer;
 import by.fpmi.bsu.pianolane.ui.pianoroll.Note;
 import by.fpmi.bsu.pianolane.ui.pianoroll.Velocity;
 import by.fpmi.bsu.pianolane.util.LogUtil;
-import by.fpmi.bsu.pianolane.util.TracksUtil;
 import by.fpmi.bsu.pianolane.wrappers.NoteEvent;
 import by.fpmi.bsu.pianolane.wrappers.NoteMidiEvent;
 import by.fpmi.bsu.pianolane.wrappers.NoteOffMessage;

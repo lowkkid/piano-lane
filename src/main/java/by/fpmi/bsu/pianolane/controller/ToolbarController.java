@@ -1,11 +1,9 @@
 package by.fpmi.bsu.pianolane.controller;
 
 import by.fpmi.bsu.pianolane.MidiPlayer;
-import by.fpmi.bsu.pianolane.model.ChannelCollection;
 import by.fpmi.bsu.pianolane.project.ProjectManager;
 import java.io.File;
 import java.io.IOException;
-import java.util.List;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;

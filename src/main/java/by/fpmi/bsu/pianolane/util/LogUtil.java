@@ -41,17 +41,6 @@ public class LogUtil {
         return events.toString();
     }
 
-    public static <K, V> void formatMapForLogging(Map<K, V> map) {
-        if (map == null || map.isEmpty()) {
-            System.out.println("Map is empty");
-        }
-
-        String formatted = map.entrySet().stream()
-                .map(entry -> String.format("Key: %s, Value: %s", entry.getKey(), entry.getValue()))
-                .collect(Collectors.joining("\n", "Map contents:\n", ""));
-        System.out.println(formatted);
-    }
-
     public static void logAllTrackEvents(Track track) {
         List<String> events = new ArrayList<>(track.size());
         for (int i = 0; i < track.size(); i++) {
