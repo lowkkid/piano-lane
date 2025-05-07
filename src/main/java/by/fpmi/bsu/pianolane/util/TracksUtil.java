@@ -30,12 +30,23 @@ public class TracksUtil {
         return InstrumentsUtil.getInstrumentById(shortMessage.getData1());
     }
 
-    public static String getTrackId(Track track) {
+    public static int getInstrumentIdForTrack(Track track) {
+        Objects.requireNonNull(track);
+        var shortMessage = (ShortMessage) findMessageInTrack(
+                track, message -> message instanceof ShortMessage sm &&
+                        sm.getCommand() == ShortMessage.PROGRAM_CHANGE);
+        assert shortMessage != null;
+        return shortMessage.getData1();
+    }
+
+
+    public static int getTrackId(Track track) {
         Objects.requireNonNull(track);
         var metaMessage = (MetaMessage) findMessageInTrack(
                 track, message -> message instanceof MetaMessage mm && mm.getType() == META_TYPE_MARKER);
         assert metaMessage != null;
-        return new String(metaMessage.getData(), StandardCharsets.UTF_8);
+        String id = new String(metaMessage.getData(), StandardCharsets.UTF_8);
+        return Integer.parseInt(id);
     }
 
     private static MidiMessage findMessageInTrack(Track track,

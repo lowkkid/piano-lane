@@ -1,10 +1,11 @@
 package by.fpmi.bsu.pianolane.controller;
 
 import by.fpmi.bsu.pianolane.MidiPlayer;
-import by.fpmi.bsu.pianolane.util.LogUtil;
+import by.fpmi.bsu.pianolane.model.ChannelCollection;
+import by.fpmi.bsu.pianolane.project.ProjectManager;
 import java.io.File;
 import java.io.IOException;
-import java.util.Arrays;
+import java.util.List;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -13,16 +14,16 @@ import javafx.scene.control.SpinnerValueFactory;
 import javafx.stage.FileChooser;
 import javafx.stage.Window;
 import javax.sound.midi.MidiSystem;
-import javax.sound.midi.Sequence;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.CURRENT_PIANO_ROLL_CONTROLLER;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCE;
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.updateSequence;
 
 @Component
 @RequiredArgsConstructor
+@Slf4j
 public class ToolbarController {
 
     public Button saveProjectButton;
@@ -38,12 +39,11 @@ public class ToolbarController {
 
     private final MidiPlayer midiPlayer;
     private final MainController mainController;
+    private final ProjectManager projectManager;
 
     private static final String DEFAULT_FILENAME = "Untitlув";
     private static final String FILE_EXTENSION = "*.mid";
     private static final String FILE_DESCRIPTION = "MIDI Files";
-
-
 
     @FXML
     public void initialize() {
@@ -105,7 +105,6 @@ public class ToolbarController {
         if (file != null) {
             try {
                 saveToFile(file.getAbsolutePath());
-                showSuccessMessage("Файл успешно сохранен");
             } catch (Exception e) {
                 showErrorMessage("Ошибка при сохранении файла", e.getMessage());
             }
@@ -117,7 +116,6 @@ public class ToolbarController {
         if (file != null) {
             try {
                 loadFromFile(file.getAbsolutePath());
-                showSuccessMessage("Файл успешно загружен");
             } catch (Exception e) {
                 showErrorMessage("Ошибка при загрузке файла", e.getMessage());
             }
@@ -155,13 +153,6 @@ public class ToolbarController {
         }
     }
 
-    private void showSuccessMessage(String message) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Успех");
-        alert.setHeaderText(null);
-        alert.setContentText(message);
-        alert.showAndWait();
-    }
 
     private void showErrorMessage(String header, String content) {
         Alert alert = new Alert(Alert.AlertType.ERROR);
@@ -172,15 +163,14 @@ public class ToolbarController {
     }
 
     private void saveToFile(String absolutePath) {
-        saveSequence(absolutePath);
-        System.out.println("Сохранение в файл: " + absolutePath);
+        log.info("Saving project to file: {}", absolutePath);
+        projectManager.saveProject(absolutePath);
+
     }
 
     private void loadFromFile(String absolutePath) throws Exception {
-        Sequence sequence = MidiSystem.getSequence(new File(absolutePath));
-        Arrays.stream(sequence.getTracks()).forEach(LogUtil::logAllTrackEvents);
-        updateSequence(sequence);
-        System.out.println("Загрузка из файла: " + absolutePath);
+        log.info("Loading project from file: {}", absolutePath);
+        projectManager.loadFromFile(absolutePath);
     }
 
 

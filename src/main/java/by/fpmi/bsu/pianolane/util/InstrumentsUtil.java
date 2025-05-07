@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.IntStream;
 import javax.sound.midi.Instrument;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
@@ -17,9 +18,7 @@ public class InstrumentsUtil {
 
     static {
         var instruments = SYNTHESIZER.getAvailableInstruments();
-        for (int i = 0; i < instruments.length; i++) {
-            INSTRUMENTS.put(i, instruments[i]);
-        }
+        IntStream.range(0, instruments.length).forEach(i -> INSTRUMENTS.put(i, instruments[i]));
     }
 
     public static List<Instrument> getInstruments() {

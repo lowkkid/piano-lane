@@ -1,5 +1,6 @@
 package by.fpmi.bsu.pianolane.model;
 
+import java.util.Objects;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -8,6 +9,7 @@ import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiEvent;
 import javax.sound.midi.Patch;
 import javax.sound.midi.ShortMessage;
+import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SYNTHESIZER;
@@ -15,6 +17,7 @@ import static by.fpmi.bsu.pianolane.util.GlobalInstances.SYNTHESIZER;
 @Getter
 @Setter
 @SuperBuilder
+@ToString(callSuper = true)
 public class DefaultChannel extends Channel {
 
     private Instrument instrument;
@@ -36,5 +39,24 @@ public class DefaultChannel extends Channel {
         } catch (InvalidMidiDataException e) {
             e.printStackTrace();
         }
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        if (!super.equals(o)) return false;
+
+        DefaultChannel that = (DefaultChannel) o;
+
+        return instrument != null && that.instrument != null ?
+                Objects.equals(instrument.getName(), that.instrument.getName()) :
+                instrument == that.instrument;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(super.hashCode(),
+                instrument != null ? instrument.getName() : null);
     }
 }

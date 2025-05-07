@@ -67,6 +67,13 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
         eventToDelete.destroy();
     }
 
+    public void setTrack(Track track) {
+        this.track = track;
+        for (NoteEvent noteEvent : noteEvents.values()) {
+            noteEvent.setTrack(track);
+        }
+    }
+
     @Override
     public void onNoteDeleted(Integer noteId) {
         log.debug("Deleting note {}", noteId);

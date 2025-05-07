@@ -41,6 +41,11 @@ public class ChannelCollection {
      */
     private ExecutorService executorService;
 
+    public void resetFrom(ChannelCollection other) {
+        System.arraycopy(other.channels, 0, this.channels, 0, this.channels.length);
+        this.synthesizersThreadPoolCount = other.synthesizersThreadPoolCount;
+        this.executorService = other.executorService;
+    }
     /**
      * @param instrument instrument for new channel
      * @return id of created Channel

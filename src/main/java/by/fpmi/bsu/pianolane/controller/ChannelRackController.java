@@ -1,8 +1,12 @@
 package by.fpmi.bsu.pianolane.controller;
 
+import static by.fpmi.bsu.pianolane.util.TracksUtil.getInstrumentForTrack;
+import static by.fpmi.bsu.pianolane.util.TracksUtil.getTrackId;
+
 import by.fpmi.bsu.pianolane.ui.ChannelRackItem;
 import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNoteContainer;
 import by.fpmi.bsu.pianolane.model.ChannelCollection;
+import java.util.Arrays;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -10,6 +14,7 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
+import javax.sound.midi.Track;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -106,6 +111,15 @@ public class ChannelRackController implements Initializable {
         synthesizersContextMenu.getItems().add(customSynthesizerItem);
         addButton.setOnMouseClicked(event ->
                 synthesizersContextMenu.show(addButton, event.getScreenX(), event.getScreenY()));
+    }
+
+    public void loadFromTracks(Track[] tracks) {
+        var channelRackItems = Arrays.stream(tracks)
+                .map(track -> new ChannelRackItem(getTrackId(track), getInstrumentForTrack(track).getName()))
+                .toList();
+
+        channelRackItems.forEach(this::registerChannelRackItem);
+        rows.addAll(channelRackItems);
     }
 
     @Autowired

@@ -21,14 +21,11 @@ public class ChannelCollectionSerializer extends Serializer<ChannelCollection> {
     @Override
     public ChannelCollection read(Kryo kryo, Input input, Class<? extends ChannelCollection> aClass) {
         int length = input.readInt();
-        System.out.println(length);
         Channel[] channels = new Channel[length];
         for (int i = 0; i < length; i++) {
             channels[i] = (Channel) kryo.readClassAndObject(input);
-            System.out.println(channels[i]);
         }
         int synthesizersThreadPoolCount = input.readInt();
-        System.out.println(synthesizersThreadPoolCount);
         var executorService = synthesizersThreadPoolCount > 0 ? Executors.newFixedThreadPool(synthesizersThreadPoolCount) : null;
         return ChannelCollection.builder()
                 .channels(channels)
