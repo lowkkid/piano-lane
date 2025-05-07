@@ -4,15 +4,18 @@ import by.fpmi.bsu.pianolane.ui.GridPane;
 import java.io.Serializable;
 import javafx.scene.layout.Pane;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 @Getter
 @Slf4j
+@NoArgsConstructor
+//TODO: experiment with final fields and newInstance in serializer
 public class MidiNote implements Serializable {
 
-    private final Integer id;
-    private final Note note;
-    private final Velocity velocity;
+    private Integer id;
+    private Note note;
+    private Velocity velocity;
 
     public static Builder builder() {
         return new Builder();
@@ -32,6 +35,7 @@ public class MidiNote implements Serializable {
         private double noteCoordinateY;
         private double noteWidth;
         private double noteHeight;
+        private double velocityHeightPercentage;
 
         public Builder noteParent(GridPane parent) {
             this.noteParent = parent;
@@ -68,10 +72,15 @@ public class MidiNote implements Serializable {
             return this;
         }
 
+        public Builder velocityHeightPercentage(double heightPercentage) {
+            this.velocityHeightPercentage = heightPercentage;
+            return this;
+        }
+
         public MidiNote build() {
             Note note = new Note(id, commonCoordinateX, noteCoordinateY, noteWidth, noteHeight);
             noteParent.getChildren().add(note);
-            Velocity velocity = new Velocity(id, velocityParent,  commonCoordinateX);
+            Velocity velocity = new Velocity(id, velocityParent,  commonCoordinateX, velocityHeightPercentage);
             velocityParent.getChildren().add(velocity);
             return new MidiNote(id, note, velocity);
         }

@@ -1,15 +1,15 @@
 package by.fpmi.bsu.pianolane.ui.pianoroll;
 
-import by.fpmi.bsu.pianolane.observer.MidiNoteDeleteObserver;
 import java.io.Serializable;
-import lombok.extern.slf4j.Slf4j;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import lombok.Getter;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
+@Getter
 public class MidiNoteContainer implements Serializable {
 
     private final Map<Integer, List<MidiNote>> notesByChannel = new HashMap<>();

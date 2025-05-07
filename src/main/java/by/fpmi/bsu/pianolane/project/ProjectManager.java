@@ -11,10 +11,17 @@ import by.fpmi.bsu.pianolane.model.ChannelCollection;
 import by.fpmi.bsu.pianolane.model.DefaultChannel;
 import by.fpmi.bsu.pianolane.serialization.ChannelCollectionSerializer;
 import by.fpmi.bsu.pianolane.serialization.DefaultChannelSerializer;
+import by.fpmi.bsu.pianolane.serialization.MidiNoteContainerSerializer;
 import by.fpmi.bsu.pianolane.serialization.NoteEventSerializer;
 import by.fpmi.bsu.pianolane.serialization.NoteMidiEventSerializer;
 import by.fpmi.bsu.pianolane.serialization.NoteOffMessageSerializer;
 import by.fpmi.bsu.pianolane.serialization.NoteOnMessageSerializer;
+import by.fpmi.bsu.pianolane.serialization.NoteSerializer;
+import by.fpmi.bsu.pianolane.serialization.VelocitySerializer;
+import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNote;
+import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNoteContainer;
+import by.fpmi.bsu.pianolane.ui.pianoroll.Note;
+import by.fpmi.bsu.pianolane.ui.pianoroll.Velocity;
 import by.fpmi.bsu.pianolane.util.LogUtil;
 import by.fpmi.bsu.pianolane.util.TracksUtil;
 import by.fpmi.bsu.pianolane.wrappers.NoteEvent;
@@ -24,6 +31,7 @@ import by.fpmi.bsu.pianolane.wrappers.NoteOnMessage;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
+import com.esotericsoftware.kryo.serializers.FieldSerializer;
 import jakarta.annotation.PostConstruct;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
@@ -32,6 +40,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -56,6 +65,7 @@ public class ProjectManager {
     @PostConstruct
     public void init() {
         kryo.register(HashMap.class);
+        kryo.register(ArrayList.class);
         kryo.register(AtomicInteger.class, new AtomicIntegerSerializer());
         kryo.register(NoteEvent.class, new NoteEventSerializer());
         kryo.register(DefaultChannel.class, new DefaultChannelSerializer());
@@ -63,6 +73,10 @@ public class ProjectManager {
         kryo.register(NoteOnMessage.class, new NoteOnMessageSerializer());
         kryo.register(NoteMidiEvent.class, new NoteMidiEventSerializer());
         kryo.register(ChannelCollection.class, new ChannelCollectionSerializer());
+        kryo.register(Note.class, new NoteSerializer());
+        kryo.register(Velocity.class, new VelocitySerializer());
+        kryo.register(MidiNote.class, new FieldSerializer<>(kryo, MidiNote.class));
+        kryo.register(MidiNoteContainer.class, new MidiNoteContainerSerializer());
     }
 
     public void saveProject(String filePath) {
@@ -90,6 +104,7 @@ public class ProjectManager {
 
             Output output = new Output(fos);
             kryo.writeObject(output, ChannelCollection.getInstance());
+            kryo.writeObject(output, MidiNoteContainer.getInstance());
             output.close();
         } catch (IOException e) {
             throw new RuntimeException("Ошибка при создании файла с MIDI и Kryo данными", e);
@@ -139,8 +154,7 @@ public class ProjectManager {
 
             ChannelCollection.getInstance().resetFrom(readChannelCollection);
 
-
-
+            kryo.readObject(input, MidiNoteContainer.class);
             input.close();
         }
     }

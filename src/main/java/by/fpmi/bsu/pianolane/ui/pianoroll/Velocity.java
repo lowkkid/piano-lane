@@ -22,23 +22,20 @@ public class Velocity extends Group implements Serializable {
     private final Circle topCircle;
     private final Rectangle handle;
     private final DoubleProperty heightPercentage;
-    private final Pane parentPane;
+    private Pane parentPane;
     private final double x;
 
-    public Velocity(Integer noteId, Pane parentPane, double x) {
+    public Velocity(Integer noteId, Pane parentPane, double x, double heightPercentage) {
         this.noteId = noteId;
-        this.parentPane = parentPane;
         this.x = x;
-        this.heightPercentage = new SimpleDoubleProperty(NORMALIZED_DEFAULT_VELOCITY_VALUE);
+        this.heightPercentage = new SimpleDoubleProperty(heightPercentage);
         // Create the main vertical line (anchored at the bottom)
         vertLine = new Rectangle(x, 0, 2, 0); // height will be set by binding
         vertLine.setFill(NOTE_AND_VELOCITY_COLOR);
 
-        // Bind the vertical line's height to a percentage of the panel height
-        vertLine.heightProperty().bind(parentPane.heightProperty().multiply(heightPercentage));
-
-        // Position the line from the bottom
-        vertLine.yProperty().bind(parentPane.heightProperty().subtract(vertLine.heightProperty()));
+        if (parentPane != null) {
+            setParentPane(parentPane);
+        }
 
         // Create the circle at the top of the line
         topCircle = new Circle(x + 1, 0, 5);
@@ -53,6 +50,15 @@ public class Velocity extends Group implements Serializable {
 
         // Add all elements to the group
         getChildren().addAll(vertLine, topCircle, handle);
+    }
+
+    public void setParentPane(Pane parentPane) {
+        this.parentPane = parentPane;
+        // Bind the vertical line's height to a percentage of the panel height
+        vertLine.heightProperty().bind(parentPane.heightProperty().multiply(heightPercentage));
+
+        // Position the line from the bottom
+        vertLine.yProperty().bind(parentPane.heightProperty().subtract(vertLine.heightProperty()));
     }
 
     public double getHeightPercentage() {

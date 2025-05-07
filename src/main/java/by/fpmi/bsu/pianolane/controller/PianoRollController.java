@@ -51,6 +51,7 @@ import java.util.List;
 import static by.fpmi.bsu.pianolane.util.CopyUtil.copy;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
 import static by.fpmi.bsu.pianolane.util.MathUtil.uiToMidiNoteLength;
+import static by.fpmi.bsu.pianolane.util.constants.DefaultValues.NORMALIZED_DEFAULT_VELOCITY_VALUE;
 
 @Component
 @Slf4j
@@ -252,11 +253,16 @@ public class PianoRollController {
 
         gridPane.addEventHandler(MouseEvent.MOUSE_CLICKED, this::handleGridClick);
 
+
+        //TODO: after loading listeners for velo change or note delete are NOT WORKING!!!
         log.info("Fetching previously written notes for channel {}", channelId);
         List<MidiNote> previouslyWrittenNotes = midiNoteContainer.getAllNotesForChannel(channelId);
         log.info("Fetched notes: {}", previouslyWrittenNotes);
+        previouslyWrittenNotes.forEach(this::setupMidiNoteListeners);
         gridPane.getChildren().addAll(previouslyWrittenNotes.stream().map(MidiNote::getNote).toList());
-        velocityPane.getChildren().addAll(previouslyWrittenNotes.stream().map(MidiNote::getVelocity).toList());
+        List<Velocity> previousVelocities = previouslyWrittenNotes.stream().map(MidiNote::getVelocity).toList();
+        previousVelocities.forEach(velocity -> velocity.setParentPane(velocityPane));
+        velocityPane.getChildren().addAll(previousVelocities);
         channel = channelCollection.getChannel(channelId);
 
         notesHorizontalScrollPane.setVvalue(0);
@@ -478,6 +484,7 @@ public class PianoRollController {
                 .noteCoordinateY(y)
                 .noteWidth(NEW_NOTE_WIDTH)
                 .noteHeight(cellHeight)
+                .velocityHeightPercentage(NORMALIZED_DEFAULT_VELOCITY_VALUE)
                 .build();
         midiNoteContainer.addNote(channelId, note);
         setupMidiNoteListeners(note);
