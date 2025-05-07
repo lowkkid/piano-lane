@@ -6,10 +6,12 @@ import by.fpmi.bsu.synthesizer.newimpl.SynthPlayer;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
+import lombok.experimental.SuperBuilder;
 
 @Getter
 @Setter
 @ToString(callSuper = true)
+@SuperBuilder
 public class SynthesizerChannel extends Channel {
 
     private SynthPlayer synthPlayer;

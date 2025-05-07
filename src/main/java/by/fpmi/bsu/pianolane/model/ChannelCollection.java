@@ -3,6 +3,12 @@ package by.fpmi.bsu.pianolane.model;
 import static by.fpmi.bsu.pianolane.util.TracksUtil.deleteTrack;
 
 import java.util.Arrays;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.Setter;
+import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sound.midi.Instrument;
@@ -13,14 +19,22 @@ import java.util.concurrent.Executors;
 
 
 @Slf4j
+@Getter
+@Setter
+@Builder
+@AllArgsConstructor
+@EqualsAndHashCode(exclude = "executorService")
+@ToString(exclude = "executorService")
 public class ChannelCollection {
 
     public static ChannelCollection getInstance() {
         return ChannelCollectionHolder.INSTANCE;
     }
 
-    private final Channel[] channels = new Channel[16];
+    private final Channel[] channels;
+    @Builder.Default
     private int synthesizersThreadPoolCount = 0;
+
     /**
      * This service only used when stopping synthesizer threads,
      * because it's need to be done asynchronously and independently of each other
@@ -87,6 +101,7 @@ public class ChannelCollection {
     }
 
     private ChannelCollection() {
+        channels = new Channel[16];
     }
 
     private static class ChannelCollectionHolder {
