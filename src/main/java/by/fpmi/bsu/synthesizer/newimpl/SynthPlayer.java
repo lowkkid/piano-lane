@@ -63,14 +63,5 @@ public class SynthPlayer {
         synchronized (activeSynths) {
             activeSynths.forEach(Synth::noteOff);
         }
-
-        while (activeSynths.stream().anyMatch(synth -> !synth.isFinished())) {
-            try {
-                log.info("Can't stop synth thread, because it still has unfinished notes.");
-                Thread.sleep(50);
-            } catch (InterruptedException e) {
-                throw new RuntimeException(e);
-            }
-        }
     }
 }

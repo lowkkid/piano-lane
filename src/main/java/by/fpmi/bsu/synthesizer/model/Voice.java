@@ -6,13 +6,11 @@ import static by.fpmi.bsu.synthesizer.newimpl.SoundUtil.generateWaveform;
 import by.fpmi.bsu.synthesizer.newimpl.Waveform;
 
 public class Voice {
-    private double frequency;
+    private final double frequency;
     private double phase;
-    private double detune;
 
     public Voice(double baseFrequency, double detuneAmount, double phase) {
-        this.detune = detuneAmount;
-        this.frequency = baseFrequency * (1.0 + detune);
+        this.frequency = baseFrequency * (1.0 + detuneAmount);
         this.phase = phase;
     }
 

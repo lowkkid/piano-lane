@@ -5,7 +5,6 @@ import javax.sound.midi.MidiEvent;
 import javax.sound.midi.ShortMessage;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 
 public class NoteMidiEvent {
 

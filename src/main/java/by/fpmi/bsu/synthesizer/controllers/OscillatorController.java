@@ -47,8 +47,8 @@ public class OscillatorController {
     @FXML
     public Canvas envelopeCanvas;
     public CheckBox switchCheckbox;
-    private String oscillatorNameParam;
-    private boolean lockedParam;
+    private final String oscillatorNameParam;
+    private final boolean lockedParam;
     public Label oscillatorNameLabel;
 
     private OscillatorSettings settings;
