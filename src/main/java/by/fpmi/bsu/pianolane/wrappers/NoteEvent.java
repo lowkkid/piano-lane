@@ -1,5 +1,6 @@
 package by.fpmi.bsu.pianolane.wrappers;
 
+import static by.fpmi.bsu.pianolane.util.TracksUtil.isMidiEventExistsInTrack;
 import static by.fpmi.bsu.pianolane.util.constants.DefaultValues.DEFAULT_VELOCITY_VALUE;
 import static by.fpmi.bsu.pianolane.util.LogUtil.getAllTrackEvents;
 
@@ -8,7 +9,6 @@ import lombok.Builder;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
 import javax.sound.midi.InvalidMidiDataException;
@@ -26,7 +26,6 @@ public class NoteEvent {
 
     private NoteMidiEvent noteOnEvent;
     private NoteMidiEvent noteOffEvent;
-    @Setter
     private Track track;
 
     public NoteEvent(Track track, int channelId, int midiNote, int startTick, int noteDuration) throws InvalidMidiDataException {
@@ -70,8 +69,24 @@ public class NoteEvent {
         track.remove(noteOffEvent.midiEvent());
     }
 
+    public void setTrack(Track track) {
+        this.track = track;
+        registerNoteEvent();
+    }
+
     private void registerNoteEvent() {
-        track.add(noteOnEvent.midiEvent());
-        track.add(noteOffEvent.midiEvent());
+        var existingNoteOnEvent = isMidiEventExistsInTrack(track, noteOnEvent.midiEvent());
+        if (existingNoteOnEvent == null) {
+            track.add(noteOnEvent.midiEvent());
+        } else {
+            noteOnEvent.setMidiEvent(existingNoteOnEvent);
+        }
+
+        var existingNoteOffEvent = isMidiEventExistsInTrack(track, noteOffEvent.midiEvent());
+        if (existingNoteOffEvent == null) {
+            track.add(noteOffEvent.midiEvent());
+        } else {
+            noteOffEvent.setMidiEvent(existingNoteOffEvent);
+        }
     }
 }

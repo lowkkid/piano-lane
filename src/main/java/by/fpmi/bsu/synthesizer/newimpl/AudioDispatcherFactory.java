@@ -6,6 +6,8 @@ import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
 import by.fpmi.bsu.synthesizer.model.Synth;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
 import javax.sound.sampled.LineUnavailableException;
@@ -16,6 +18,7 @@ import java.util.List;
 import static by.fpmi.bsu.synthesizer.newimpl.Constants.SAMPLE_RATE;
 
 @Slf4j
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
 public class AudioDispatcherFactory {
 
     private static final int bufferSize = 512;

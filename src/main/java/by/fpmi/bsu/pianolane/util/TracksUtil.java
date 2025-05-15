@@ -17,7 +17,7 @@ import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public class TracksUtil {
+public final class TracksUtil {
 
     private static final int META_TYPE_MARKER = 6;
 
@@ -40,13 +40,39 @@ public class TracksUtil {
     }
 
 
-    public static int getTrackId(Track track) {
-        Objects.requireNonNull(track);
+    public static Integer getTrackId(Track track) {
+        if (track == null) {
+            return null;
+        }
         var metaMessage = (MetaMessage) findMessageInTrack(
                 track, message -> message instanceof MetaMessage mm && mm.getType() == META_TYPE_MARKER);
         assert metaMessage != null;
         String id = new String(metaMessage.getData(), StandardCharsets.UTF_8);
         return Integer.parseInt(id);
+    }
+
+    public static MidiEvent isMidiEventExistsInTrack(Track track, MidiEvent desired) {
+        for (int i = 0; i < track.size(); i++) {
+            MidiEvent existing = track.get(i);
+            MidiMessage existingMessage = existing.getMessage();
+            MidiMessage desiredMessage = desired.getMessage();
+            long tick = existing.getTick();
+
+            if (existingMessage instanceof ShortMessage em && desiredMessage instanceof ShortMessage dm) {
+                if (tick == desired.getTick()
+                        && em.getCommand() == dm.getCommand()
+                        && em.getChannel() == dm.getChannel()
+                        && em.getData1() == dm.getData1()
+                        && em.getData2() == dm.getData2()) {
+                    return existing;
+                }
+            } else if (existingMessage instanceof MetaMessage em && desiredMessage instanceof MetaMessage dm) {
+                if (tick == desired.getTick() && em.getType() == dm.getType()) {
+                    return existing;
+                }
+            }
+        }
+        return null;
     }
 
     private static MidiMessage findMessageInTrack(Track track,

@@ -20,13 +20,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import static by.fpmi.bsu.pianolane.util.MathUtil.uiToMidiNoteLength;
 import static by.fpmi.bsu.pianolane.util.TracksUtil.createTrackWithId;
+import static by.fpmi.bsu.pianolane.util.TracksUtil.getTrackId;
 
 @Data
 @Slf4j
 @Getter
 @SuperBuilder
-@ToString(exclude = "track")
-//TODO: add track for equals and hash code
 public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObserver, VelocityChangedObserver {
 
     private final AtomicInteger notesSequence;
@@ -99,6 +98,7 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
         if (o == null || getClass() != o.getClass()) return false;
         Channel channel = (Channel) o;
         return channelId == channel.channelId &&
+                Objects.equals(getTrackId(track), getTrackId(channel.track)) &&
                 muted == channel.muted &&
                 soloed == channel.soloed &&
                 notesSequence.get() == channel.notesSequence.get() &&
@@ -111,8 +111,21 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
                 notesSequence.get(),
                 noteEvents,
                 channelId,
+                getTrackId(track),
                 muted,
                 soloed
         );
     }
+
+    @Override
+    public String toString() {
+        return getClass().getSimpleName() + "{" +
+                "noteSequence=" + notesSequence.get() +
+                ", noteEvents=" + noteEvents +
+                ", channelId=" + channelId +
+                ", track=" + getTrackId(track) +
+                ", muted=" + muted +
+                ", soloed" + soloed;
+    }
+
 }

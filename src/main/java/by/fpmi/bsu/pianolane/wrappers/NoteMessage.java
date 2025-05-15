@@ -3,9 +3,12 @@ package by.fpmi.bsu.pianolane.wrappers;
 import java.util.Objects;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.ShortMessage;
+import lombok.Setter;
 
+@Setter
 public abstract class NoteMessage {
-    protected final ShortMessage message;
+
+    protected ShortMessage message;
 
     protected NoteMessage() {
         this.message = new ShortMessage();

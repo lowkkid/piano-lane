@@ -3,8 +3,11 @@ package by.fpmi.bsu.pianolane.util;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.stream.IntStream;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
 
-public class MathUtil {
+@NoArgsConstructor(access = AccessLevel.PRIVATE)
+public final class MathUtil {
 
     private static final Map<Integer, Double> MIDI_NOTE_FREQUENCIES = new HashMap<>();
     private static final Map<Integer, Float> UNISON_NORMALIZATION_COEFFICIENTS = new HashMap<>();
@@ -34,6 +37,4 @@ public class MathUtil {
     public static int uiToMidiNoteLength(double uiNoteLength) {
         return (int) (UI_TO_MIDI_NOTE_COEFFICIENTS * uiNoteLength);
     }
-
-
 }

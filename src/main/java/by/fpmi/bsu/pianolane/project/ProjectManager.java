@@ -45,12 +45,13 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.Sequence;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 @Component
+@Slf4j
 public class ProjectManager {
 
-    private final String extension = ".plp";
     private final int formatVersion = 1;
     private final byte[] signature = "!PLP".getBytes(StandardCharsets.UTF_8);
     private final Kryo kryo = new Kryo();
@@ -79,6 +80,7 @@ public class ProjectManager {
     }
 
     public void saveProject(String filePath) {
+        log.info("Saving project to file: {}", filePath);
         try (FileOutputStream fos = new FileOutputStream(filePath)) {
             // Запись MIDI данных во временный поток
             ByteArrayOutputStream midiOut = new ByteArrayOutputStream();
@@ -110,16 +112,15 @@ public class ProjectManager {
         }
     }
 
-    public void loadFromFile(String absolutePath) throws Exception {
+    public void loadProject(String absolutePath) {
+        log.info("Loading project from file: {}", absolutePath);
         try (FileInputStream fis = new FileInputStream(absolutePath)) {
-            // Проверка сигнатуры
             byte[] readSignature = new byte[4];
             fis.read(readSignature);
             if (!Arrays.equals(readSignature, signature)) {
                 throw new IOException("Wrong file format");
             }
 
-            // Чтение версии
             int readVersion = fis.read();
             if (readVersion != formatVersion) {
                 throw new IOException("Unsupported format version: " + readVersion);
@@ -145,16 +146,21 @@ public class ProjectManager {
             ChannelCollection readChannelCollection = kryo.readObject(input, ChannelCollection.class);
             Arrays.stream(sequence.getTracks()).forEach(track -> {
                 int channelId = getTrackId(track);
+                System.out.println(channelId);
                 Channel target = readChannelCollection.getChannel(channelId);
+                System.out.println(target);
                 if (target != null) {
                     target.setTrack(track);
                 }
+                System.out.println(target);
             });
 
             ChannelCollection.getInstance().resetFrom(readChannelCollection);
 
             kryo.readObject(input, MidiNoteContainer.class);
             input.close();
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 

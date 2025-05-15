@@ -620,7 +620,6 @@ public class PianoRollController {
     }
 
     private void notifyVelocityChangedEventObservers(Integer noteId, Integer newVelocity) {
-        System.out.println("UPDATING VELOCITY WITH " + newVelocity);
         for (VelocityChangedObserver observer : velocityChangedObservers) {
             observer.onVelocityChanged(noteId, newVelocity);
         }

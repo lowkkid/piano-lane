@@ -4,6 +4,10 @@
 <?import javafx.scene.control.Spinner?>
 <?import javafx.scene.layout.VBox?>
 <?import javafx.scene.layout.Region?>
+<?import by.fpmi.bsu.pianolane.ui.button.SaveButton?>
+<?import javafx.stage.FileChooser?>
+
+<?import by.fpmi.bsu.pianolane.ui.button.OpenButton?>
 <VBox fx:id="toolsAndSettings"
       prefHeight="100.0"
       prefWidth="200.0"
@@ -11,18 +15,21 @@
       xmlns="http://javafx.com/javafx/8.0"
       xmlns:fx="http://javafx.com/fxml/1"
       fx:controller="by.fpmi.bsu.pianolane.controller.ToolbarController">
-    <HBox fx:id="upperButtons" styleClass="top-box" prefHeight="50" stylesheets="@../css/panel.css" style="-fx-padding: 0 10 0 10">
-        <Button fx:id="saveProjectButton" styleClass="menu-button">
+    <HBox fx:id="upperButtons" styleClass="top-box" prefHeight="50" stylesheets="@../css/panel.css"
+          style="-fx-padding: 0 10 0 10">
+        <SaveButton fx:id="saveProjectButton" styleClass="menu-button"
+                    initialFileName="project"
+                    fileExtension="plp">
             <graphic>
-                <FontIcon iconLiteral="bx-save" />
+                <FontIcon iconLiteral="bx-save"/>
             </graphic>
-        </Button>
+        </SaveButton>
         <Region prefWidth="10"/>
-        <Button fx:id="loadProjectButton" styleClass="menu-button">
+        <OpenButton fx:id="loadProjectButton" styleClass="menu-button">
             <graphic>
                 <FontIcon iconLiteral="bx-upload"/>
             </graphic>
-        </Button>
+        </OpenButton>
 
         <Region HBox.hgrow="ALWAYS"/>
 
@@ -43,7 +50,7 @@
     <HBox alignment="CENTER" styleClass="top-box">
         <Button fx:id="menuButton" styleClass="menu-button" stylesheets="@../css/panel.css">
             <graphic>
-                <FontIcon iconLiteral="bx-list-ul" />
+                <FontIcon iconLiteral="bx-list-ul"/>
             </graphic>
         </Button>
     </HBox>

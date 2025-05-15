@@ -2,30 +2,28 @@ package by.fpmi.bsu.pianolane.controller;
 
 import by.fpmi.bsu.pianolane.MidiPlayer;
 import by.fpmi.bsu.pianolane.project.ProjectManager;
-import java.io.File;
-import java.io.IOException;
+import by.fpmi.bsu.pianolane.ui.button.OpenButton;
+import by.fpmi.bsu.pianolane.ui.button.SaveButton;
 import javafx.fxml.FXML;
-import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.Spinner;
 import javafx.scene.control.SpinnerValueFactory;
 import javafx.stage.FileChooser;
-import javafx.stage.Window;
-import javax.sound.midi.MidiSystem;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.CURRENT_PIANO_ROLL_CONTROLLER;
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCE;
 
 @Component
 @RequiredArgsConstructor
 @Slf4j
 public class ToolbarController {
 
-    public Button saveProjectButton;
-    public Button loadProjectButton;
+    @FXML
+    public SaveButton saveProjectButton;
+    public OpenButton loadProjectButton;
+    public SaveButton exportToWavButton;
     @FXML
     private Button playButton;
     @FXML
@@ -39,138 +37,23 @@ public class ToolbarController {
     private final MainController mainController;
     private final ProjectManager projectManager;
 
-    private static final String DEFAULT_FILENAME = "Untitlув";
-    private static final String FILE_EXTENSION = "*.mid";
-    private static final String FILE_DESCRIPTION = "MIDI Files";
+    private static final String PROJECT_FILE_EXTENSION = "*.plp";
+    private static final String PROJECT_FILES_DESCRIPTION = "Piano Lane Project files";
+    private static final FileChooser.ExtensionFilter PROJECT_FILES_FILTER = new FileChooser.ExtensionFilter(
+            PROJECT_FILES_DESCRIPTION + " (" + PROJECT_FILE_EXTENSION + ")",
+            PROJECT_FILE_EXTENSION
+    );
 
     @FXML
     public void initialize() {
         initializePlayAndStopButton();
         initializeBpmSpinner();
         menuButton.setOnAction(e -> mainController.toggleChannelRack());
-        initializeSaveProjectButton();
-        saveProjectButton.setOnAction(event -> handleSaveProject());
-        loadProjectButton.setOnAction(event -> handleLoadProject());
+        saveProjectButton.setOnSave(projectManager::saveProject);
+        saveProjectButton.addExtensionFilter(PROJECT_FILES_FILTER);
+        loadProjectButton.setOnOpen(projectManager::loadProject);
+        loadProjectButton.addExtensionFilter(PROJECT_FILES_FILTER);
     }
-
-    private void initializeSaveProjectButton() {
-        saveProjectButton.setOnAction(event -> {
-            FileChooser fileChooser = new FileChooser();
-
-            fileChooser.setInitialFileName("Untitled");
-
-            FileChooser.ExtensionFilter extFilter =
-                    new FileChooser.ExtensionFilter("MIDI Files (*.mid)", "*.mid");
-            fileChooser.getExtensionFilters().add(extFilter);
-
-            File file = fileChooser.showSaveDialog(saveProjectButton.getScene().getWindow());
-
-            if (file != null) {
-                try {
-                    saveSequence(file.getAbsolutePath());
-                } catch (Exception e) {
-                    Alert alert = new Alert(Alert.AlertType.ERROR);
-                    alert.setTitle("Ошибка");
-                    alert.setHeaderText("Error while saving project");
-                    alert.setContentText("Failed to save project: " + e.getMessage());
-                    alert.showAndWait();
-                }
-            }
-        });
-    }
-
-    private void saveSequence(String filePath) {
-        int[] fileTypes = MidiSystem.getMidiFileTypes(SEQUENCE);
-        try {
-            if (fileTypes.length > 0) {
-                int fileType = contains(fileTypes, 1) ? 1 : fileTypes[0];
-                MidiSystem.write(SEQUENCE, fileType, new File(filePath));
-            }
-        } catch (IOException e) {
-            throw new RuntimeException("Ошибка при создании MIDI-последовательности", e);
-        }
-    }
-
-    private boolean contains(int[] array, int value) {
-        for (int item : array) {
-            if (item == value) return true;
-        }
-        return false;
-    }
-
-    private void handleSaveProject() {
-        File file = showFileChooser(FileOperation.SAVE);
-        if (file != null) {
-            try {
-                saveToFile(file.getAbsolutePath());
-            } catch (Exception e) {
-                showErrorMessage("Ошибка при сохранении файла", e.getMessage());
-            }
-        }
-    }
-
-    private void handleLoadProject() {
-        File file = showFileChooser(FileOperation.LOAD);
-        if (file != null) {
-            try {
-                loadFromFile(file.getAbsolutePath());
-            } catch (Exception e) {
-                showErrorMessage("Ошибка при загрузке файла", e.getMessage());
-            }
-        }
-    }
-
-    private enum FileOperation {
-        SAVE, LOAD
-    }
-
-    private File showFileChooser(FileOperation operation) {
-        FileChooser fileChooser = new FileChooser();
-
-        // Настройка фильтра расширений
-        FileChooser.ExtensionFilter extFilter = new FileChooser.ExtensionFilter(
-                FILE_DESCRIPTION + " (" + FILE_EXTENSION + ")",
-                FILE_EXTENSION
-        );
-        fileChooser.getExtensionFilters().add(extFilter);
-
-        fileChooser.getExtensionFilters().addAll(
-                new FileChooser.ExtensionFilter("All files", "*.*")
-        );
-
-        // Настройка начальной директории (опционально)
-        fileChooser.setInitialDirectory(new File(System.getProperty("user.home")));
-
-        Window window = saveProjectButton.getScene().getWindow();
-
-        if (operation == FileOperation.SAVE) {
-            fileChooser.setInitialFileName(DEFAULT_FILENAME + ".mid");
-            return fileChooser.showSaveDialog(window);
-        } else {
-            return fileChooser.showOpenDialog(window);
-        }
-    }
-
-
-    private void showErrorMessage(String header, String content) {
-        Alert alert = new Alert(Alert.AlertType.ERROR);
-        alert.setTitle("Ошибка");
-        alert.setHeaderText(header);
-        alert.setContentText(content);
-        alert.showAndWait();
-    }
-
-    private void saveToFile(String absolutePath) {
-        log.info("Saving project to file: {}", absolutePath);
-        projectManager.saveProject(absolutePath);
-
-    }
-
-    private void loadFromFile(String absolutePath) throws Exception {
-        log.info("Loading project from file: {}", absolutePath);
-        projectManager.loadFromFile(absolutePath);
-    }
-
 
     private void initializePlayAndStopButton() {
         playButton.setOnAction(event -> playNotes());

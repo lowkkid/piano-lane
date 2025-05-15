@@ -2,12 +2,14 @@ package by.fpmi.bsu.pianolane.wrappers;
 
 import java.util.Objects;
 import javax.sound.midi.MidiEvent;
+import javax.sound.midi.ShortMessage;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
 
 public class NoteMidiEvent {
 
-    private final MidiEvent midiEvent;
+    private MidiEvent midiEvent;
     private final NoteMessage noteMessage;
 
     public NoteMidiEvent(NoteMessage noteMessage, long tick) {
@@ -37,6 +39,11 @@ public class NoteMidiEvent {
 
     public long getTick() {
         return midiEvent.getTick();
+    }
+
+    public void setMidiEvent(MidiEvent midiEvent) {
+        this.midiEvent = midiEvent;
+        noteMessage.setMessage((ShortMessage) midiEvent.getMessage());
     }
 
     @Override
