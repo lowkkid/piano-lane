@@ -3,7 +3,7 @@ package by.fpmi.bsu.pianolane.serialization;
 import static by.fpmi.bsu.pianolane.util.ObjectFactory.createNoteOffMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import by.fpmi.bsu.pianolane.wrappers.NoteOffMessage;
+import by.fpmi.bsu.pianolane.midi.note.NoteOffMessage;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 

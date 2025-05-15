@@ -2,15 +2,15 @@
 
 <?import javafx.scene.control.*?>
 
-<?import by.fpmi.bsu.pianolane.ui.GridPane?>
+<?import by.fpmi.bsu.pianolane.pianoroll.components.GridPane?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.HBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
-<?import by.fpmi.bsu.pianolane.ui.button.MagnetButton?>
+<?import by.fpmi.bsu.pianolane.pianoroll.components.MagnetButton?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="by.fpmi.bsu.pianolane.controller.PianoRollController"
+            fx:controller="by.fpmi.bsu.pianolane.pianoroll.PianoRollController"
             stylesheets="@../css/panel.css">
     <top>
         <AnchorPane fx:id="pianoRollTopPanel" style="-fx-background-color: #4a4a4a;" prefHeight="50">

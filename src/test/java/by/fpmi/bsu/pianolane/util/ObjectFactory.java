@@ -1,16 +1,17 @@
 package by.fpmi.bsu.pianolane.util;
 
-import static by.fpmi.bsu.pianolane.util.MidiUtil.createTrack;
+import static by.fpmi.bsu.pianolane.common.util.MidiUtil.createTrack;
 
-import by.fpmi.bsu.pianolane.model.Channel;
-import by.fpmi.bsu.pianolane.model.ChannelCollection;
-import by.fpmi.bsu.pianolane.wrappers.NoteEvent;
-import by.fpmi.bsu.pianolane.model.DefaultChannel;
+import by.fpmi.bsu.pianolane.common.util.MidiUtil;
+import by.fpmi.bsu.pianolane.midi.channel.model.Channel;
+import by.fpmi.bsu.pianolane.midi.channel.ChannelCollection;
+import by.fpmi.bsu.pianolane.midi.note.NoteEvent;
+import by.fpmi.bsu.pianolane.midi.channel.model.DefaultChannel;
 
-import by.fpmi.bsu.pianolane.wrappers.NoteMessage;
-import by.fpmi.bsu.pianolane.wrappers.NoteMidiEvent;
-import by.fpmi.bsu.pianolane.wrappers.NoteOffMessage;
-import by.fpmi.bsu.pianolane.wrappers.NoteOnMessage;
+import by.fpmi.bsu.pianolane.midi.note.NoteMessage;
+import by.fpmi.bsu.pianolane.midi.note.NoteMidiEvent;
+import by.fpmi.bsu.pianolane.midi.note.NoteOffMessage;
+import by.fpmi.bsu.pianolane.midi.note.NoteOnMessage;
 import javax.sound.midi.Instrument;
 
 public class ObjectFactory {
@@ -42,21 +43,6 @@ public class ObjectFactory {
     }
 
     public static Channel createDefaultChannel() {
-        //        Map<Integer, NoteEvent> noteEvents = new HashMap<>();
-//        AtomicInteger notesSequence = new AtomicInteger();
-//        for (int i = 0; i < 5; i++) {
-//            NoteEvent noteEvent = createNoteEvent();
-//            Integer key = notesSequence.getAndIncrement();
-//            noteEvents.put(key, noteEvent);
-//        }
-//
-//        return DefaultChannel.builder()
-//                .noteEvents(noteEvents)
-//                .notesSequence(notesSequence)
-//                .channelId(CHANNEL_ID)
-//                .muted(false)
-//                .soloed(false)
-//                .build();
         Channel defaultChannel = new DefaultChannel(CHANNEL_ID, getInstrument());
         defaultChannel.addNote(MIDI_NOTE, TICK, NOTE_LENGTH);
         defaultChannel.addNote(MIDI_NOTE - 12, TICK, NOTE_LENGTH);

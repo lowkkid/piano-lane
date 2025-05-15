@@ -3,7 +3,7 @@ package by.fpmi.bsu.pianolane.serialization;
 import static by.fpmi.bsu.pianolane.util.ObjectFactory.createNoteEvent;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import by.fpmi.bsu.pianolane.wrappers.NoteEvent;
+import by.fpmi.bsu.pianolane.midi.note.NoteEvent;
 import org.junit.jupiter.api.Test;
 
 class NoteEventSerializerTest extends AbstractSerializerTest {

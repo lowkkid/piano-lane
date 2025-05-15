@@ -6,7 +6,7 @@
 <?import javafx.scene.canvas.Canvas?>
 
 <VBox fx:id="filterRoot" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="by.fpmi.bsu.synthesizer.controllers.FilterController"
+      fx:controller="by.fpmi.bsu.pianolane.synthesizer.filter.FilterController"
       styleClass="filter-container" prefWidth="357"
       stylesheets="@../../css/synthesizer/oscillator.css">
 

@@ -3,7 +3,7 @@ package by.fpmi.bsu.pianolane.serialization;
 import static by.fpmi.bsu.pianolane.util.ObjectFactory.createChannelCollection;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import by.fpmi.bsu.pianolane.model.ChannelCollection;
+import by.fpmi.bsu.pianolane.midi.channel.ChannelCollection;
 import java.io.IOException;
 import org.junit.jupiter.api.Test;
 

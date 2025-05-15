@@ -1,32 +1,32 @@
 package by.fpmi.bsu.pianolane.project;
 
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCE;
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.updateSequence;
-import static by.fpmi.bsu.pianolane.util.MidiUtil.getTrackId;
+import static by.fpmi.bsu.pianolane.common.util.GlobalInstances.SEQUENCE;
+import static by.fpmi.bsu.pianolane.common.util.GlobalInstances.updateSequence;
+import static by.fpmi.bsu.pianolane.common.util.MidiUtil.getTrackId;
 import static com.esotericsoftware.kryo.serializers.DefaultSerializers.AtomicIntegerSerializer;
 
-import by.fpmi.bsu.pianolane.controller.ChannelRackController;
-import by.fpmi.bsu.pianolane.model.Channel;
-import by.fpmi.bsu.pianolane.model.ChannelCollection;
-import by.fpmi.bsu.pianolane.model.DefaultChannel;
-import by.fpmi.bsu.pianolane.serialization.ChannelCollectionSerializer;
-import by.fpmi.bsu.pianolane.serialization.DefaultChannelSerializer;
-import by.fpmi.bsu.pianolane.serialization.MidiNoteContainerSerializer;
-import by.fpmi.bsu.pianolane.serialization.NoteEventSerializer;
-import by.fpmi.bsu.pianolane.serialization.NoteMidiEventSerializer;
-import by.fpmi.bsu.pianolane.serialization.NoteOffMessageSerializer;
-import by.fpmi.bsu.pianolane.serialization.NoteOnMessageSerializer;
-import by.fpmi.bsu.pianolane.serialization.NoteSerializer;
-import by.fpmi.bsu.pianolane.serialization.VelocitySerializer;
-import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNote;
-import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNoteContainer;
-import by.fpmi.bsu.pianolane.ui.pianoroll.Note;
-import by.fpmi.bsu.pianolane.ui.pianoroll.Velocity;
-import by.fpmi.bsu.pianolane.util.LogUtil;
-import by.fpmi.bsu.pianolane.wrappers.NoteEvent;
-import by.fpmi.bsu.pianolane.wrappers.NoteMidiEvent;
-import by.fpmi.bsu.pianolane.wrappers.NoteOffMessage;
-import by.fpmi.bsu.pianolane.wrappers.NoteOnMessage;
+import by.fpmi.bsu.pianolane.common.channelrack.ChannelRackController;
+import by.fpmi.bsu.pianolane.midi.channel.model.Channel;
+import by.fpmi.bsu.pianolane.midi.channel.ChannelCollection;
+import by.fpmi.bsu.pianolane.midi.channel.model.DefaultChannel;
+import by.fpmi.bsu.pianolane.midi.channel.serialization.ChannelCollectionSerializer;
+import by.fpmi.bsu.pianolane.midi.channel.serialization.DefaultChannelSerializer;
+import by.fpmi.bsu.pianolane.pianoroll.serialization.MidiNoteContainerSerializer;
+import by.fpmi.bsu.pianolane.midi.note.serialization.NoteEventSerializer;
+import by.fpmi.bsu.pianolane.midi.note.serialization.NoteMidiEventSerializer;
+import by.fpmi.bsu.pianolane.midi.note.serialization.NoteOffMessageSerializer;
+import by.fpmi.bsu.pianolane.midi.note.serialization.NoteOnMessageSerializer;
+import by.fpmi.bsu.pianolane.pianoroll.serialization.NoteSerializer;
+import by.fpmi.bsu.pianolane.pianoroll.serialization.VelocitySerializer;
+import by.fpmi.bsu.pianolane.pianoroll.components.NoteWithVelocity;
+import by.fpmi.bsu.pianolane.pianoroll.MidiNoteContainer;
+import by.fpmi.bsu.pianolane.pianoroll.components.Note;
+import by.fpmi.bsu.pianolane.pianoroll.components.Velocity;
+import by.fpmi.bsu.pianolane.common.util.LogUtil;
+import by.fpmi.bsu.pianolane.midi.note.NoteEvent;
+import by.fpmi.bsu.pianolane.midi.note.NoteMidiEvent;
+import by.fpmi.bsu.pianolane.midi.note.NoteOffMessage;
+import by.fpmi.bsu.pianolane.midi.note.NoteOnMessage;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;
@@ -75,7 +75,7 @@ public class ProjectManager {
         kryo.register(ChannelCollection.class, new ChannelCollectionSerializer());
         kryo.register(Note.class, new NoteSerializer());
         kryo.register(Velocity.class, new VelocitySerializer());
-        kryo.register(MidiNote.class, new FieldSerializer<>(kryo, MidiNote.class));
+        kryo.register(NoteWithVelocity.class, new FieldSerializer<>(kryo, NoteWithVelocity.class));
         kryo.register(MidiNoteContainer.class, new MidiNoteContainerSerializer());
     }
 

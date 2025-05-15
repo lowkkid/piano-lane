@@ -1,11 +1,17 @@
 package by.fpmi.bsu.pianolane.serialization;
 
-import by.fpmi.bsu.pianolane.model.ChannelCollection;
-import by.fpmi.bsu.pianolane.wrappers.NoteEvent;
-import by.fpmi.bsu.pianolane.model.DefaultChannel;
-import by.fpmi.bsu.pianolane.wrappers.NoteMidiEvent;
-import by.fpmi.bsu.pianolane.wrappers.NoteOffMessage;
-import by.fpmi.bsu.pianolane.wrappers.NoteOnMessage;
+import by.fpmi.bsu.pianolane.midi.channel.ChannelCollection;
+import by.fpmi.bsu.pianolane.midi.channel.serialization.ChannelCollectionSerializer;
+import by.fpmi.bsu.pianolane.midi.channel.serialization.DefaultChannelSerializer;
+import by.fpmi.bsu.pianolane.midi.note.NoteEvent;
+import by.fpmi.bsu.pianolane.midi.channel.model.DefaultChannel;
+import by.fpmi.bsu.pianolane.midi.note.NoteMidiEvent;
+import by.fpmi.bsu.pianolane.midi.note.NoteOffMessage;
+import by.fpmi.bsu.pianolane.midi.note.NoteOnMessage;
+import by.fpmi.bsu.pianolane.midi.note.serialization.NoteEventSerializer;
+import by.fpmi.bsu.pianolane.midi.note.serialization.NoteMidiEventSerializer;
+import by.fpmi.bsu.pianolane.midi.note.serialization.NoteOffMessageSerializer;
+import by.fpmi.bsu.pianolane.midi.note.serialization.NoteOnMessageSerializer;
 import com.esotericsoftware.kryo.Kryo;
 import com.esotericsoftware.kryo.io.Input;
 import com.esotericsoftware.kryo.io.Output;

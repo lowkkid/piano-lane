@@ -1,7 +1,7 @@
 package by.fpmi.bsu.pianolane;
 
-import by.fpmi.bsu.pianolane.config.SpringConfig;
-import by.fpmi.bsu.pianolane.util.SpringFxmlLoader;
+import by.fpmi.bsu.pianolane.common.config.SpringConfig;
+import by.fpmi.bsu.pianolane.common.util.SpringFxmlLoader;
 import javafx.application.Application;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
@@ -10,8 +10,8 @@ import javafx.stage.Screen;
 import javafx.stage.Stage;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.SPRING_CONTEXT;
-import static by.fpmi.bsu.pianolane.util.constants.FxmlPaths.PIANO_LANE_FXML;
+import static by.fpmi.bsu.pianolane.common.util.GlobalInstances.SPRING_CONTEXT;
+import static by.fpmi.bsu.pianolane.common.util.constants.FxmlPaths.PIANO_LANE_FXML;
 
 
 public class PianoLaneApplication extends Application {

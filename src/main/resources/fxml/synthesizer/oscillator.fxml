@@ -5,7 +5,7 @@
 <?import javafx.scene.canvas.Canvas?>
 <VBox fx:id="oscillatorRoot" xmlns="http://javafx.com/javafx"
       xmlns:fx="http://javafx.com/fxml"
-      fx:controller="by.fpmi.bsu.synthesizer.controllers.OscillatorController"
+      fx:controller="by.fpmi.bsu.pianolane.synthesizer.oscillator.OscillatorController"
       prefWidth="270"
       stylesheets="@../../css/synthesizer/oscillator.css">
     <HBox prefHeight="25" alignment="CENTER_LEFT" style="-fx-background-color: #1a2634;">

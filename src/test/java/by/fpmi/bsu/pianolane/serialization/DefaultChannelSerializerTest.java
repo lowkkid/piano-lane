@@ -3,7 +3,7 @@ package by.fpmi.bsu.pianolane.serialization;
 import static by.fpmi.bsu.pianolane.util.ObjectFactory.createDefaultChannel;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import by.fpmi.bsu.pianolane.model.DefaultChannel;
+import by.fpmi.bsu.pianolane.midi.channel.model.DefaultChannel;
 import org.junit.jupiter.api.Test;
 
 class DefaultChannelSerializerTest extends AbstractSerializerTest {

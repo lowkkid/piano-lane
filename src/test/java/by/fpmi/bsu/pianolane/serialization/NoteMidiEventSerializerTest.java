@@ -5,8 +5,8 @@ import static by.fpmi.bsu.pianolane.util.ObjectFactory.createNoteOffMessage;
 import static by.fpmi.bsu.pianolane.util.ObjectFactory.createNoteOnMessage;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
-import by.fpmi.bsu.pianolane.wrappers.NoteMessage;
-import by.fpmi.bsu.pianolane.wrappers.NoteMidiEvent;
+import by.fpmi.bsu.pianolane.midi.note.NoteMessage;
+import by.fpmi.bsu.pianolane.midi.note.NoteMidiEvent;
 import java.io.IOException;
 import java.util.stream.Stream;
 import org.junit.jupiter.params.ParameterizedTest;
