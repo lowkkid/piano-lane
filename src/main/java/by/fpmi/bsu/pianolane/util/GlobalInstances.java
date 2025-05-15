@@ -3,9 +3,6 @@ package by.fpmi.bsu.pianolane.util;
 import by.fpmi.bsu.pianolane.CustomReceiver;
 import by.fpmi.bsu.pianolane.controller.PianoRollController;
 import by.fpmi.bsu.pianolane.model.ChannelCollection;
-import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ConfigurableApplicationContext;
-
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
@@ -13,6 +10,8 @@ import javax.sound.midi.Receiver;
 import javax.sound.midi.Sequence;
 import javax.sound.midi.Sequencer;
 import javax.sound.midi.Synthesizer;
+import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ConfigurableApplicationContext;
 
 @Slf4j
 public class GlobalInstances {

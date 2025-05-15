@@ -17,7 +17,7 @@ public class NoteMidiEventSerializer extends Serializer<NoteMidiEvent> {
     }
 
     @Override
-    public NoteMidiEvent read(Kryo kryo, Input input, Class<? extends NoteMidiEvent> aClass) {
+    public NoteMidiEvent read(Kryo kryo, Input input, Class<? extends NoteMidiEvent> clazz) {
         NoteMessage noteMessage = (NoteMessage) kryo.readClassAndObject(input);
         long tick = input.readLong();
         return new NoteMidiEvent(noteMessage, tick);

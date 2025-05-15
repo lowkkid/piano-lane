@@ -82,7 +82,8 @@ public class KnobControl extends StackPane {
     }
 
     /**
-     * Converts double value to angle
+     * Converts double value to angle.
+     *
      * @param val between {@link #minValue} and {@link #maxValue}
      * @return angle from {@link #MIN_ANGLE} to {@link #MAX_ANGLE} degrees
      */
@@ -91,7 +92,8 @@ public class KnobControl extends StackPane {
     }
 
     /**
-     * Converts angle to double value
+     * Converts angle to double value.
+     *
      * @param angle from {@link #MIN_ANGLE} to {@link #MAX_ANGLE} degrees
      * @return value between {@link #minValue} and {@link #maxValue}
      */

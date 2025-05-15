@@ -24,8 +24,8 @@ public final class TracksUtil {
     public static Instrument getInstrumentForTrack(Track track) {
         Objects.requireNonNull(track);
         var shortMessage = (ShortMessage) findMessageInTrack(
-                track, message -> message instanceof ShortMessage sm &&
-                        sm.getCommand() == ShortMessage.PROGRAM_CHANGE);
+                track, message -> message instanceof ShortMessage sm
+                        && sm.getCommand() == ShortMessage.PROGRAM_CHANGE);
         assert shortMessage != null;
         return InstrumentsUtil.getInstrumentById(shortMessage.getData1());
     }
@@ -33,8 +33,8 @@ public final class TracksUtil {
     public static int getInstrumentIdForTrack(Track track) {
         Objects.requireNonNull(track);
         var shortMessage = (ShortMessage) findMessageInTrack(
-                track, message -> message instanceof ShortMessage sm &&
-                        sm.getCommand() == ShortMessage.PROGRAM_CHANGE);
+                track, message -> message instanceof ShortMessage sm
+                        && sm.getCommand() == ShortMessage.PROGRAM_CHANGE);
         assert shortMessage != null;
         return shortMessage.getData1();
     }

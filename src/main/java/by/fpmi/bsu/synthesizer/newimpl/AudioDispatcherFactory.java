@@ -1,21 +1,20 @@
 package by.fpmi.bsu.synthesizer.newimpl;
 
+import static by.fpmi.bsu.synthesizer.newimpl.Constants.SAMPLE_RATE;
+
 import be.tarsos.dsp.AudioDispatcher;
 import be.tarsos.dsp.AudioEvent;
 import be.tarsos.dsp.AudioProcessor;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 import be.tarsos.dsp.io.jvm.AudioPlayer;
 import by.fpmi.bsu.synthesizer.model.Synth;
-import lombok.AccessLevel;
-import lombok.NoArgsConstructor;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.sound.sampled.LineUnavailableException;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
-import static by.fpmi.bsu.synthesizer.newimpl.Constants.SAMPLE_RATE;
+import javax.sound.sampled.LineUnavailableException;
+import lombok.AccessLevel;
+import lombok.NoArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 @NoArgsConstructor(access = AccessLevel.PRIVATE)

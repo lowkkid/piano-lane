@@ -16,7 +16,7 @@ public class NoteOnMessageSerializer extends Serializer<NoteOnMessage> {
     }
 
     @Override
-    public NoteOnMessage read(Kryo kryo, Input input, Class<? extends NoteOnMessage> aClass) {
+    public NoteOnMessage read(Kryo kryo, Input input, Class<? extends NoteOnMessage> clazz) {
         int channel = input.readInt();
         int midiNote = input.readInt();
         int velocity = input.readInt();

@@ -1,14 +1,8 @@
 package by.fpmi.bsu.synthesizer.model;
 
-import by.fpmi.bsu.synthesizer.newimpl.Waveform;
 import by.fpmi.bsu.synthesizer.settings.SynthSettings;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-
-import java.util.ArrayList;
-import java.util.List;
-
-import static by.fpmi.bsu.synthesizer.newimpl.Constants.SAMPLE_RATE;
 
 @Data
 @Slf4j

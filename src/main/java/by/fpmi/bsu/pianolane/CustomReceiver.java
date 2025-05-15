@@ -1,21 +1,20 @@
 package by.fpmi.bsu.pianolane;
 
+import static by.fpmi.bsu.pianolane.util.GlobalInstances.DEFAULT_RECEIVER;
+import static by.fpmi.bsu.pianolane.util.LogUtil.getCommandName;
+import static by.fpmi.bsu.pianolane.util.MathUtil.midiNoteToFreq;
+
 import by.fpmi.bsu.pianolane.model.SynthesizerChannel;
 import by.fpmi.bsu.pianolane.model.ChannelCollection;
 import by.fpmi.bsu.synthesizer.model.Synth;
-import lombok.extern.slf4j.Slf4j;
-
-import javax.sound.midi.MidiMessage;
-import javax.sound.midi.Receiver;
-import javax.sound.midi.ShortMessage;
 import java.util.ArrayDeque;
 import java.util.Deque;
 import java.util.HashMap;
 import java.util.Map;
-
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.DEFAULT_RECEIVER;
-import static by.fpmi.bsu.pianolane.util.LogUtil.getCommandName;
-import static by.fpmi.bsu.pianolane.util.MathUtil.midiNoteToFreq;
+import javax.sound.midi.MidiMessage;
+import javax.sound.midi.Receiver;
+import javax.sound.midi.ShortMessage;
+import lombok.extern.slf4j.Slf4j;
 
 @Slf4j
 public class CustomReceiver implements Receiver {

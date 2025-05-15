@@ -22,12 +22,12 @@ public class ChannelRackItem extends HBox {
     private Label instrumentName;
 
     private final String defaultInstrumentNameStyle =
-            "-fx-border-color: transparent; -fx-border-width: 1;" +
-            "-fx-text-fill: white; -fx-font-size: 14; -fx-label-padding:  3px;";
+            "-fx-border-color: transparent; -fx-border-width: 1;"
+                    + "-fx-text-fill: white; -fx-font-size: 14; -fx-label-padding:  3px;";
 
     private final String hoveredInstrumentNameStyle =
-            "-fx-border-color: white; -fx-border-width: 1;" +
-            "-fx-text-fill: white; -fx-font-size: 14; -fx-label-padding: 3px";
+            "-fx-border-color: white; -fx-border-width: 1;"
+                    + "-fx-text-fill: white; -fx-font-size: 14; -fx-label-padding: 3px";
 
     public ChannelRackItem(int channelId, String instrumentName) {
         super(10);

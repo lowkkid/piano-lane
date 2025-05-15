@@ -1,8 +1,14 @@
 package by.fpmi.bsu.pianolane.controller;
 
+import static by.fpmi.bsu.pianolane.util.CopyUtil.copy;
+import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
+import static by.fpmi.bsu.pianolane.util.MathUtil.uiToMidiNoteLength;
+import static by.fpmi.bsu.pianolane.util.constants.DefaultValues.NORMALIZED_DEFAULT_VELOCITY_VALUE;
+
 import by.fpmi.bsu.pianolane.observer.MidiNoteDeleteObserver;
 import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
 import by.fpmi.bsu.pianolane.observer.VelocityChangedObserver;
+import by.fpmi.bsu.pianolane.ui.button.MagnetButton;
 import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNote;
 import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNoteContainer;
 import by.fpmi.bsu.pianolane.ui.pianoroll.Note;
@@ -11,6 +17,8 @@ import by.fpmi.bsu.pianolane.ui.GridPane;
 import by.fpmi.bsu.pianolane.model.ChannelCollection;
 import by.fpmi.bsu.pianolane.ui.pianoroll.Velocity;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Set;
 import java.util.concurrent.atomic.AtomicBoolean;
 import java.util.function.Supplier;
 import javafx.animation.KeyFrame;
@@ -46,13 +54,6 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Scope;
 import org.springframework.stereotype.Component;
 
-import java.util.List;
-
-import static by.fpmi.bsu.pianolane.util.CopyUtil.copy;
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
-import static by.fpmi.bsu.pianolane.util.MathUtil.uiToMidiNoteLength;
-import static by.fpmi.bsu.pianolane.util.constants.DefaultValues.NORMALIZED_DEFAULT_VELOCITY_VALUE;
-
 @Component
 @Slf4j
 @Scope("prototype")
@@ -66,7 +67,7 @@ public class PianoRollController {
     @FXML
     private AnchorPane pianoRollTopPanel;
     @FXML
-    private Button magnetButton;
+    private MagnetButton magnetButton;
     @FXML
     public ScrollPane notesHorizontalScrollPane;
     @FXML
@@ -88,12 +89,14 @@ public class PianoRollController {
     private static double NEW_NOTE_WIDTH = 50;
     private static final double GRID_QUARTER_NOTE_WIDTH = 50;
     private static int GRID_DIVISION_FACTOR = 1;
+    private static final Set<Integer> ALLOWED_GRID_DIVISION_FACTORS = Set.of(1, 2, 4);
+
     private static final Supplier<Double> GRID_CELL_WIDTH = () -> GRID_QUARTER_NOTE_WIDTH / (double) GRID_DIVISION_FACTOR;
     private static final Supplier<Double> TICKS_PER_COLUMN = () -> 480 / (double) GRID_DIVISION_FACTOR;
 
     private static final int NUM_KEYS = 60;        // 5 octaves (60 keys)
     private static final double KEY_HEIGHT = 30;   // Высота клавиш
-    private final String[] NOTES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+    private static final String[] NOTES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
     // Параметры сетки
     private final double cellHeight = 30;  // Высота клетки (соответствует одной клавише)
@@ -119,67 +122,14 @@ public class PianoRollController {
         this.channelId = channelId;
     }
 
-
-    @Autowired
-    public void setMainController(MainController mainController) {
-        this.mainController = mainController;
+    public void setGridDivisionFactor(int gridDivisionFactor) {
+        if (!ALLOWED_GRID_DIVISION_FACTORS.contains(gridDivisionFactor)) {
+            throw new IllegalArgumentException("Invalid grid division factor: " + gridDivisionFactor);
+        }
+        GRID_DIVISION_FACTOR = gridDivisionFactor;
+        resolveCurrentGridDivisionFactor();
     }
 
-    private boolean isMenuShowing = false;
-
-    private void initializeMagnetButton() {
-        // Создаем контекстное меню для кнопки магнита
-        ContextMenu magnetMenu = new ContextMenu();
-
-        // Создаем пункты меню
-        MenuItem oneBeaItem = new MenuItem("1 beat");
-        MenuItem halfBeatItem = new MenuItem("1/2 beat");
-        MenuItem quarterBeatItem = new MenuItem("1/4 beat");
-
-        // Добавляем слушатели событий
-        oneBeaItem.setOnAction(event -> {
-            GRID_DIVISION_FACTOR = 1;
-            showEighthNoteLines(false);
-            showSixteenthNoteLines(false);
-        });
-
-        halfBeatItem.setOnAction(event -> {
-            GRID_DIVISION_FACTOR = 2;
-            showEighthNoteLines(true);
-            showSixteenthNoteLines(false);
-        });
-
-        quarterBeatItem.setOnAction(event -> {
-            GRID_DIVISION_FACTOR = 4;
-            showEighthNoteLines(true);
-            showSixteenthNoteLines(true);
-        });
-
-        // Применяем CSS-стиль для всего меню
-        magnetMenu.getStyleClass().add("magnet-menu");
-
-        // Добавляем CSS-класс для каждого пункта
-        oneBeaItem.getStyleClass().add("magnet-menu-item");
-        halfBeatItem.getStyleClass().add("magnet-menu-item");
-        quarterBeatItem.getStyleClass().add("magnet-menu-item");
-
-        // Добавляем пункты в меню
-        magnetMenu.getItems().addAll(oneBeaItem, halfBeatItem, quarterBeatItem);
-
-        // Привязываем меню к кнопке с логикой переключения
-        magnetButton.setOnAction(event -> {
-            if (isMenuShowing) {
-                magnetMenu.hide();
-                isMenuShowing = false;
-            } else {
-                magnetMenu.show(magnetButton, Side.BOTTOM, 0, 0);
-                isMenuShowing = true;
-            }
-        });
-
-        // Обновляем состояние при скрытии меню
-        magnetMenu.setOnHidden(event -> isMenuShowing = false);
-    }
 
     private void initializeTopPanel() {
         pianoRollTopPanel.setPrefHeight(50); // Общая высота верхней панели
@@ -192,7 +142,7 @@ public class PianoRollController {
         headerScrollPane.setFitToWidth(true);
 
         headerContent.setMinHeight(15);
-        leftToolbox.setMinHeight(15);// Минимальная высота
+        leftToolbox.setMinHeight(15);
 
         // Скрываем полосы прокрутки
         headerScrollPane.setHbarPolicy(ScrollPane.ScrollBarPolicy.NEVER);
@@ -208,12 +158,12 @@ public class PianoRollController {
         // Создаем слушатель только для notesHorizontalScrollPane
         notesScrollListener = (obs, oldVal, newVal) -> {
             // Вычисляем скорректированное значение с учетом смещения в 10 пикселей
-            double notesTotalWidth = notesHorizontalScrollPane.getContent().getBoundsInLocal().getWidth() -
-                    notesHorizontalScrollPane.getViewportBounds().getWidth();
+            double notesTotalWidth = notesHorizontalScrollPane.getContent().getBoundsInLocal().getWidth()
+                    - notesHorizontalScrollPane.getViewportBounds().getWidth();
             double pixelsMoved = notesTotalWidth * newVal.doubleValue();
 
-            double headerTotalWidth = headerScrollPane.getContent().getBoundsInLocal().getWidth() -
-                    headerScrollPane.getViewportBounds().getWidth();
+            double headerTotalWidth = headerScrollPane.getContent().getBoundsInLocal().getWidth()
+                    - headerScrollPane.getViewportBounds().getWidth();
 
             // Вычитаем 10 пикселей из позиции прокрутки
             double adjustedPixelsMoved = pixelsMoved;
@@ -240,13 +190,13 @@ public class PianoRollController {
     }
 
     public void initialize() {
+        magnetButton.setGridDivider(this::setGridDivisionFactor);
         initializeTopPanel();
-        initializeMagnetButton();
         splitPane.setDividerPositions(0.8);
         gridPane.setChannelId(channelId);
         drawKeyboard();
         drawGrid();
-        initializeOptionalGridDivision();
+        resolveCurrentGridDivisionFactor();
         initPlayhead();
 
         closeButton.setOnAction(event -> mainController.closePianoRoll());
@@ -290,23 +240,21 @@ public class PianoRollController {
         Platform.runLater(this::initializeScrollSynchronization);
     }
 
-    private void initializeOptionalGridDivision() {
+    private void resolveCurrentGridDivisionFactor() {
         switch (GRID_DIVISION_FACTOR) {
-            case 1:
+            case 1 -> {
                 showEighthNoteLines(false);
                 showSixteenthNoteLines(false);
-                break;
-            case 2:
+            }
+            case 2 -> {
                 showEighthNoteLines(true);
                 showSixteenthNoteLines(false);
-                break;
-            case 4:
+            }
+            case 4 -> {
                 showEighthNoteLines(true);
                 showSixteenthNoteLines(true);
-                break;
-            default:
-                log.warn("Got unsupported value for GRID_DIVISION_FACTOR: {} ,when initializing PianoRoll", GRID_DIVISION_FACTOR);
-                break;
+            }
+            default -> log.warn("Got unsupported value for GRID_DIVISION_FACTOR: {}", GRID_DIVISION_FACTOR);
         }
     }
 
@@ -359,7 +307,9 @@ public class PianoRollController {
             columnLine.setFill(isMeasureLine ? Color.BLACK : Color.GRAY);
             gridPane.getChildren().add(columnLine);
             velocityPane.getChildren().add(copy(columnLine));
-            if (isMeasureLine) drawBarNumber(i / 4, i * GRID_QUARTER_NOTE_WIDTH);
+            if (isMeasureLine) {
+                drawBarNumber(i / 4, i * GRID_QUARTER_NOTE_WIDTH);
+            }
 
             // Добавляем линии для 1/8 и 1/16, если текущая позиция не совпадает с четвертью
             if (i < numColumns) {
@@ -450,7 +400,9 @@ public class PianoRollController {
 
     // Обработка клика по сетке: рассчитываем позицию с учетом переворота оси Y
     private void handleGridClick(MouseEvent event) {
-        if (event.isConsumed() || event.getButton() != MouseButton.PRIMARY || event.getEventType() != MouseEvent.MOUSE_CLICKED) {
+        if (event.isConsumed()
+                || event.getButton() != MouseButton.PRIMARY
+                || event.getEventType() != MouseEvent.MOUSE_CLICKED) {
             return;
         }
 
@@ -595,7 +547,7 @@ public class PianoRollController {
         });
     }
 
-    public void subscribeToMidiNoteDeleteEvent(MidiNoteDeleteObserver...midiNoteDeleteObservers) {
+    public void subscribeToMidiNoteDeleteEvent(MidiNoteDeleteObserver... midiNoteDeleteObservers) {
         this.midiNoteDeleteObservers.addAll(List.of(midiNoteDeleteObservers));
     }
 
@@ -617,6 +569,11 @@ public class PianoRollController {
 
     public void subscribeToVelocityChangedEvent(VelocityChangedObserver velocityChangedObserver) {
         velocityChangedObservers.add(velocityChangedObserver);
+    }
+
+    @Autowired
+    public void setMainController(MainController mainController) {
+        this.mainController = mainController;
     }
 
     private void notifyVelocityChangedEventObservers(Integer noteId, Integer newVelocity) {

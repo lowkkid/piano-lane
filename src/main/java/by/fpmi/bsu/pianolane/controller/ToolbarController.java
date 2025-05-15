@@ -1,5 +1,7 @@
 package by.fpmi.bsu.pianolane.controller;
 
+import static by.fpmi.bsu.pianolane.util.GlobalInstances.CURRENT_PIANO_ROLL_CONTROLLER;
+
 import by.fpmi.bsu.pianolane.MidiPlayer;
 import by.fpmi.bsu.pianolane.project.ProjectManager;
 import by.fpmi.bsu.pianolane.ui.button.OpenButton;
@@ -12,8 +14,6 @@ import javafx.stage.FileChooser;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.CURRENT_PIANO_ROLL_CONTROLLER;
 
 @Component
 @RequiredArgsConstructor
@@ -68,7 +68,9 @@ public class ToolbarController {
         valueFactory.setConverter(new javafx.util.StringConverter<>() {
             @Override
             public String toString(Double value) {
-                if (value == null) return "";
+                if (value == null) {
+                    return "";
+                }
                 return String.format("%.1f", value);
             }
 

@@ -1,26 +1,23 @@
 package by.fpmi.bsu.pianolane.model;
 
-import by.fpmi.bsu.pianolane.wrappers.NoteEvent;
-import by.fpmi.bsu.pianolane.observer.MidiNoteDeleteObserver;
-import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
-import by.fpmi.bsu.pianolane.observer.VelocityChangedObserver;
-import java.util.HashMap;
-import java.util.Objects;
-import lombok.Data;
-
-import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.Track;
-
-import java.util.Map;
-import java.util.concurrent.atomic.AtomicInteger;
-import lombok.Getter;
-import lombok.ToString;
-import lombok.experimental.SuperBuilder;
-import lombok.extern.slf4j.Slf4j;
-
 import static by.fpmi.bsu.pianolane.util.MathUtil.uiToMidiNoteLength;
 import static by.fpmi.bsu.pianolane.util.TracksUtil.createTrackWithId;
 import static by.fpmi.bsu.pianolane.util.TracksUtil.getTrackId;
+
+import by.fpmi.bsu.pianolane.observer.MidiNoteDeleteObserver;
+import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
+import by.fpmi.bsu.pianolane.observer.VelocityChangedObserver;
+import by.fpmi.bsu.pianolane.wrappers.NoteEvent;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.concurrent.atomic.AtomicInteger;
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.Track;
+import lombok.Data;
+import lombok.Getter;
+import lombok.experimental.SuperBuilder;
+import lombok.extern.slf4j.Slf4j;
 
 @Data
 @Slf4j
@@ -59,7 +56,7 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
     public void deleteNote(Integer key) {
         NoteEvent eventToDelete = noteEvents.get(key);
         if (eventToDelete == null) {
-            log.warn("Tried to delete note event with key {}, but NoteEvent was not found for specified key",key);
+            log.warn("Tried to delete note event with key {}, but NoteEvent was not found for specified key", key);
             return;
         }
         noteEvents.remove(key);
@@ -94,15 +91,19 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
 
     @Override
     public boolean equals(Object o) {
-        if (this == o) return true;
-        if (o == null || getClass() != o.getClass()) return false;
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
         Channel channel = (Channel) o;
-        return channelId == channel.channelId &&
-                Objects.equals(getTrackId(track), getTrackId(channel.track)) &&
-                muted == channel.muted &&
-                soloed == channel.soloed &&
-                notesSequence.get() == channel.notesSequence.get() &&
-                Objects.equals(noteEvents, channel.noteEvents);
+        return channelId == channel.channelId
+                && Objects.equals(getTrackId(track), getTrackId(channel.track))
+                && muted == channel.muted
+                && soloed == channel.soloed
+                && notesSequence.get() == channel.notesSequence.get()
+                && Objects.equals(noteEvents, channel.noteEvents);
     }
 
     @Override
@@ -119,13 +120,13 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
 
     @Override
     public String toString() {
-        return getClass().getSimpleName() + "{" +
-                "noteSequence=" + notesSequence.get() +
-                ", noteEvents=" + noteEvents +
-                ", channelId=" + channelId +
-                ", track=" + getTrackId(track) +
-                ", muted=" + muted +
-                ", soloed" + soloed;
+        return getClass().getSimpleName() + "{"
+                + "noteSequence=" + notesSequence.get()
+                + ", noteEvents=" + noteEvents
+                + ", channelId=" + channelId
+                + ", track=" + getTrackId(track)
+                + ", muted=" + muted
+                + ", soloed" + soloed;
     }
 
 }

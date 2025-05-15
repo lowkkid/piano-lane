@@ -18,7 +18,7 @@ public class NoteSerializer extends Serializer<Note> {
     }
 
     @Override
-    public Note read(Kryo kryo, Input input, Class<? extends Note> aClass) {
+    public Note read(Kryo kryo, Input input, Class<? extends Note> clazz) {
         int noteId = input.readInt();
         double x = input.readDouble();
         double y = input.readDouble();

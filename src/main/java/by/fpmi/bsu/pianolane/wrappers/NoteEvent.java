@@ -1,9 +1,11 @@
 package by.fpmi.bsu.pianolane.wrappers;
 
+import static by.fpmi.bsu.pianolane.util.LogUtil.getAllTrackEvents;
 import static by.fpmi.bsu.pianolane.util.TracksUtil.isMidiEventExistsInTrack;
 import static by.fpmi.bsu.pianolane.util.constants.DefaultValues.DEFAULT_VELOCITY_VALUE;
-import static by.fpmi.bsu.pianolane.util.LogUtil.getAllTrackEvents;
 
+import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.Track;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -11,8 +13,6 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.Track;
 
 @Slf4j
 @Getter

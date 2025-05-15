@@ -1,11 +1,11 @@
 package by.fpmi.bsu.pianolane;
 
+import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
+
 import by.fpmi.bsu.pianolane.model.ChannelCollection;
 import lombok.Getter;
 import lombok.Setter;
 import org.springframework.stereotype.Component;
-
-import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
 
 @Component
 @Getter

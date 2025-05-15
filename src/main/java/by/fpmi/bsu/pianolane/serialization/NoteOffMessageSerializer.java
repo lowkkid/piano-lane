@@ -14,7 +14,7 @@ public class NoteOffMessageSerializer extends Serializer<NoteOffMessage> {
     }
 
     @Override
-    public NoteOffMessage read(Kryo kryo, Input input, Class<? extends NoteOffMessage> aClass) {
+    public NoteOffMessage read(Kryo kryo, Input input, Class<? extends NoteOffMessage> clazz) {
         int channel = input.readInt();
         int midiNote = input.readInt();
         return new NoteOffMessage(channel, midiNote);

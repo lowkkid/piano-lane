@@ -16,7 +16,7 @@ public class VelocitySerializer extends Serializer<Velocity> {
     }
 
     @Override
-    public Velocity read(Kryo kryo, Input input, Class<? extends Velocity> aClass) {
+    public Velocity read(Kryo kryo, Input input, Class<? extends Velocity> clazz) {
         int noteId = input.readInt();
         double heightPercentage = input.readDouble();
         double x = input.readDouble();

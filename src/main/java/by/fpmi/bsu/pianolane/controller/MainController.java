@@ -1,15 +1,15 @@
 package by.fpmi.bsu.pianolane.controller;
 
+import static by.fpmi.bsu.pianolane.util.constants.FxmlPaths.CHANNEL_RACK_FXML;
+import static by.fpmi.bsu.pianolane.util.constants.FxmlPaths.PIANO_ROLL_FXML;
+import static by.fpmi.bsu.pianolane.util.constants.FxmlPaths.SYNTHESIZER_FXML;
+
 import by.fpmi.bsu.pianolane.util.SpringFxmlLoader;
 import javafx.fxml.FXML;
 import javafx.scene.Node;
 import javafx.scene.layout.StackPane;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Component;
-
-import static by.fpmi.bsu.pianolane.util.constants.FxmlPaths.CHANNEL_RACK_FXML;
-import static by.fpmi.bsu.pianolane.util.constants.FxmlPaths.PIANO_ROLL_FXML;
-import static by.fpmi.bsu.pianolane.util.constants.FxmlPaths.SYNTHESIZER_FXML;
 
 @Component
 @Slf4j
@@ -81,8 +81,8 @@ public class MainController {
         // Обработчик нажатия мыши
         node.setOnMousePressed(mouseEvent -> {
             // Сохраняем начальную позицию клика относительно текущего положения узла
-            dragDelta.x = node.getTranslateX() - mouseEvent.getSceneX();
-            dragDelta.y = node.getTranslateY() - mouseEvent.getSceneY();
+            dragDelta.xCoordinate = node.getTranslateX() - mouseEvent.getSceneX();
+            dragDelta.yCoordinate = node.getTranslateY() - mouseEvent.getSceneY();
 
             // Поднимаем элемент наверх при клике
             node.toFront();
@@ -91,8 +91,8 @@ public class MainController {
         // Обработчик перетаскивания
         node.setOnMouseDragged(mouseEvent -> {
             // Вычисляем новую позицию
-            double newX = mouseEvent.getSceneX() + dragDelta.x;
-            double newY = mouseEvent.getSceneY() + dragDelta.y;
+            double newX = mouseEvent.getSceneX() + dragDelta.xCoordinate;
+            double newY = mouseEvent.getSceneY() + dragDelta.yCoordinate;
 
             // Устанавливаем новую позицию без ограничений минимума в 0
             node.setTranslateX(newX);
@@ -100,8 +100,8 @@ public class MainController {
         });
     }
 
-    // Вспомогательный класс для хранения смещения
     private static class Delta {
-        double x, y;
+        double xCoordinate;
+        double yCoordinate;
     }
 }

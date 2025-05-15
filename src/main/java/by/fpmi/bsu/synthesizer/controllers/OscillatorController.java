@@ -404,9 +404,9 @@ public class OscillatorController {
 
         // If a segment is set to 0, still draw a tiny line so it's visible
         double minWidth = 1;
-        if (attackWidth < minWidth) attackWidth = minWidth;
-        if (decayWidth < minWidth) decayWidth = minWidth;
-        if (releaseWidth < minWidth) releaseWidth = minWidth;
+        if (attackWidth < minWidth) {attackWidth = minWidth;}
+        if (decayWidth < minWidth) {decayWidth = minWidth;}
+        if (releaseWidth < minWidth) {releaseWidth = minWidth;}
 
         // Calculate points
         double x1 = margin; // Start

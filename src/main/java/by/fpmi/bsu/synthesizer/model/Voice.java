@@ -19,7 +19,9 @@ public class Voice {
     public float generateSample(Waveform waveform) {
         float sample = generateWaveform(waveform, phase);
         phase += frequency / SAMPLE_RATE;
-        if (phase >= 1.0) phase -= 1.0;
+        if (phase >= 1.0) {
+            phase -= 1.0;
+        }
         return sample;
     }
 }

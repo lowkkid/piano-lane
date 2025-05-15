@@ -4,9 +4,13 @@ import static by.fpmi.bsu.pianolane.util.TracksUtil.getInstrumentForTrack;
 import static by.fpmi.bsu.pianolane.util.TracksUtil.getTrackId;
 
 import by.fpmi.bsu.pianolane.ui.ChannelRackItem;
-import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNoteContainer;
 import by.fpmi.bsu.pianolane.model.ChannelCollection;
+import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNoteContainer;
 import java.util.Arrays;
+import java.net.URL;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.ResourceBundle;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -14,16 +18,13 @@ import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
 import javafx.scene.layout.VBox;
+import javax.sound.midi.Instrument;
 import javax.sound.midi.Track;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
-import javax.sound.midi.Instrument;
-import java.net.URL;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.ResourceBundle;
+
 
 @Component
 @Slf4j
@@ -86,7 +87,8 @@ public class ChannelRackController implements Initializable {
         channelRackItem.getInstrumentName().setOnMouseClicked(event -> {
             if (event.getButton() == MouseButton.SECONDARY) {
                 deleteItem.setOnAction(e -> deleteInstrument(channelRackItem));
-                channelRackItemContextMenu.show(channelRackItem.getInstrumentName(), event.getScreenX(), event.getScreenY());
+                channelRackItemContextMenu.show(
+                        channelRackItem.getInstrumentName(), event.getScreenX(), event.getScreenY());
                 midiNoteContainer.removeAllNotesForChanel(channelRackItem.getChannelId());
             }
         });

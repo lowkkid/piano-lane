@@ -2,8 +2,6 @@ package by.fpmi.bsu.synthesizer.newimpl;
 
 import be.tarsos.dsp.io.TarsosDSPAudioInputStream;
 
-import javax.sound.sampled.AudioFormat;
-import java.io.IOException;
 import be.tarsos.dsp.io.TarsosDSPAudioFormat;
 
 public class SilentAudioInputStream implements TarsosDSPAudioInputStream {

@@ -3,6 +3,10 @@ package by.fpmi.bsu.pianolane.model;
 import static by.fpmi.bsu.pianolane.util.TracksUtil.deleteTrack;
 
 import java.util.Arrays;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import javax.sound.midi.Instrument;
+import javax.sound.midi.Track;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.EqualsAndHashCode;
@@ -10,13 +14,6 @@ import lombok.Getter;
 import lombok.Setter;
 import lombok.ToString;
 import lombok.extern.slf4j.Slf4j;
-
-import javax.sound.midi.Instrument;
-import javax.sound.midi.Track;
-
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-
 
 @Slf4j
 @Getter
@@ -35,10 +32,6 @@ public class ChannelCollection {
     @Builder.Default
     private int synthesizersThreadPoolCount = 0;
 
-    /**
-     * This service only used when stopping synthesizer threads,
-     * because it's need to be done asynchronously and independently of each other
-     */
     private ExecutorService executorService;
 
     public void resetFrom(ChannelCollection other) {
@@ -46,10 +39,7 @@ public class ChannelCollection {
         this.synthesizersThreadPoolCount = other.synthesizersThreadPoolCount;
         this.executorService = other.executorService;
     }
-    /**
-     * @param instrument instrument for new channel
-     * @return id of created Channel
-     */
+
     public int addDefaultChannel(Instrument instrument) {
         for (int i = 0; i < 16; i++) {
             if (channels[i] == null) {
@@ -100,7 +90,8 @@ public class ChannelCollection {
                 .filter(channel -> channel instanceof SynthesizerChannel)
                 .map(channel -> (SynthesizerChannel) channel)
                 .forEach(synthChannel -> executorService.submit(() -> {
-                    log.info("Stopping synthesizer from channel {} in thread {}", synthChannel.getChannelId(), Thread.currentThread().getName());
+                    log.info("Stopping synthesizer from channel {} in thread {}",
+                            synthChannel.getChannelId(), Thread.currentThread().getName());
                     synthChannel.getSynthPlayer().stop();
                 }));
     }

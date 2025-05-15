@@ -8,6 +8,7 @@
 <?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.HBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
+<?import by.fpmi.bsu.pianolane.ui.button.MagnetButton?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="by.fpmi.bsu.pianolane.controller.PianoRollController"
             stylesheets="@../css/panel.css">
@@ -32,11 +33,11 @@
                         <FontIcon iconLiteral="bx-cog" />
                     </graphic>
                 </Button>
-                <Button fx:id="magnetButton" styleClass="piano-roll-toolbar-button">
+                <MagnetButton fx:id="magnetButton" styleClass="piano-roll-toolbar-button">
                     <graphic>
                         <FontIcon iconLiteral="bx-magnet" />
                     </graphic>
-                </Button>
+                </MagnetButton>
             </HBox>
 
             <ScrollPane fx:id="headerScrollPane"

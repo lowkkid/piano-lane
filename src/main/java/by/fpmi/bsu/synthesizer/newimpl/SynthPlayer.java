@@ -1,15 +1,16 @@
 package by.fpmi.bsu.synthesizer.newimpl;
 
+import static by.fpmi.bsu.synthesizer.newimpl.AudioDispatcherFactory.createAudioDispatcher;
+
 import be.tarsos.dsp.AudioDispatcher;
 import by.fpmi.bsu.synthesizer.model.Synth;
 import by.fpmi.bsu.synthesizer.settings.SynthSettings;
+import java.util.ArrayList;
+import java.util.List;
 import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
 
-import static by.fpmi.bsu.synthesizer.newimpl.AudioDispatcherFactory.createAudioDispatcher;
 
 @Getter
 @Slf4j
