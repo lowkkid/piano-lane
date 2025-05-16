@@ -2,11 +2,10 @@ package by.fpmi.bsu.synthesizer.controllers;
 
 
 import static by.fpmi.bsu.synthesizer.newimpl.SoundUtil.generateWaveform;
+import static by.fpmi.bsu.synthesizer.ui.ElementsFactory.createKnobWithLabel;
 
-import by.fpmi.bsu.synthesizer.newimpl.Waveform;
+import by.fpmi.bsu.pianolane.util.enums.Waveform;
 import by.fpmi.bsu.synthesizer.settings.OscillatorSettings;
-import by.fpmi.bsu.synthesizer.ui.KnobControl;
-import java.util.function.Consumer;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -27,7 +26,9 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
 import javafx.scene.text.Text;
 import javafx.scene.text.TextAlignment;
+import lombok.RequiredArgsConstructor;
 
+@RequiredArgsConstructor
 public class OscillatorController {
 
     private static final Color ATTACK_KNOB_COLOR = Color.rgb(255, 100, 100);
@@ -41,38 +42,20 @@ public class OscillatorController {
     private static final double DECAY_TIME_MAX_VALUE = 3;
     private static final double RELEASE_TIME_MAX_VALUE = 3;
 
-    @FXML
-    public Canvas waveformCanvas;
+    @FXML private VBox oscillatorRoot;
+    @FXML private Canvas waveformCanvas;
+    @FXML private Canvas envelopeCanvas;
+    @FXML private ChoiceBox<String> waveformChoiceBox;
+    @FXML private Button prevButton;
+    @FXML private Button nextButton;
+    @FXML private HBox envelopeControlBox;
+    @FXML private HBox mainControlBox;
+    @FXML private CheckBox switchCheckbox;
+    @FXML private Label oscillatorNameLabel;
 
-    @FXML
-    public Canvas envelopeCanvas;
-    public CheckBox switchCheckbox;
     private final String oscillatorNameParam;
     private final boolean lockedParam;
-    public Label oscillatorNameLabel;
-
-    private OscillatorSettings settings;
-
-    public OscillatorController(String oscillatorNameParam, boolean isLocked, OscillatorSettings settings) {
-        this.oscillatorNameParam = oscillatorNameParam;
-        this.lockedParam = isLocked;
-        this.settings = settings;
-    }
-
-    @FXML
-    private ChoiceBox<String> waveformChoiceBox;
-
-    @FXML
-    private Button prevButton;
-
-    @FXML
-    private Button nextButton;
-
-    @FXML
-    private HBox envelopeControlBox;
-
-    @FXML
-    private HBox mainControlBox;
+    private final OscillatorSettings settings;
 
 //    private double attackTime = 0.0;  // 0.0 to 0.4
 //    private double decayTime = 0.0;   // 0.0 to 0.4
@@ -85,11 +68,6 @@ public class OscillatorController {
 //    private double phaseAmount = 0.0;  // 0.0 to 1.0
 //    private Waveform waveform;
 
-    @FXML
-    private VBox oscillatorRoot;
-
-    private OscillatorController oscillatorController;
-
 
     public void initialize() {
         switchCheckbox.setOnAction(event -> {
@@ -101,7 +79,6 @@ public class OscillatorController {
         switchCheckbox.setSelected(!lockedParam);
         switchPanel(lockedParam);
 
-        oscillatorController = this;
         // Initialize waveform canvas
         GraphicsContext gcWave = waveformCanvas.getGraphicsContext2D();
         gcWave.setFill(Color.BLACK);
@@ -293,32 +270,6 @@ public class OscillatorController {
         return box;
     }
 
-    private VBox createKnobWithLabel(int size, Color color, String labelText, double initialValue, double minValue, double maxValue,
-                                     Consumer<Number> listener) {
-        VBox box = new VBox(5);
-        box.setAlignment(Pos.CENTER);
-
-        // Create the knob with white indicator
-        KnobControl knob = new KnobControl(size, color,
-                initialValue,
-                minValue,
-                maxValue);
-
-        // Create the label
-        Label label = new Label(labelText);
-        label.setTextFill(color);
-        label.setFont(Font.font("Arial", FontWeight.NORMAL, 10)); // Smaller font
-
-        knob.valueProperty().addListener((obs, oldVal, newVal) -> {
-            if (listener != null) {
-                listener.accept(newVal);
-            }
-        });
-
-        box.getChildren().addAll(knob, label);
-        return box;
-    }
-
     private void setupEnvelopeControls() {
         envelopeControlBox.getChildren().clear();
 
@@ -404,9 +355,15 @@ public class OscillatorController {
 
         // If a segment is set to 0, still draw a tiny line so it's visible
         double minWidth = 1;
-        if (attackWidth < minWidth) {attackWidth = minWidth;}
-        if (decayWidth < minWidth) {decayWidth = minWidth;}
-        if (releaseWidth < minWidth) {releaseWidth = minWidth;}
+        if (attackWidth < minWidth) {
+            attackWidth = minWidth;
+        }
+        if (decayWidth < minWidth) {
+            decayWidth = minWidth;
+        }
+        if (releaseWidth < minWidth) {
+            releaseWidth = minWidth;
+        }
 
         // Calculate points
         double x1 = margin; // Start

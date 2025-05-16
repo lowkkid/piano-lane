@@ -1,3 +1,39 @@
-<?import javafx.scene.layout.VBox?>
+<?xml version="1.0" encoding="UTF-8"?>
 
-<VBox xmlns="http://javafx.com/javafx/2OscillatorController3.0.1" xmlns:fx="http://javafx.com/fxml/1" prefWidth="357" style="-fx-border-color: red"/>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.canvas.Canvas?>
+
+<VBox fx:id="filterRoot" xmlns="http://javafx.com/javafx/23.0.1" xmlns:fx="http://javafx.com/fxml/1"
+      fx:controller="by.fpmi.bsu.synthesizer.controllers.FilterController"
+      styleClass="filter-container" prefWidth="357"
+      stylesheets="@../../css/synthesizer/oscillator.css">
+
+    <padding>
+        <Insets top="5" right="5" bottom="5" left="5"/>
+    </padding>
+
+    <HBox alignment="CENTER_LEFT" style="-fx-background-color: #1a2634;">
+        <CheckBox fx:id="filterEnableButton" styleClass="switch-checkbox" minHeight="25" maxHeight="25"/>
+        <Label alignment="CENTER" minHeight="25" maxHeight="25"
+               style="-fx-text-fill: white; -fx-padding: 0 7 0 7; -fx-border-color: #3a4a5a;">Filter
+        </Label>
+        <ChoiceBox fx:id="filterTypeChoiceBox" prefWidth="150" minHeight="25" maxHeight="25"
+                   style="-fx-background-color: #1a2634; -fx-text-fill: white; -fx-border-color: #3a4a5a;"/>
+    </HBox>
+
+    <Canvas fx:id="responseCanvas" width="347" height="90"/>
+    <Region prefHeight="10"/>
+    <HBox fx:id="filterControlBox" maxHeight="40">
+        <HBox fx:id="frequencyKnobContainer" alignment="CENTER_LEFT" styleClass="slider-container">
+            <Label fx:id="frequencyValueLabel" text="1000 Hz" styleClass="value-label"
+                   prefWidth="80"/>
+        </HBox>
+        <HBox fx:id="resonanceKnobContainer" alignment="CENTER_LEFT" styleClass="slider-container" visible="false"
+              managed="false">
+            <Label fx:id="resonanceValueLabel" text="1.0" styleClass="value-label"
+                   prefWidth="80"/>
+        </HBox>
+    </HBox>
+</VBox>

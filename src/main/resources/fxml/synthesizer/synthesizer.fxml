@@ -24,11 +24,6 @@
         <TabPane>
             <Tab closable="false" text="OSC">
                 <HBox fx:id="mainContainer">
-<!--                    <fx:include fx:id="oscillatorA" source="oscillator.fxml" />-->
-<!--                    <Region HBox.hgrow="ALWAYS" />-->
-<!--                    <fx:include fx:id="oscillatorB" source="oscillator.fxml" />-->
-<!--                    <Region HBox.hgrow="ALWAYS" />-->
-<!--                    <VBox prefWidth="357" style="-fx-border-color: red"/>-->
                 </HBox>
             </Tab>
             <Tab closable="false" text="Effects">

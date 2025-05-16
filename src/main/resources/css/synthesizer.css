@@ -67,3 +67,69 @@
     -fx-border-width: 1;
 }
 
+/* Filter Section Styles */
+.filter-container {
+    -fx-background-color: #363636;
+    -fx-border-color: #1B1A1A;
+    -fx-border-width: 1;
+}
+
+.header-container {
+    -fx-padding: 5 5 5 5;
+}
+
+.section-header {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #E0E0E0;
+}
+
+.filter-visualizer {
+    -fx-background-color: #000000; /* Black background for better contrast */
+    -fx-border-color: #1B1A1A;
+    -fx-border-width: 1;
+}
+
+.controls-container {
+    -fx-padding: 5 0 0 0;
+}
+
+.slider-container {
+    -fx-padding: 5 5 5 5;
+}
+
+.param-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #BBBBBB;
+}
+
+.value-label {
+    -fx-font-size: 12px;
+    -fx-text-fill: #BBBBBB;
+    -fx-alignment: center-right;
+}
+
+.slider .track {
+    -fx-background-color: #222222;
+    -fx-border-color: #444444;
+}
+
+.slider .thumb {
+    -fx-background-color: #00AAFF;
+    -fx-background-radius: 10;
+}
+
+.filter-type-combo {
+    -fx-background-color: #222222;
+    -fx-text-fill: #FFFFFF;
+}
+
+.enable-button {
+    -fx-background-color: #222222;
+    -fx-text-fill: #FFFFFF;
+}
+
+.enable-button:selected {
+    -fx-background-color: #00AAFF;
+    -fx-text-fill: #FFFFFF;
+}

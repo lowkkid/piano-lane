@@ -1,11 +1,9 @@
 package by.fpmi.bsu.synthesizer.settings;
 
-import by.fpmi.bsu.synthesizer.newimpl.Waveform;
+import by.fpmi.bsu.pianolane.util.enums.Waveform;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 
 @Getter
 @Setter

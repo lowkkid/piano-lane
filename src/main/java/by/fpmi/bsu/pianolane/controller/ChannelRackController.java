@@ -3,12 +3,12 @@ package by.fpmi.bsu.pianolane.controller;
 import static by.fpmi.bsu.pianolane.util.TracksUtil.getInstrumentForTrack;
 import static by.fpmi.bsu.pianolane.util.TracksUtil.getTrackId;
 
-import by.fpmi.bsu.pianolane.ui.ChannelRackItem;
 import by.fpmi.bsu.pianolane.model.ChannelCollection;
+import by.fpmi.bsu.pianolane.ui.ChannelRackItem;
 import by.fpmi.bsu.pianolane.ui.pianoroll.MidiNoteContainer;
-import java.util.Arrays;
 import java.net.URL;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
 import javafx.fxml.FXML;

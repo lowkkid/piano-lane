@@ -3,7 +3,7 @@ package by.fpmi.bsu.synthesizer.model;
 import static by.fpmi.bsu.synthesizer.newimpl.Constants.SAMPLE_RATE;
 import static by.fpmi.bsu.synthesizer.newimpl.SoundUtil.generateWaveform;
 
-import by.fpmi.bsu.synthesizer.newimpl.Waveform;
+import by.fpmi.bsu.pianolane.util.enums.Waveform;
 
 public class Voice {
     private final double frequency;

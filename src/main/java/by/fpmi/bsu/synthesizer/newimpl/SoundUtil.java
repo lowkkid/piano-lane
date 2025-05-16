@@ -1,5 +1,6 @@
 package by.fpmi.bsu.synthesizer.newimpl;
 
+import by.fpmi.bsu.pianolane.util.enums.Waveform;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 

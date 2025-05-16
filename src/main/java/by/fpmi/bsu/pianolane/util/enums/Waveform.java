@@ -1,8 +1,10 @@
-package by.fpmi.bsu.synthesizer.newimpl;
+package by.fpmi.bsu.pianolane.util.enums;
 
 import lombok.Getter;
+import lombok.RequiredArgsConstructor;
 
 @Getter
+@RequiredArgsConstructor
 public enum Waveform {
     SINE("Sine"),
     SQUARE("Square"),
@@ -11,10 +13,6 @@ public enum Waveform {
     NOISE("Noise");
 
     private final String displayName;
-
-    Waveform(String displayName) {
-        this.displayName = displayName;
-    }
 
     public static Waveform fromDisplayName(String displayName) {
         for (Waveform type : Waveform.values()) {

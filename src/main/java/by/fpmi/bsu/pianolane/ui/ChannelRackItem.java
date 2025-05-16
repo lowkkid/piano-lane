@@ -5,6 +5,7 @@ import javafx.scene.Cursor;
 import javafx.scene.Group;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
+import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
@@ -32,12 +33,18 @@ public class ChannelRackItem extends HBox {
     public ChannelRackItem(int channelId, String instrumentName) {
         super(10);
         this.channelId = channelId;
-        setAlignment(Pos.CENTER);
+        setAlignment(Pos.CENTER_LEFT);
         setStyle("-fx-background-color: #3b3b3b; -fx-padding: 5;");
 
+        // Индикатор
         Circle indicator = new Circle(6);
         indicator.setFill(Color.LIMEGREEN);
         indicator.setCursor(Cursor.HAND);
+        StackPane indicatorContainer = new StackPane(indicator);
+        indicatorContainer.setPrefWidth(24);
+        indicatorContainer.setMinWidth(24);
+        indicatorContainer.setMaxWidth(24);
+
         indicator.setOnMouseClicked(event -> {
             if (indicator.getFill().equals(Color.LIMEGREEN)) {
                 indicator.setFill(Color.DARKGREEN);
@@ -46,17 +53,39 @@ public class ChannelRackItem extends HBox {
             }
         });
 
+        // Ручки управления
         StackPane knob1 = createKnob();
-        StackPane knob2 = createKnob();
+        knob1.setPrefWidth(24);
+        knob1.setMinWidth(24);
+        knob1.setMaxWidth(24);
 
+        StackPane knob2 = createKnob();
+        knob2.setPrefWidth(24);
+        knob2.setMinWidth(24);
+        knob2.setMaxWidth(24);
+
+        // Название инструмента
         this.instrumentName = new Label(instrumentName);
         this.instrumentName.setStyle(defaultInstrumentNameStyle);
+        this.instrumentName.setPrefWidth(120);
+        this.instrumentName.setMinWidth(120);
+        this.instrumentName.setMaxWidth(120);
 
+        // Панель шагов - занимает все оставшееся пространство
         stepPane.setPrefHeight(30);
-        stepPane.setPrefWidth(250);
+        stepPane.setPrefWidth(400); // Увеличена предпочтительная ширина
+        stepPane.setMinWidth(300);  // Минимальная ширина
         stepPane.setStyle("-fx-background-color: #2a2a2a;");
 
-        getChildren().addAll(indicator, knob1, knob2, this.instrumentName, stepPane);
+        getChildren().addAll(indicatorContainer, knob1, knob2, this.instrumentName, stepPane);
+
+        // Установка приоритетов роста - только stepPane может расти
+        HBox.setHgrow(indicatorContainer, Priority.NEVER);
+        HBox.setHgrow(knob1, Priority.NEVER);
+        HBox.setHgrow(knob2, Priority.NEVER);
+        HBox.setHgrow(this.instrumentName, Priority.NEVER);
+        HBox.setHgrow(stepPane, Priority.ALWAYS); // Разрешаем расти и занимать все доступное пространство
+
         addInstrumentNameListeners();
     }
 
@@ -69,10 +98,11 @@ public class ChannelRackItem extends HBox {
         );
     }
 
-
     private StackPane createKnob() {
         StackPane knob = new StackPane();
         knob.setPrefSize(24, 24);
+        knob.setMinSize(24, 24);
+        knob.setMaxSize(24, 24);
 
         Circle knobCircle = new Circle(12, Color.DARKGRAY);
         knobCircle.setStroke(Color.BLACK);
