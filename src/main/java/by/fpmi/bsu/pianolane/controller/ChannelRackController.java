@@ -11,6 +11,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.ResourceBundle;
+import java.util.stream.Collectors;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -31,6 +32,8 @@ import org.springframework.stereotype.Component;
 @Slf4j
 public class ChannelRackController implements Initializable {
 
+    private static final String SYNTHESIZER_NAME = "Simple synthesizer";
+
     @FXML
     private VBox instrumentContainer;
     @FXML
@@ -38,17 +41,23 @@ public class ChannelRackController implements Initializable {
     @FXML
     private Button addButton;
 
-    private MainController mainController;
+    private final MainController mainController;
+
+    public ChannelRackController(MainController mainController) {
+        this.mainController = mainController;
+    }
+
     private final ChannelCollection channelCollection = ChannelCollection.getInstance();
+    private final MidiNoteContainer midiNoteContainer = MidiNoteContainer.getInstance();
 
     private final ContextMenu channelRackItemContextMenu = new ContextMenu();
     private final MenuItem deleteItem = new MenuItem("Delete");
 
     private final ContextMenu synthesizersContextMenu = new ContextMenu();
-    private final MenuItem customSynthesizerItem = new MenuItem("Custom Synthesizer");
+    private final MenuItem customSynthesizerItem = new MenuItem(SYNTHESIZER_NAME);
 
     private final List<ChannelRackItem> rows = new ArrayList<>();
-    private final MidiNoteContainer midiNoteContainer = MidiNoteContainer.getInstance();
+
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -66,7 +75,7 @@ public class ChannelRackController implements Initializable {
     protected void addInstrument(Instrument instrument) {
         int channelId = channelCollection.addDefaultChannel(instrument);
 
-        ChannelRackItem item = new ChannelRackItem(channelId, instrument.getName());
+        ChannelRackItem item = new ChannelRackItem(channelId, generateUniqueNameForChannelRackItem(instrument.getName()));
         registerChannelRackItem(item);
         rows.add(item);
         if (instrumentContainer != null) {
@@ -125,7 +134,7 @@ public class ChannelRackController implements Initializable {
     private void addSynthesizer() {
         int channelId = channelCollection.addSynthesizerChannel();
 
-        ChannelRackItem item = new ChannelRackItem(channelId, "Custom Synthesizer");
+        ChannelRackItem item = new ChannelRackItem(channelId, SYNTHESIZER_NAME);
         registerChannelRackItem(item);
         rows.add(item);
         instrumentContainer.getChildren().add(item);
@@ -152,8 +161,24 @@ public class ChannelRackController implements Initializable {
         rows.addAll(channelRackItems);
     }
 
-    @Autowired
-    public void setMainController(MainController mainController) {
-        this.mainController = mainController;
+    private String generateUniqueNameForChannelRackItem(String baseName) {
+        final String NAME_TEMPLATE = "%s #%d";
+        var existingNames = rows.stream()
+                .map(row -> row.getInstrumentName().getText())
+                .collect(Collectors.toSet());
+
+        var uniqueName = baseName;
+        var suffix = 1;
+
+        while (existingNames.contains(uniqueName)) {
+            uniqueName = String.format(NAME_TEMPLATE, baseName, suffix++);
+        }
+
+        return uniqueName;
     }
+
+//    @Autowired
+//    public void setMainController(MainController mainController) {
+//        this.mainController = mainController;
+//    }
 }

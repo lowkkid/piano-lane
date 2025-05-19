@@ -5,17 +5,12 @@ import static by.fpmi.bsu.synthesizer.ui.ElementsFactory.createRoundGreenCheckbo
 
 import by.fpmi.bsu.synthesizer.ui.KnobControl;
 import javafx.geometry.Pos;
-import javafx.scene.Cursor;
-import javafx.scene.Group;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
-import javafx.scene.shape.Circle;
-import javafx.scene.shape.Line;
-import javafx.scene.shape.Polygon;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -88,45 +83,6 @@ public class ChannelRackItem extends HBox {
                 instrumentName.setStyle(defaultInstrumentNameStyle)
         );
     }
-
-//    private StackPane createKnob() {
-//        StackPane knob = new StackPane();
-//        knob.setPrefSize(24, 24);
-//        knob.setMinSize(24, 24);
-//        knob.setMaxSize(24, 24);
-//
-//        Circle knobCircle = new Circle(12, Color.DARKGRAY);
-//        knobCircle.setStroke(Color.BLACK);
-//        knobCircle.setStrokeWidth(1);
-//
-//        Group arrowGroup = new Group();
-//        Line line = new Line(0, 0, 0, -12);
-//        line.setStroke(Color.WHITE);
-//        line.setStrokeWidth(2);
-//
-//        Polygon arrowHead = new Polygon(0.0, -15.0, -3.0, -9.0, 3.0, -9.0);
-//        arrowHead.setFill(Color.WHITE);
-//
-//        arrowGroup.getChildren().addAll(line, arrowHead);
-//        arrowGroup.setRotate(0);
-//        knob.getChildren().addAll(knobCircle, arrowGroup);
-//        knob.setAlignment(Pos.CENTER);
-//        knob.setCursor(Cursor.HAND);
-//
-//        knob.setOnScroll(e -> {
-//            double currentAngle = arrowGroup.getRotate();
-//            double delta = e.getDeltaY() / 3;
-//            double newAngle = currentAngle + delta;
-//            if (newAngle > 150) {
-//                newAngle = 150;
-//            } else if (newAngle < -150) {
-//                newAngle = -150;
-//            }
-//            arrowGroup.setRotate(newAngle);
-//        });
-//
-//        return knob;
-//    }
 
     public void setEnabled(boolean enabled) {
         isEnabled.setSelected(enabled);
