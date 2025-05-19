@@ -1,7 +1,7 @@
 package by.fpmi.bsu.pianolane.serialization;
 
-import static by.fpmi.bsu.pianolane.util.InstrumentsUtil.getInstrumentById;
-import static by.fpmi.bsu.pianolane.util.TracksUtil.getInstrumentIdForTrack;
+import static by.fpmi.bsu.pianolane.util.MidiUtil.getInstrumentById;
+import static by.fpmi.bsu.pianolane.util.MidiUtil.getInstrumentIdForTrack;
 
 import by.fpmi.bsu.pianolane.wrappers.NoteEvent;
 import by.fpmi.bsu.pianolane.model.DefaultChannel;

@@ -1,7 +1,7 @@
 package by.fpmi.bsu.pianolane.wrappers;
 
 import static by.fpmi.bsu.pianolane.util.LogUtil.getAllTrackEvents;
-import static by.fpmi.bsu.pianolane.util.TracksUtil.isMidiEventExistsInTrack;
+import static by.fpmi.bsu.pianolane.util.MidiUtil.isMidiEventExistsInTrack;
 import static by.fpmi.bsu.pianolane.util.constants.DefaultValues.DEFAULT_VELOCITY_VALUE;
 
 import javax.sound.midi.InvalidMidiDataException;

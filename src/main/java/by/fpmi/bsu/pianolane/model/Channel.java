@@ -1,8 +1,12 @@
 package by.fpmi.bsu.pianolane.model;
 
+import static by.fpmi.bsu.pianolane.util.GlobalInstances.MIDI_CHANNELS;
+import static by.fpmi.bsu.pianolane.util.GlobalInstances.SYNTHESIZER;
 import static by.fpmi.bsu.pianolane.util.MathUtil.uiToMidiNoteLength;
-import static by.fpmi.bsu.pianolane.util.TracksUtil.createTrackWithId;
-import static by.fpmi.bsu.pianolane.util.TracksUtil.getTrackId;
+import static by.fpmi.bsu.pianolane.util.MidiUtil.createTrackWithId;
+import static by.fpmi.bsu.pianolane.util.MidiUtil.getTrackId;
+import static by.fpmi.bsu.pianolane.util.constants.Constants.MidiConstants.PAN_CONTROLLER;
+import static by.fpmi.bsu.pianolane.util.constants.Constants.MidiConstants.VOLUME_CONTROLLER;
 
 import by.fpmi.bsu.pianolane.observer.MidiNoteDeleteObserver;
 import by.fpmi.bsu.pianolane.observer.NoteResizedObserver;
@@ -13,6 +17,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiChannel;
 import javax.sound.midi.Track;
 import lombok.Data;
 import lombok.Getter;
@@ -29,14 +34,18 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
     private final Map<Integer, NoteEvent> noteEvents;
 
     protected int channelId;
+    protected MidiChannel original;
     protected Track track;
     protected boolean muted;
     protected boolean soloed;
+    protected int volume; // 0-127
+    protected int pan; // 0-127 (64 = center)
 
     public Channel(int channelId) {
         this.channelId = channelId;
         notesSequence = new AtomicInteger(0);
         noteEvents = new HashMap<>();
+        original = MIDI_CHANNELS[channelId];
         track = createTrackWithId(String.valueOf(channelId));
         muted = false;
         soloed = false;
@@ -54,13 +63,42 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
     }
 
     public void deleteNote(Integer key) {
-        NoteEvent eventToDelete = noteEvents.get(key);
+        var eventToDelete = noteEvents.get(key);
         if (eventToDelete == null) {
             log.warn("Tried to delete note event with key {}, but NoteEvent was not found for specified key", key);
             return;
         }
         noteEvents.remove(key);
         eventToDelete.destroy();
+    }
+
+    public void setMute(boolean muted) {
+        log.info("Synthesizer class: {}", SYNTHESIZER.getClass().getName());
+        log.info("Channel class: {}", original.getClass().getName());
+        // Проверьте, поддерживает ли синтезатор нужные функции
+
+        log.info("Setting mute to {} for channel with id {}", muted, channelId);
+        this.muted = muted;
+        log.info("Channel {} before mute change: active={}", channelId, original.getMute());
+        original.setMute(muted);
+        log.info("Channel {} after mute change: active={}", channelId, original.getMute());
+        log.info("Channel {} before mute change: active={}", channelId, original.getController(7));
+        //original.controlChange(7, 0);
+        log.info("Channel {} after mute change: active={}", channelId, original.getController(7));
+    }
+
+    public void setVolume(int volume) {
+        this.volume = volume;
+            original.controlChange(VOLUME_CONTROLLER, volume);
+    }
+
+    public void setPan(int pan) {
+        this.pan = pan;
+        original.controlChange(PAN_CONTROLLER, pan);
+    }
+
+    protected void setSoloed(boolean soloed) {
+        this.soloed = soloed;
     }
 
     public void setTrack(Track track) {

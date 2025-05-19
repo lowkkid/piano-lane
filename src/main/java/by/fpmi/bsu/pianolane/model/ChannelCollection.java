@@ -1,8 +1,10 @@
 package by.fpmi.bsu.pianolane.model;
 
-import static by.fpmi.bsu.pianolane.util.TracksUtil.deleteTrack;
+import static by.fpmi.bsu.pianolane.util.MidiUtil.deleteTrack;
 
 import java.util.Arrays;
+import java.util.List;
+import java.util.Objects;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import javax.sound.midi.Instrument;
@@ -73,6 +75,24 @@ public class ChannelCollection {
         return channels[channelId];
     }
 
+    public void soloChannel(int channelId) {
+        var currentChannel = channels[channelId];
+        var otherChannels = activeChannels().stream()
+                .filter(channel -> channel.getChannelId() != currentChannel.getChannelId())
+                .toList();
+        if (!currentChannel.isSoloed()) {
+            channels[channelId].setSoloed(true);
+            channels[channelId].setMute(false);
+            otherChannels.forEach(channel -> {
+                channel.setMute(true);
+                channel.setSoloed(false);
+            });
+        } else {
+            currentChannel.setSoloed(false);
+            otherChannels.forEach(channel -> channel.setMute(false));
+        }
+    }
+
     public boolean isSynthesizer(int channelId) {
         return channels[channelId] != null && channels[channelId] instanceof SynthesizerChannel;
     }
@@ -94,6 +114,10 @@ public class ChannelCollection {
                             synthChannel.getChannelId(), Thread.currentThread().getName());
                     synthChannel.getSynthPlayer().stop();
                 }));
+    }
+
+    private List<Channel> activeChannels() {
+        return Arrays.stream(channels).filter(Objects::nonNull).toList();
     }
 
     private ChannelCollection() {

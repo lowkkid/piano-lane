@@ -1,6 +1,6 @@
 package by.fpmi.bsu.pianolane.controller;
 
-import by.fpmi.bsu.pianolane.util.InstrumentsUtil;
+import static by.fpmi.bsu.pianolane.util.MidiUtil.getInstruments;
 import javafx.fxml.FXML;
 import javafx.scene.control.TreeCell;
 import javafx.scene.control.TreeItem;
@@ -24,7 +24,7 @@ public class SampleBrowserController {
         TreeItem<Instrument> rootItem = new TreeItem<>(null);
         rootItem.setExpanded(true);
 
-        InstrumentsUtil.getInstruments().stream()
+        getInstruments().stream()
                 .map(TreeItem::new)
                 .forEach(rootItem.getChildren()::add);
 

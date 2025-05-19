@@ -4,6 +4,7 @@ import by.fpmi.bsu.pianolane.CustomReceiver;
 import by.fpmi.bsu.pianolane.controller.PianoRollController;
 import by.fpmi.bsu.pianolane.model.ChannelCollection;
 import javax.sound.midi.InvalidMidiDataException;
+import javax.sound.midi.MidiChannel;
 import javax.sound.midi.MidiSystem;
 import javax.sound.midi.MidiUnavailableException;
 import javax.sound.midi.Receiver;
@@ -22,6 +23,7 @@ public class GlobalInstances {
     public static ConfigurableApplicationContext SPRING_CONTEXT;
     public static PianoRollController CURRENT_PIANO_ROLL_CONTROLLER;
     public static Receiver DEFAULT_RECEIVER;
+    public static MidiChannel[] MIDI_CHANNELS;
 
     private static final ChannelCollection channelCollection = ChannelCollection.getInstance();
 
@@ -29,7 +31,8 @@ public class GlobalInstances {
         try {
             SYNTHESIZER = MidiSystem.getSynthesizer();
             SYNTHESIZER.open();
-            DEFAULT_RECEIVER = MidiSystem.getReceiver();
+            MIDI_CHANNELS = SYNTHESIZER.getChannels();
+            DEFAULT_RECEIVER = SYNTHESIZER.getReceiver();
             SEQUENCER = MidiSystem.getSequencer(false);
             SEQUENCER.open();
             SEQUENCER.getTransmitter().setReceiver(new CustomReceiver());

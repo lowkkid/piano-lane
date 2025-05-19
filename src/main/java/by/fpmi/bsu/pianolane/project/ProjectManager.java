@@ -2,7 +2,7 @@ package by.fpmi.bsu.pianolane.project;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCE;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.updateSequence;
-import static by.fpmi.bsu.pianolane.util.TracksUtil.getTrackId;
+import static by.fpmi.bsu.pianolane.util.MidiUtil.getTrackId;
 import static com.esotericsoftware.kryo.serializers.DefaultSerializers.AtomicIntegerSerializer;
 
 import by.fpmi.bsu.pianolane.controller.ChannelRackController;

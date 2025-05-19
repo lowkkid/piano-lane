@@ -1,6 +1,6 @@
 package by.fpmi.bsu.pianolane.util;
 
-import static by.fpmi.bsu.pianolane.util.TracksUtil.createTrack;
+import static by.fpmi.bsu.pianolane.util.MidiUtil.createTrack;
 
 import by.fpmi.bsu.pianolane.model.Channel;
 import by.fpmi.bsu.pianolane.model.ChannelCollection;
@@ -38,7 +38,7 @@ public class ObjectFactory {
     }
 
     public static Instrument getInstrument() {
-        return InstrumentsUtil.getInstrumentById(0);
+        return MidiUtil.getInstrumentById(0);
     }
 
     public static Channel createDefaultChannel() {

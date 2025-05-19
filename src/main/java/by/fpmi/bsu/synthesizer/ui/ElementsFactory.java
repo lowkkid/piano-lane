@@ -2,6 +2,8 @@ package by.fpmi.bsu.synthesizer.ui;
 
 import java.util.function.Consumer;
 import javafx.geometry.Pos;
+import javafx.scene.Cursor;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.VBox;
 import javafx.scene.paint.Color;
@@ -24,10 +26,7 @@ public final class ElementsFactory {
         VBox box = new VBox(5);
         box.setAlignment(Pos.CENTER);
 
-        KnobControl knob = new KnobControl(size, color,
-                initialValue,
-                minValue,
-                maxValue);
+        KnobControl knob = new KnobControl(size, color, initialValue, minValue, maxValue);
 
         Label label = new Label(labelText);
         label.setTextFill(color);
@@ -41,5 +40,23 @@ public final class ElementsFactory {
 
         box.getChildren().addAll(knob, label);
         return box;
+    }
+
+    public static KnobControl createKnob(
+            int size,
+            Color color,
+            double initialValue,
+            double minValue,
+            double maxValue) {
+
+        return new KnobControl(size, color, initialValue, minValue, maxValue);
+    }
+
+    public static CheckBox createRoundGreenCheckbox() {
+        CheckBox checkBox = new CheckBox();
+        checkBox.setSelected(true);
+        checkBox.setCursor(Cursor.HAND);
+        checkBox.getStyleClass().add("round-check-box");
+        return checkBox;
     }
 }

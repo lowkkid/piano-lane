@@ -1,8 +1,13 @@
 package by.fpmi.bsu.pianolane.ui;
 
+import static by.fpmi.bsu.synthesizer.ui.ElementsFactory.createKnob;
+import static by.fpmi.bsu.synthesizer.ui.ElementsFactory.createRoundGreenCheckbox;
+
+import by.fpmi.bsu.synthesizer.ui.KnobControl;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
 import javafx.scene.Group;
+import javafx.scene.control.CheckBox;
 import javafx.scene.control.Label;
 import javafx.scene.layout.HBox;
 import javafx.scene.layout.Priority;
@@ -19,8 +24,11 @@ import lombok.Setter;
 public class ChannelRackItem extends HBox {
 
     private int channelId;
-    private StackPane stepPane = new StackPane();
+    private CheckBox isEnabled;
     private Label instrumentName;
+    private KnobControl panKnob;
+    private KnobControl volumeKnob;
+    private StackPane stepPane = new StackPane();
 
     private final String defaultInstrumentNameStyle =
             "-fx-border-color: transparent; -fx-border-width: 1;"
@@ -37,32 +45,15 @@ public class ChannelRackItem extends HBox {
         setStyle("-fx-background-color: #3b3b3b; -fx-padding: 5;");
 
         // Индикатор
-        Circle indicator = new Circle(6);
-        indicator.setFill(Color.LIMEGREEN);
-        indicator.setCursor(Cursor.HAND);
-        StackPane indicatorContainer = new StackPane(indicator);
-        indicatorContainer.setPrefWidth(24);
-        indicatorContainer.setMinWidth(24);
-        indicatorContainer.setMaxWidth(24);
+        isEnabled = createRoundGreenCheckbox();
 
-        indicator.setOnMouseClicked(event -> {
-            if (indicator.getFill().equals(Color.LIMEGREEN)) {
-                indicator.setFill(Color.DARKGREEN);
-            } else {
-                indicator.setFill(Color.LIMEGREEN);
-            }
-        });
+        StackPane checkContainer = new StackPane(isEnabled);
+        checkContainer.setMinWidth(24);
+        checkContainer.setMaxWidth(24);
+        checkContainer.setPrefWidth(24);
 
-        // Ручки управления
-        StackPane knob1 = createKnob();
-        knob1.setPrefWidth(24);
-        knob1.setMinWidth(24);
-        knob1.setMaxWidth(24);
-
-        StackPane knob2 = createKnob();
-        knob2.setPrefWidth(24);
-        knob2.setMinWidth(24);
-        knob2.setMaxWidth(24);
+        panKnob = createKnob(10, Color.WHITE, 64, 0, 127);
+        volumeKnob = createKnob(10, Color.WHITE, 100, 0, 127);
 
         // Название инструмента
         this.instrumentName = new Label(instrumentName);
@@ -77,14 +68,14 @@ public class ChannelRackItem extends HBox {
         stepPane.setMinWidth(300);  // Минимальная ширина
         stepPane.setStyle("-fx-background-color: #2a2a2a;");
 
-        getChildren().addAll(indicatorContainer, knob1, knob2, this.instrumentName, stepPane);
+        getChildren().addAll(checkContainer, volumeKnob, panKnob, this.instrumentName, stepPane);
 
         // Установка приоритетов роста - только stepPane может расти
-        HBox.setHgrow(indicatorContainer, Priority.NEVER);
-        HBox.setHgrow(knob1, Priority.NEVER);
-        HBox.setHgrow(knob2, Priority.NEVER);
+        HBox.setHgrow(checkContainer, Priority.NEVER);
+        HBox.setHgrow(volumeKnob, Priority.NEVER);
+        HBox.setHgrow(panKnob, Priority.NEVER);
         HBox.setHgrow(this.instrumentName, Priority.NEVER);
-        HBox.setHgrow(stepPane, Priority.ALWAYS); // Разрешаем расти и занимать все доступное пространство
+        HBox.setHgrow(stepPane, Priority.NEVER); // Разрешаем расти и занимать все доступное пространство
 
         addInstrumentNameListeners();
     }
@@ -98,42 +89,50 @@ public class ChannelRackItem extends HBox {
         );
     }
 
-    private StackPane createKnob() {
-        StackPane knob = new StackPane();
-        knob.setPrefSize(24, 24);
-        knob.setMinSize(24, 24);
-        knob.setMaxSize(24, 24);
+//    private StackPane createKnob() {
+//        StackPane knob = new StackPane();
+//        knob.setPrefSize(24, 24);
+//        knob.setMinSize(24, 24);
+//        knob.setMaxSize(24, 24);
+//
+//        Circle knobCircle = new Circle(12, Color.DARKGRAY);
+//        knobCircle.setStroke(Color.BLACK);
+//        knobCircle.setStrokeWidth(1);
+//
+//        Group arrowGroup = new Group();
+//        Line line = new Line(0, 0, 0, -12);
+//        line.setStroke(Color.WHITE);
+//        line.setStrokeWidth(2);
+//
+//        Polygon arrowHead = new Polygon(0.0, -15.0, -3.0, -9.0, 3.0, -9.0);
+//        arrowHead.setFill(Color.WHITE);
+//
+//        arrowGroup.getChildren().addAll(line, arrowHead);
+//        arrowGroup.setRotate(0);
+//        knob.getChildren().addAll(knobCircle, arrowGroup);
+//        knob.setAlignment(Pos.CENTER);
+//        knob.setCursor(Cursor.HAND);
+//
+//        knob.setOnScroll(e -> {
+//            double currentAngle = arrowGroup.getRotate();
+//            double delta = e.getDeltaY() / 3;
+//            double newAngle = currentAngle + delta;
+//            if (newAngle > 150) {
+//                newAngle = 150;
+//            } else if (newAngle < -150) {
+//                newAngle = -150;
+//            }
+//            arrowGroup.setRotate(newAngle);
+//        });
+//
+//        return knob;
+//    }
 
-        Circle knobCircle = new Circle(12, Color.DARKGRAY);
-        knobCircle.setStroke(Color.BLACK);
-        knobCircle.setStrokeWidth(1);
+    public void setEnabled(boolean enabled) {
+        isEnabled.setSelected(enabled);
+    }
 
-        Group arrowGroup = new Group();
-        Line line = new Line(0, 0, 0, -12);
-        line.setStroke(Color.WHITE);
-        line.setStrokeWidth(2);
-
-        Polygon arrowHead = new Polygon(0.0, -15.0, -3.0, -9.0, 3.0, -9.0);
-        arrowHead.setFill(Color.WHITE);
-
-        arrowGroup.getChildren().addAll(line, arrowHead);
-        arrowGroup.setRotate(0);
-        knob.getChildren().addAll(knobCircle, arrowGroup);
-        knob.setAlignment(Pos.CENTER);
-        knob.setCursor(Cursor.HAND);
-
-        knob.setOnScroll(e -> {
-            double currentAngle = arrowGroup.getRotate();
-            double delta = e.getDeltaY() / 3;
-            double newAngle = currentAngle + delta;
-            if (newAngle > 150) {
-                newAngle = 150;
-            } else if (newAngle < -150) {
-                newAngle = -150;
-            }
-            arrowGroup.setRotate(newAngle);
-        });
-
-        return knob;
+    public boolean isEnabled() {
+        return isEnabled.isSelected();
     }
 }

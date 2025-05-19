@@ -2,10 +2,16 @@ package by.fpmi.bsu.pianolane.util;
 
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCE;
 import static by.fpmi.bsu.pianolane.util.GlobalInstances.SEQUENCER;
+import static by.fpmi.bsu.pianolane.util.GlobalInstances.SYNTHESIZER;
 
 import java.nio.charset.StandardCharsets;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.function.Predicate;
+import java.util.stream.IntStream;
 import javax.sound.midi.Instrument;
 import javax.sound.midi.InvalidMidiDataException;
 import javax.sound.midi.MetaMessage;
@@ -16,10 +22,25 @@ import javax.sound.midi.Track;
 import lombok.AccessLevel;
 import lombok.NoArgsConstructor;
 
+//TODO: rename with MidiUtils
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
-public final class TracksUtil {
+public final class MidiUtil {
 
     private static final int META_TYPE_MARKER = 6;
+    private static final Map<Integer, Instrument> INSTRUMENTS = new HashMap<>();
+
+    static {
+        var instruments = SYNTHESIZER.getAvailableInstruments();
+        IntStream.range(0, instruments.length).forEach(i -> INSTRUMENTS.put(i, instruments[i]));
+    }
+
+    public static List<Instrument> getInstruments() {
+        return new ArrayList<>(INSTRUMENTS.values());
+    }
+
+    public static Instrument getInstrumentById(int instrumentId) {
+        return INSTRUMENTS.get(instrumentId);
+    }
 
     public static Instrument getInstrumentForTrack(Track track) {
         Objects.requireNonNull(track);
@@ -27,7 +48,7 @@ public final class TracksUtil {
                 track, message -> message instanceof ShortMessage sm
                         && sm.getCommand() == ShortMessage.PROGRAM_CHANGE);
         assert shortMessage != null;
-        return InstrumentsUtil.getInstrumentById(shortMessage.getData1());
+        return getInstrumentById(shortMessage.getData1());
     }
 
     public static int getInstrumentIdForTrack(Track track) {
@@ -76,7 +97,7 @@ public final class TracksUtil {
     }
 
     private static MidiMessage findMessageInTrack(Track track,
-                                     Predicate<MidiMessage> matcher) {
+                                                  Predicate<MidiMessage> matcher) {
         for (int i = 0; i < track.size(); i++) {
             MidiMessage message = track.get(i).getMessage();
             if (matcher.test(message)) {

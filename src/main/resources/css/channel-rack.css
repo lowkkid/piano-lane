@@ -47,3 +47,26 @@
 .dark-context-menu .menu-item:focused {
     -fx-background-color: #3b3b3b;
 }
+
+.round-check-box .box {
+    -fx-background-radius: 100%;
+    -fx-border-radius: 100%;
+    -fx-padding: 3px;
+    -fx-min-width: 12px;
+    -fx-min-height: 12px;
+    -fx-max-width: 12px;
+    -fx-max-height: 12px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.6), 4, 0, 1, 1);
+    /* Стиль по умолчанию (не выбрано) */
+    -fx-background-color: linear-gradient(to bottom right, #2e8b57, #006400, #004d00);
+}
+
+/* Стиль для выбранного состояния */
+.round-check-box:selected .box {
+    -fx-background-color: linear-gradient(to bottom right, #90ee90, #32cd32, #006400);
+}
+
+/* Полностью скрываем стандартную метку */
+.round-check-box .mark {
+    visibility: hidden;
+}

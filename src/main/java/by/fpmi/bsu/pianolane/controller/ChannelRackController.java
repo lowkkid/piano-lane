@@ -1,7 +1,7 @@
 package by.fpmi.bsu.pianolane.controller;
 
-import static by.fpmi.bsu.pianolane.util.TracksUtil.getInstrumentForTrack;
-import static by.fpmi.bsu.pianolane.util.TracksUtil.getTrackId;
+import static by.fpmi.bsu.pianolane.util.MidiUtil.getInstrumentForTrack;
+import static by.fpmi.bsu.pianolane.util.MidiUtil.getTrackId;
 
 import by.fpmi.bsu.pianolane.model.ChannelCollection;
 import by.fpmi.bsu.pianolane.ui.ChannelRackItem;
@@ -17,6 +17,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.MouseButton;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.VBox;
 import javax.sound.midi.Instrument;
 import javax.sound.midi.Track;
@@ -79,7 +80,6 @@ public class ChannelRackController implements Initializable {
         instrumentContainer.getChildren().remove(channelRackItem);
     }
 
-
     private void registerChannelRackItem(ChannelRackItem channelRackItem) {
         channelRackItem.getStepPane().setOnMouseClicked(mouseEvent ->
                 mainController.openPianoRoll(channelRackItem.getChannelId())
@@ -91,6 +91,34 @@ public class ChannelRackController implements Initializable {
                         channelRackItem.getInstrumentName(), event.getScreenX(), event.getScreenY());
                 midiNoteContainer.removeAllNotesForChanel(channelRackItem.getChannelId());
             }
+        });
+        channelRackItem.getIsEnabled().addEventFilter(MouseEvent.MOUSE_CLICKED, event -> {
+            boolean isMuted = !channelRackItem.isEnabled();
+            if (event.getButton() == MouseButton.SECONDARY) {
+                var otherChannelRackItems = rows.stream()
+                        .filter(item -> item.getChannelId() != channelRackItem.getChannelId())
+                        .toList();
+
+                channelRackItem.setEnabled(true);
+                if (!channelCollection.getChannel(channelRackItem.getChannelId()).isSoloed()) {
+                    otherChannelRackItems.forEach(item -> item.setEnabled(false));
+                } else {
+                    otherChannelRackItems.forEach(item -> item.setEnabled(true));
+                }
+                channelCollection.soloChannel(channelRackItem.getChannelId());
+                event.consume();
+            } else if (event.getButton() == MouseButton.PRIMARY) {
+                channelCollection.getChannel(channelRackItem.getChannelId()).setMute(isMuted);
+            }
+        });
+        channelRackItem.getPanKnob().valueProperty().addListener((obs, oldVal, newVal) -> {
+                    System.out.println(newVal.intValue());
+                    channelCollection.getChannel(channelRackItem.getChannelId()).setPan(newVal.intValue());
+                }
+        );
+        channelRackItem.getVolumeKnob().valueProperty().addListener((obs, oldVal, newVal) -> {
+            System.out.println(newVal.intValue());
+            channelCollection.getChannel(channelRackItem.getChannelId()).setVolume(newVal.intValue());
         });
     }
 
