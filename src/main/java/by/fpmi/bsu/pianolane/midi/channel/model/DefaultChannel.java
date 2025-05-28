@@ -33,6 +33,7 @@ public class DefaultChannel extends Channel {
         Patch patch = instrument.getPatch();
 
         try {
+            original.programChange(patch.getBank(), patch.getProgram());
             ShortMessage programChange = new ShortMessage();
             programChange.setMessage(ShortMessage.PROGRAM_CHANGE, channelId, patch.getProgram(), 0);
             track.add(new MidiEvent(programChange, 0));

@@ -9,6 +9,7 @@
 <?import javafx.scene.layout.HBox?>
 <?import org.kordamp.ikonli.javafx.FontIcon?>
 <?import by.fpmi.bsu.pianolane.pianoroll.components.MagnetButton?>
+<?import by.fpmi.bsu.pianolane.pianoroll.components.Keyboard?>
 <BorderPane xmlns="http://javafx.com/javafx/8.0" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="by.fpmi.bsu.pianolane.pianoroll.PianoRollController"
             stylesheets="@../css/panel.css">
@@ -26,16 +27,16 @@
                   AnchorPane.bottomAnchor="0.0"
                   style="-fx-background-color: #2b2b2b;"
                   prefHeight="15"
-            maxHeight="15"
-            minHeight="15">
+                  maxHeight="15"
+                  minHeight="15">
                 <Button fx:id="settingsButton" styleClass="piano-roll-toolbar-button">
                     <graphic>
-                        <FontIcon iconLiteral="bx-cog" />
+                        <FontIcon iconLiteral="bx-cog"/>
                     </graphic>
                 </Button>
                 <MagnetButton fx:id="magnetButton" styleClass="piano-roll-toolbar-button">
                     <graphic>
-                        <FontIcon iconLiteral="bx-magnet" />
+                        <FontIcon iconLiteral="bx-magnet"/>
                     </graphic>
                 </MagnetButton>
             </HBox>
@@ -59,8 +60,7 @@
                         style="-fx-background-color: black;">
                 <AnchorPane fx:id="pianoRollContainer" style="-fx-background-color: black;">
 
-                    <Pane fx:id="keyboardPane" prefWidth="120" stylesheets="@/css/piano-keys.css"
-                          AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"/>
+                    <Keyboard fx:id="keyboard" AnchorPane.leftAnchor="0" AnchorPane.topAnchor="0" AnchorPane.bottomAnchor="0"/>
                     <ScrollPane fx:id="notesHorizontalScrollPane"
                                 AnchorPane.leftAnchor="120"
                                 AnchorPane.topAnchor="0"

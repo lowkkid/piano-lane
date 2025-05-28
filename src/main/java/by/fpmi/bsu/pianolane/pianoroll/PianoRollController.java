@@ -1,5 +1,6 @@
 package by.fpmi.bsu.pianolane.pianoroll;
 
+import static by.fpmi.bsu.pianolane.common.Constants.MidiConstants.NUM_KEYS;
 import static by.fpmi.bsu.pianolane.common.Constants.MidiConstants.VELOCITY_IN_PERCENTS;
 import static by.fpmi.bsu.pianolane.common.util.CopyUtil.copy;
 import static by.fpmi.bsu.pianolane.common.util.GlobalInstances.SEQUENCER;
@@ -9,6 +10,7 @@ import by.fpmi.bsu.pianolane.mainwindow.MainController;
 import by.fpmi.bsu.pianolane.common.noteobserver.MidiNoteDeleteObserver;
 import by.fpmi.bsu.pianolane.common.noteobserver.NoteResizedObserver;
 import by.fpmi.bsu.pianolane.common.noteobserver.VelocityChangedObserver;
+import by.fpmi.bsu.pianolane.pianoroll.components.Keyboard;
 import by.fpmi.bsu.pianolane.pianoroll.components.MagnetButton;
 import by.fpmi.bsu.pianolane.pianoroll.components.NoteWithVelocity;
 import by.fpmi.bsu.pianolane.pianoroll.components.Note;
@@ -39,12 +41,10 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.ScrollEvent;
 import javafx.scene.layout.AnchorPane;
 import javafx.scene.layout.HBox;
-import javafx.scene.layout.Pane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
 import javafx.scene.text.Font;
 import javafx.scene.text.FontWeight;
-import javafx.scene.text.Text;
 import javafx.util.Duration;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -75,9 +75,9 @@ public class PianoRollController {
     @FXML
     private GridPane gridPane;
     @FXML
-    private GridPane velocityPane;
+    private Keyboard keyboard;
     @FXML
-    private Pane keyboardPane;
+    private GridPane velocityPane;
     @FXML
     private Button closeButton;
     @FXML
@@ -91,9 +91,7 @@ public class PianoRollController {
     private static final Supplier<Double> GRID_CELL_WIDTH = () -> GRID_QUARTER_NOTE_WIDTH / (double) GRID_DIVISION_FACTOR;
     private static final Supplier<Double> TICKS_PER_COLUMN = () -> 480 / (double) GRID_DIVISION_FACTOR;
 
-    private static final int NUM_KEYS = 60;        // 5 octaves (60 keys)
-    private static final double KEY_HEIGHT = 30;   // Высота клавиш
-    private static final String[] NOTES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
+    public static final double KEY_HEIGHT = 30;   // Высота клавиш
 
     // Параметры сетки
     private final double cellHeight = 30;  // Высота клетки (соответствует одной клавише)
@@ -187,11 +185,11 @@ public class PianoRollController {
     }
 
     public void initialize() {
+        keyboard.setChannelId(channelId);
         magnetButton.setGridDivider(this::setGridDivisionFactor);
         initializeTopPanel();
         splitPane.setDividerPositions(0.8);
         gridPane.setChannelId(channelId);
-        drawKeyboard();
         drawGrid();
         resolveCurrentGridDivisionFactor();
         initPlayhead();
@@ -201,7 +199,6 @@ public class PianoRollController {
         gridPane.addEventHandler(MouseEvent.MOUSE_CLICKED, this::handleGridClick);
 
 
-        //TODO: after loading listeners for velo change or note delete are NOT WORKING!!!
         log.info("Fetching previously written notes for channel {}", channelId);
         List<NoteWithVelocity> previouslyWrittenNotes = midiNoteContainer.getAllNotesForChannel(channelId);
         log.info("Fetched notes: {}", previouslyWrittenNotes);
@@ -255,27 +252,6 @@ public class PianoRollController {
         }
     }
 
-    // Отрисовка клавиатуры снизу вверх: нота с i=0 отрисовывается внизу
-    private void drawKeyboard() {
-        for (int i = 0; i < NUM_KEYS; i++) {
-            int noteIndex = i % 12;
-            int octaveNumber = (i / 12) + 1;
-            boolean isBlackKey = NOTES[noteIndex].contains("#");
-
-            double y = (NUM_KEYS - 1 - i) * KEY_HEIGHT;
-            Rectangle key = new Rectangle(0, y, 120, KEY_HEIGHT);
-            key.getStyleClass().add(isBlackKey ? "black-key" : "white-key");
-
-            Text noteLabel = new Text(
-                    5,
-                    y + KEY_HEIGHT - 5,
-                    NOTES[noteIndex] + octaveNumber);
-            noteLabel.setFont(new Font(12));
-            noteLabel.setFill(isBlackKey ? Color.WHITE : Color.BLACK);
-
-            keyboardPane.getChildren().addAll(key, noteLabel);
-        }
-    }
 
     private final List<Rectangle> eighthNoteLines = new ArrayList<>();
     private final List<Rectangle> sixteenthNoteLines = new ArrayList<>();

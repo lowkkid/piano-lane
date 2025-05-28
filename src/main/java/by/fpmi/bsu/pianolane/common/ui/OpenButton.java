@@ -3,7 +3,6 @@ package by.fpmi.bsu.pianolane.common.ui;
 import by.fpmi.bsu.pianolane.common.util.enums.FileOperation;
 import java.io.File;
 import java.util.function.Consumer;
-import javafx.scene.Node;
 import lombok.Setter;
 
 @Setter
@@ -15,14 +14,6 @@ public class OpenButton extends FileOperationButton {
 
     public OpenButton() {
         super();
-    }
-
-    public OpenButton(String text) {
-        super(text);
-    }
-
-    public OpenButton(String text, Node graphic) {
-        super(text, graphic);
     }
 
     @Override

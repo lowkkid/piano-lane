@@ -7,6 +7,7 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor(access = AccessLevel.PRIVATE)
 public final class Constants {
 
+    public static final String[] NOTES = {"C", "C#", "D", "D#", "E", "F", "F#", "G", "G#", "A", "A#", "B"};
 
     public static final int SAMPLE_RATE = 44100;
     public static final float SAMPLE_RATE_FLOAT = 44100.0f;
@@ -14,6 +15,10 @@ public final class Constants {
 
 
     public static final class MidiConstants {
+
+        public static final int STARTING_MIDI_NOTE = 21;
+        public static final int ENDING_MIDI_NOTE = 108;
+        public static final int NUM_KEYS = ENDING_MIDI_NOTE - STARTING_MIDI_NOTE + 1;        // 5 octaves (60 keys)
 
         public static final int RESOLUTION = 480;
         public static final int DEFAULT_VELOCITY_VALUE = 75;

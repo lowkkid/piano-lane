@@ -3,7 +3,6 @@ package by.fpmi.bsu.pianolane.common.ui;
 import by.fpmi.bsu.pianolane.common.util.enums.FileOperation;
 import java.io.File;
 import java.util.function.Consumer;
-import javafx.scene.Node;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -19,14 +18,6 @@ public class SaveButton extends FileOperationButton {
 
     public SaveButton() {
         super();
-    }
-
-    public SaveButton(String text) {
-        super(text);
-    }
-
-    public SaveButton(String text, Node graphic) {
-        super(text, graphic);
     }
 
     public void setFileExtension(String value) {
