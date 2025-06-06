@@ -1,6 +1,5 @@
 package by.fpmi.bsu.pianolane.midi.channel.model;
 
-import static by.fpmi.bsu.pianolane.common.util.GlobalInstances.MIDI_CHANNELS;
 import static by.fpmi.bsu.pianolane.common.util.GlobalInstances.SYNTHESIZER;
 import static by.fpmi.bsu.pianolane.common.util.MathUtil.uiToMidiNoteLength;
 import static by.fpmi.bsu.pianolane.common.util.MidiUtil.createTrackWithId;
@@ -17,10 +16,10 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.atomic.AtomicInteger;
 import javax.sound.midi.InvalidMidiDataException;
-import javax.sound.midi.MidiChannel;
 import javax.sound.midi.Track;
 import lombok.Data;
 import lombok.Getter;
+import lombok.Setter;
 import lombok.experimental.SuperBuilder;
 import lombok.extern.slf4j.Slf4j;
 
@@ -34,9 +33,9 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
     private final Map<Integer, NoteEvent> noteEvents;
 
     protected int channelId;
-    protected MidiChannel original;
     protected Track track;
     protected boolean muted;
+    @Setter
     protected boolean soloed;
     protected int volume; // 0-127
     protected int pan; // 0-127 (64 = center)
@@ -45,7 +44,6 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
         this.channelId = channelId;
         notesSequence = new AtomicInteger(0);
         noteEvents = new HashMap<>();
-        original = MIDI_CHANNELS[channelId];
         track = createTrackWithId(String.valueOf(channelId));
         muted = false;
         soloed = false;
@@ -72,34 +70,11 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
         eventToDelete.destroy();
     }
 
-    public void setMute(boolean muted) {
-        log.info("Synthesizer class: {}", SYNTHESIZER.getClass().getName());
-        log.info("Channel class: {}", original.getClass().getName());
-        // Проверьте, поддерживает ли синтезатор нужные функции
+    public abstract void setMute(boolean muted);
 
-        log.info("Setting mute to {} for channel with id {}", muted, channelId);
-        this.muted = muted;
-        log.info("Channel {} before mute change: active={}", channelId, original.getMute());
-        original.setMute(muted);
-        log.info("Channel {} after mute change: active={}", channelId, original.getMute());
-        log.info("Channel {} before mute change: active={}", channelId, original.getController(7));
-        //original.controlChange(7, 0);
-        log.info("Channel {} after mute change: active={}", channelId, original.getController(7));
-    }
+    public abstract void setVolume(int volume);
 
-    public void setVolume(int volume) {
-        this.volume = volume;
-            original.controlChange(VOLUME_CONTROLLER, volume);
-    }
-
-    public void setPan(int pan) {
-        this.pan = pan;
-        original.controlChange(PAN_CONTROLLER, pan);
-    }
-
-    public void setSoloed(boolean soloed) {
-        this.soloed = soloed;
-    }
+    public abstract void setPan(int pan);
 
     public void setTrack(Track track) {
         this.track = track;
@@ -166,5 +141,4 @@ public abstract class Channel implements MidiNoteDeleteObserver, NoteResizedObse
                 + ", muted=" + muted
                 + ", soloed" + soloed;
     }
-
 }

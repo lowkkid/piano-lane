@@ -1,6 +1,7 @@
 package by.fpmi.bsu.pianolane.midi.channel.model;
 
 import java.util.Objects;
+import javax.sound.midi.MidiChannel;
 import lombok.Getter;
 import lombok.Setter;
 
@@ -12,6 +13,9 @@ import javax.sound.midi.ShortMessage;
 import lombok.ToString;
 import lombok.experimental.SuperBuilder;
 
+import static by.fpmi.bsu.pianolane.common.Constants.MidiConstants.PAN_CONTROLLER;
+import static by.fpmi.bsu.pianolane.common.Constants.MidiConstants.VOLUME_CONTROLLER;
+import static by.fpmi.bsu.pianolane.common.util.GlobalInstances.MIDI_CHANNELS;
 import static by.fpmi.bsu.pianolane.common.util.GlobalInstances.SYNTHESIZER;
 
 @Getter
@@ -21,25 +25,28 @@ import static by.fpmi.bsu.pianolane.common.util.GlobalInstances.SYNTHESIZER;
 public class DefaultChannel extends Channel {
 
     private Instrument instrument;
+    protected MidiChannel original;
 
     public DefaultChannel(int channelId, Instrument instrument) {
         super(channelId);
         this.instrument = instrument;
+        original = MIDI_CHANNELS[channelId];
         linkInstrumentToChannel();
     }
 
-    private void linkInstrumentToChannel() {
-        SYNTHESIZER.loadInstrument(this.instrument);
-        Patch patch = instrument.getPatch();
+    public void setMute(boolean muted) {
+        this.muted = muted;
+        original.setMute(muted);
+    }
 
-        try {
-            original.programChange(patch.getBank(), patch.getProgram());
-            ShortMessage programChange = new ShortMessage();
-            programChange.setMessage(ShortMessage.PROGRAM_CHANGE, channelId, patch.getProgram(), 0);
-            track.add(new MidiEvent(programChange, 0));
-        } catch (InvalidMidiDataException e) {
-            throw new RuntimeException(e);
-        }
+    public void setVolume(int volume) {
+        this.volume = volume;
+        original.controlChange(VOLUME_CONTROLLER, volume);
+    }
+
+    public void setPan(int pan) {
+        this.pan = pan;
+        original.controlChange(PAN_CONTROLLER, pan);
     }
 
     @Override
@@ -59,5 +66,19 @@ public class DefaultChannel extends Channel {
     public int hashCode() {
         return Objects.hash(super.hashCode(),
                 instrument != null ? instrument.getName() : null);
+    }
+
+    private void linkInstrumentToChannel() {
+        SYNTHESIZER.loadInstrument(this.instrument);
+        Patch patch = instrument.getPatch();
+
+        try {
+            original.programChange(patch.getBank(), patch.getProgram());
+            ShortMessage programChange = new ShortMessage();
+            programChange.setMessage(ShortMessage.PROGRAM_CHANGE, channelId, patch.getProgram(), 0);
+            track.add(new MidiEvent(programChange, 0));
+        } catch (InvalidMidiDataException e) {
+            throw new RuntimeException(e);
+        }
     }
 }

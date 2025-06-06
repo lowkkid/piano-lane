@@ -21,4 +21,20 @@ public class SynthesizerChannel extends Channel {
         var settings = createSynthSettings(channelId);
         synthPlayer = new SynthPlayer(settings);
     }
+
+    @Override
+    public void setMute(boolean muted) {
+        this.muted = muted;
+        synthPlayer.getSynthSettings().setEnabled(!muted);
+    }
+
+    @Override
+    public void setVolume(int volume) {
+
+    }
+
+    @Override
+    public void setPan(int pan) {
+
+    }
 }

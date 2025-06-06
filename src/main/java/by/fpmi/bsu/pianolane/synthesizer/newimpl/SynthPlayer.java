@@ -1,5 +1,6 @@
 package by.fpmi.bsu.pianolane.synthesizer.newimpl;
 
+import static by.fpmi.bsu.pianolane.common.Constants.SAMPLE_RATE;
 import static by.fpmi.bsu.pianolane.synthesizer.newimpl.AudioDispatcherFactory.createAudioDispatcher;
 import static by.fpmi.bsu.pianolane.synthesizer.newimpl.AudioDispatcherFactory.format;
 
@@ -57,10 +58,10 @@ public class SynthPlayer {
         var frequency = (float) filterSettings.getFrequency();
 
         filterProcessor = switch (filterSettings.getFilterType()) {
-            case LOW_PASS_SP -> new LowPassSP(frequency, 44100);
-            case LOW_PASS_FS -> new LowPassFS(frequency, 44100);
-            case HIGH_PASS -> new HighPass(frequency, 44100);
-            case BAND_PASS -> new BandPass(frequency, frequency / (float) filterSettings.getQ(), 44100);
+            case LOW_PASS_SP -> new LowPassSP(frequency, SAMPLE_RATE);
+            case LOW_PASS_FS -> new LowPassFS(frequency, SAMPLE_RATE);
+            case HIGH_PASS -> new HighPass(frequency, SAMPLE_RATE);
+            case BAND_PASS -> new BandPass(frequency, frequency / (float) filterSettings.getQ(), SAMPLE_RATE);
         };
 
         dispatcher.addAudioProcessor(filterProcessor);
